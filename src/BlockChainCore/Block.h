@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <type_traits>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "ContainedData.h"
 #include <boost/multiprecision/gmp.hpp>
@@ -44,13 +45,25 @@ namespace BigNums = boost::multiprecision;
                        ContainedData&& containedData);
         static Block ConstructFromChain(const BlockChain& currentBlockChain) noexcept(false);
         static Block init();
-        //bool IsVerified(Signature) write this shit later
-
+        [[nodiscard]]
         auto GetHashInfo() const noexcept;
         [[nodiscard]]
         ByteVector GetBlockBytes() const noexcept;
-        bool IsVerified(const bool(*verifier)(const ByteVector&, const ByteVector&, std::pair<std::string, std::string>&));
-        bool IsVefified(const std::function<bool(const ByteVector&, const ByteVector&, std::pair<std::string, std::string>&)>& verifier);
+       template <class Callable>
+               bool IsValid(Callable&& callable)
+               requires std::invocable<Callable, const ByteVector&, const ByteVector&, const std::pair<std::string, std::string>&> &&
+                       std::same_as<bool, std::decay_t<decltype(callable(this->hashInfo.curHash, this->GetBlockBytes(), this->minedBy))>>{
+                           return callable(this->hashInfo.curHash, this->GetBlockBytes(), this->minedBy);
+                       }
+       [[nodiscard]]
+       auto GetTransactionLedger() const noexcept;
+       void SetCurHash(const ByteVector& curHash);
+       void SetCurHash(ByteVector&& curHash);
+       void SetPrevHash(const ByteVector& prevHash);
+       void SetPrevHash(ByteVector&& prevHash);
+       void SetTransactionLedger(const BigNums::mpz_int& ledgerId);
+        void SetTransactionLedger(BigNums::mpz_int&& ledgerId);
+
 
 
     };

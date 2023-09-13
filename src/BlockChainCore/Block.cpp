@@ -3,6 +3,7 @@
 //
 
 #include "Block.h"
+#include "Crypto.h"
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 #include <boost/multiprecision/random.hpp>
@@ -38,12 +39,28 @@ namespace BlockChainCore {
         return Block{};
     }
 
-    bool Block::IsVerified(const bool(*verifier)(const ByteVector&, const ByteVector&, std::pair<std::string, std::string>&)){
-        return verifier(this->hashInfo.curHash, this->GetBlockBytes(), this->minedBy);
+    auto Block::GetTransactionLedger() const noexcept{
+        return this->ledgerId;
     }
-    bool Block::IsVefified(const std::function<bool(const ByteVector&, const ByteVector&, std::pair<std::string, std::string>&)>& verifier){
-        return verifier(this->hashInfo.curHash, this->GetBlockBytes(), this->minedBy);
+    void Block::SetCurHash(const ByteVector& curHash){
+        this->hashInfo.curHash = curHash;
     }
+    void Block::SetCurHash(ByteVector&& curHash){
+        this->hashInfo.curHash = std::move(curHash);
+    }
+    void Block::SetPrevHash(const ByteVector& prevHash){
+        this->hashInfo.prevHash = prevHash;
+    }
+    void Block::SetPrevHash(ByteVector&& prevHash){
+        this->hashInfo.prevHash = std::move(prevHash);
+    }
+    void Block::SetTransactionLedger(const BigNums::mpz_int& ledgerId){
+        this->ledgerId = ledgerId;
+    }
+    void Block::SetTransactionLedger(BigNums::mpz_int&& ledgerId){
+        this->ledgerId = std::move(ledgerId);
+    }
+
 
 
 } // BlockChainCore
