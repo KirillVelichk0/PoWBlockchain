@@ -2,5 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 project(BlockChainCore)
 
 set(CMAKE_CXX_STANDARD 20)
-
-add_library(BlockChainCore FiniteField.cpp)
+find_package(Boost REQUIRED COMPONENTS serialization contract random)
+find_package(cryptopp CONFIG REQUIRED)
+add_library(BlockChainCore Block.cpp Block.h Crypto.h Crypto.cpp ContainedData.h ContainedData.cpp)
+target_link_libraries(BlockChainCore PRIVATE Boost::boost Boost::random Boost::serialization Boost::contract cryptopp::cryptopp)
