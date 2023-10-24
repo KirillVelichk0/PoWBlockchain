@@ -8,7 +8,6 @@
 #include <cryptopp/oids.h>
 #include <cryptopp/seckey.h>
 #include <optional>
-#include <cryptopp/seckey.h>
 #include <sstream>
 namespace BlockChainCore {
     namespace ASN1 = CryptoPP::ASN1;
@@ -37,6 +36,7 @@ namespace BlockChainCore {
         try {
             auto pubKeyImported = ImportPublicKey(publicKey);
             if(!pubKeyImported.has_value()){
+                //write logger
                 throw std::invalid_argument("");
             }
             ECDSA256 ::Verifier verifier(pubKeyImported.value());
