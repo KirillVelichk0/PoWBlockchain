@@ -11,15 +11,15 @@
 namespace BlockChainCore {
     Block::Block(const BlockHashInfo& hashInfo, const UnixTime& timestamp, const std::pair<std::string, std::string>& minedBy,
           const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
-          const ContainedData& contData) : hashInfo(hashInfo), timestamp(timestamp),
-                                                        minedBy(minedBy), ledgerId(ledgerId), consensusInfo(consensusInfo), containedData(contData)
+          const BlockContainedData& contData) : hashInfo(hashInfo), timestamp(timestamp),
+                                                minedBy(minedBy), ledgerId(ledgerId), consensusInfo(consensusInfo), containedData(contData)
     {}
     Block::Block(BlockHashInfo&& hashInfo, const UnixTime& timestamp, std::pair<std::string, std::string>&& minedBy,
-    const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
-            ContainedData&& contData) : hashInfo(std::move(hashInfo)), timestamp(timestamp),
-    minedBy(std::move(minedBy)), ledgerId(ledgerId),
-    consensusInfo(consensusInfo),
-    containedData(std::move(contData))
+                 const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
+                 BlockContainedData&& contData) : hashInfo(std::move(hashInfo)), timestamp(timestamp),
+                                                  minedBy(std::move(minedBy)), ledgerId(ledgerId),
+                                                  consensusInfo(consensusInfo),
+                                                  containedData(std::move(contData))
     {}
     auto Block::GetHashInfo() const noexcept {
         return this->hashInfo;
@@ -87,10 +87,10 @@ namespace BlockChainCore {
     auto Block::GetContainedData() const noexcept{
         return this->containedData;
     }
-    void Block::SetContainedData(const ContainedData& contData){
+    void Block::SetContainedData(const BlockContainedData& contData){
         this->containedData = contData;
     }
-    void Block::SetContainedData(ContainedData&& contData){
+    void Block::SetContainedData(BlockContainedData&& contData){
         this->containedData = std::move(contData);
     }
     ByteVector Block::SerializeForHashing() const{

@@ -15,7 +15,7 @@
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "ContainedData.h"
+#include "BlockContainedData.h"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/multiprecision/gmp.hpp>
@@ -111,17 +111,17 @@ namespace BigNums = boost::multiprecision;
         std::pair<std::string, std::string> minedBy; //два числа в тексовом виде, разделенные точкой
         BigNums::mpz_int ledgerId = 1; //для идентификации в БД
         BlockConsensusInfo consensusInfo;
-        ContainedData containedData;
+        BlockContainedData containedData;
         Block() = default;
         explicit Block(const BlockChain& currentBlockChain) noexcept(false);
     public:
         friend class boost::serialization::access;
         Block(const BlockHashInfo& hashInfo, const UnixTime& timestamp, const std::pair<std::string, std::string>& minedBy,
                        const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
-                       const ContainedData& containedData);
+                       const BlockContainedData& containedData);
         Block(BlockHashInfo&& hashInfo, const UnixTime& timestamp, std::pair<std::string, std::string>&& minedBy,
-                       const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
-                       ContainedData&& containedData);
+              const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
+              BlockContainedData&& containedData);
         //! Частично конструирует блок, цепляя его к переданной ветке блокчейна
         static Block ConstructFromChain(const BlockChain& currentBlockChain) noexcept(false);
         //! Инициализирует начальный блок.
@@ -164,8 +164,8 @@ namespace BigNums = boost::multiprecision;
        void SetMiningPoint(const BigNums::mpz_int& miningPoint);
        [[nodiscard]]
        auto GetContainedData() const noexcept;
-       void SetContainedData(const ContainedData& contData);
-       void SetContainedData(ContainedData&& contData);
+       void SetContainedData(const BlockContainedData& contData);
+       void SetContainedData(BlockContainedData&& contData);
     private:
         template <typename Archive>
         void save(Archive &ar, const unsigned int version) const{
