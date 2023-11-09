@@ -3,8 +3,6 @@
 //
 
 #include "ILogger.h"
-#include <boost/json.hpp>
-#include <boost/stacktrace.hpp>
 #include "predefs.h"
 namespace BlockChainCore {
 
@@ -19,14 +17,28 @@ namespace BlockChainCore {
          *
          */
         std::shared_ptr<ILogger> &GetLoggerInternal(){
-            static std::shared_ptr<ILogger> logger;
+            static std::shared_ptr<ILogger> logger = std::make_shared<DisabledLogger>();
             return logger;
         }
     }
-    void __SetupLogger(){} //write later
+    void SetupLogger(std::shared_ptr<ILogger> logger){
+        static bool wasSetted = false;
+        if(!wasSetted) {
+            GetLoggerInternal() = logger;
+            wasSetted = true;
+        }
+    }
+
+    LoggerTester::LoggerTester(std::shared_ptr<ILogger> logger){
+        GetLoggerInternal() = logger;
+    }
+    LoggerTester::~LoggerTester(){
+        GetLoggerInternal() = std::make_shared<DisabledLogger>();
+    }
+
 
     void Log(const LogPackage &log){
-        auto& logger = GetLoggerInternal();
+        auto logger = GetLoggerInternal();
         logger->Log(log);
     }
     DisabledLogger::~DisabledLogger(){
@@ -36,27 +48,30 @@ namespace BlockChainCore {
         //все вырублено, чилим
     }
 
-    std::string ConstructDefaultLogContext(std::string_view currentStacktrace){
-        boost::json::object context;
-        context["stacktrace"] = currentStacktrace;
-        context["context_creator"] = "ConstructDefaultLogContext";
-        return boost::json::serialize(context);
-    }
 
 
 
-    std::string ConstractDefaultLogSystemInfo(){
-        boost::json::object context;
-        return boost::json::serialize(context);
+
+    std::string ConstructDefaultLogCompiledSystemInfo(){
+        boost::json::object sys_info;
+        sys_info["OS"] = GetCurOs();
+        sys_info["ARCH"] = GetCurArch();
+        sys_info["ENDIAN"] = GetCurEndian();
+        sys_info["COMP"] = GetCurComp();
+        return boost::json::serialize(sys_info);
     }
-    LogPackage ConstructDefaultLog(std::string_view sourceType, LogTypeEnum logType, std::string_view message){
-        LogPackage result;
-        result.sourceType = sourceType;
-        result.logType = logType;
-        result.message = message;
-        result.timestamp = boost::posix_time::second_clock::local_time();
-        std::string stacktrace = to_string(boost::stacktrace::stacktrace());
-        result.context = ConstructDefaultLogContext(stacktrace);
+    AddtitonalContextInfo ConstructWhatHappened(std::string_view whatHappened) noexcept{
+        using namespace std::string_view_literals;
+        return std::make_pair("what_happened"sv, whatHappened);
     }
+    AddtitonalContextInfo  ConstructExceptionType(std::string_view exceptionType) noexcept{
+        using namespace std::string_view_literals;
+        return std::make_pair("exception_type"sv, exceptionType);
+    }
+    std::pair<AddtitonalContextInfo, AddtitonalContextInfo> ConstructExceptionAdditionalContext(std::string_view exceptionType) noexcept{
+        using namespace std::string_view_literals;
+        return std::make_pair(ConstructWhatHappened("Throw Exception"sv), ConstructExceptionType(exceptionType));
+    }
+
 
 }

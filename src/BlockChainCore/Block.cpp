@@ -6,8 +6,6 @@
 #include "Crypto.h"
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
-#include <boost/multiprecision/random.hpp>
-#include <ctime>
 namespace BlockChainCore {
     Block::Block(const BlockHashInfo& hashInfo, const UnixTime& timestamp, const std::pair<std::string, std::string>& minedBy,
           const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,

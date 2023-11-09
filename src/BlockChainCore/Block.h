@@ -32,10 +32,20 @@ namespace BigNums = boost::multiprecision;
      * Данный класс полностью повторяет функционал класса boost::archive::text_oarchive.
      * Его единственная задача - обеспечить дополнительный сценарий сериализации для верификации блока.
      * Достигается это путем перегрузки шаблона serialize в структуре BlockHashInfo.
-     * В случае необходимости расширения функционала переделать под text_oarchive_impl в соответствии с рекомендациями разработчиков.
+
      */
-    class TextOArchive_ForSign: public boost::archive::text_oarchive{
-        using boost::archive::text_oarchive::text_oarchive;
+    class BOOST_SYMBOL_VISIBLE TextOArchive_ForSign final :
+        public boost::archive::text_oarchive_impl<TextOArchive_ForSign>
+    {
+    public:
+        explicit TextOArchive_ForSign(std::ostream & os_, unsigned int flags = 0) :
+        // note: added _ to suppress useless gcc warning
+                text_oarchive_impl<TextOArchive_ForSign>(os_, flags)
+        {
+            if(0 == (flags & boost::archive::no_header))
+                init();
+        }
+        ~TextOArchive_ForSign() BOOST_OVERRIDE = default;
     };
 
 //! \brief Информация о хэше блока
@@ -116,10 +126,10 @@ namespace BigNums = boost::multiprecision;
         explicit Block(const BlockChain& currentBlockChain) noexcept(false);
     public:
         friend class boost::serialization::access;
-        Block(const BlockHashInfo& hashInfo, const UnixTime& timestamp, const std::pair<std::string, std::string>& minedBy,
+        explicit Block(const BlockHashInfo& hashInfo, const UnixTime& timestamp, const std::pair<std::string, std::string>& minedBy,
                        const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
                        const BlockContainedData& containedData);
-        Block(BlockHashInfo&& hashInfo, const UnixTime& timestamp, std::pair<std::string, std::string>&& minedBy,
+        explicit Block(BlockHashInfo&& hashInfo, const UnixTime& timestamp, std::pair<std::string, std::string>&& minedBy,
               const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
               BlockContainedData&& containedData);
         //! Частично конструирует блок, цепляя его к переданной ветке блокчейна
