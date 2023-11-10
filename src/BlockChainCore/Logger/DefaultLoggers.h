@@ -4,6 +4,7 @@
 #ifndef BLOCKCHAINCORE_DEFAULTLOGGERS_H
 #define BLOCKCHAINCORE_DEFAULTLOGGERS_H
 #include "ILogger.h"
+#include <source_location>
 namespace BlockChainCore {
     using AddtitonalContextInfo = std::pair<std::string_view, std::string_view>;
 
@@ -18,11 +19,11 @@ namespace BlockChainCore {
         }
     }
 
-    LogPackage ConstructTraceStartingLog(std::string_view sourceType) noexcept;
+    LogPackage ConstructTraceStartingLog(const std::source_location& location) noexcept;
     AddtitonalContextInfo ConstructWhatHappened(std::string_view whatHappened) noexcept;
     AddtitonalContextInfo  ConstructExceptionType(std::string_view exceptionType) noexcept;
     std::pair<AddtitonalContextInfo, AddtitonalContextInfo> ConstructExceptionAdditionalContext(std::string_view exceptionType) noexcept;
-
+    void LogStartTrace(const std::source_location& loc = std::source_location::current());
 
     template <std::same_as<std::pair<std::string_view, std::string_view>>... ContextInfo>
     std::string ConstructDefaultLogContext(std::string_view currentStacktrace, ContextInfo... contextInfo){
@@ -45,9 +46,9 @@ namespace BlockChainCore {
      * распаковывается и помещается внутри context/source_additional_context
      */
     template <std::same_as<std::pair<std::string_view, std::string_view>>... ContextInfo>
-    inline LogPackage ConstructDefaultLog(std::string_view sourceType, LogTypeEnum logType, std::string_view message, ContextInfo... contextInfo){
+    inline LogPackage ConstructDefaultLog(const std::source_location& location, LogTypeEnum logType, std::string_view message, ContextInfo... contextInfo){
         LogPackage result;
-        result.sourceType = sourceType;
+        result.sourceType = location.function_name();
         result.logType = logType;
         result.message = message;
         result.timestamp = boost::posix_time::second_clock::local_time();

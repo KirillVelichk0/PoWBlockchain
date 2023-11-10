@@ -20,8 +20,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/multiprecision/gmp.hpp>
 #include <functional>
-#include "../Logger/ILogger.h"
+#include <source_location>
 #include "../Logger/DefaultLoggers.h"
+#include "BlockLogs.h"
 namespace BlockChainCore {
 class Block;
 using BlockChain = std::vector<Block>;
@@ -62,10 +63,7 @@ namespace BigNums = boost::multiprecision;
         */
         template <typename Archive>
         void serialize(Archive &ar, const unsigned int version) {
-            {
-                auto log = ConstructTraceStartingLog("BlockHashInfo::serialize");
-                Log(log);
-            }
+            LogStartTrace();
             ar & prevSignedHash;
             ar & curSignedHash;
         }
@@ -74,10 +72,7 @@ namespace BigNums = boost::multiprecision;
 
     template <>
     void BlockHashInfo::serialize<TextOArchive_ForSign>(TextOArchive_ForSign& ar, const unsigned int version){
-        {
-            auto log = ConstructTraceStartingLog("BlockHashInfo::serialize<TextOArchive_ForSign>");
-            Log(log);
-        }
+        LogStartTrace();
         ar & prevSignedHash;
     }
 
@@ -89,10 +84,7 @@ namespace BigNums = boost::multiprecision;
     private:
         template <typename Archive>
         void save(Archive &ar, const unsigned int version) const{
-            {
-                auto log = ConstructTraceStartingLog("BlockConsensusInfo::save");
-                Log(log);
-            }
+                LogStartTrace();
             {
                 std::ostringstream oss;
                 oss << this->miningPoint;
@@ -109,10 +101,7 @@ namespace BigNums = boost::multiprecision;
 
         template<class Archive>
         void load(Archive &ar, const unsigned int version){
-            {
-                auto log = ConstructTraceStartingLog("BlockConsensusInfo::load");
-                Log(log);
-            }
+            LogStartTrace();
             std::string miningPointStr;
             std::string luckStr;
             ar & miningPointStr;
@@ -168,19 +157,9 @@ namespace BigNums = boost::multiprecision;
                requires std::invocable<CallableVerifier, const ByteVector&, const ByteVector&, const std::pair<std::string, std::string>&> &&
                         std::same_as<bool, std::decay_t<decltype(callable(this->hashInfo.curSignedHash,
                                                                           this->SerializeForHashing(), this->minedBy))>>{
-            {
-                auto log = ConstructTraceStartingLog("Block::IsValid");
-                Log(log);
-            }
-            {
-                std::ostringstream oss;
-                oss << this->ledgerId;
-                std::string blockId = oss.str();
-                std::string message = "Starting validation check of block with id: " + blockId;
-                auto log = ConstructDefaultLog("Block::IsValid", LogTypeEnum::Info,
-                                               message, ConstructWhatHappened("Block validating info log"));
-                Log(log);
-            }
+            LogStartTrace();
+            BlockLogs::LogIsValidInfo(this->ledgerId);
+
                            return callable(this->hashInfo.curSignedHash, this->SerializeForHashing(), this->minedBy);
                        }
        [[nodiscard]]
