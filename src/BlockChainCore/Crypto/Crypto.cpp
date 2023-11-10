@@ -8,7 +8,8 @@
 #include <cryptopp/oids.h>
 #include <cryptopp/seckey.h>
 #include <optional>
-#include "ILogger.h"
+#include "../Logger/ILogger.h"
+#include "../Logger/DefaultLoggers.h"
 #include <sstream>
 namespace BlockChainCore {
     namespace ASN1 = CryptoPP::ASN1;
@@ -16,6 +17,10 @@ namespace BlockChainCore {
 
     std::optional<ECDSA256::PublicKey> ImportPublicKey(const std::pair<std::string, std::string>& publicKey) noexcept{
         std::optional<ECDSA256::PublicKey> result = ECDSA256 ::PublicKey{};
+        {
+            auto log = ConstructTraceStartingLog("BlockChainCore::ImportPublicKey");
+            Log(log);
+        }
         try {
             CryptoPP::RandomNumberGenerator rng;
             std::istringstream ss(publicKey.first + " " + publicKey.second);
@@ -29,9 +34,10 @@ namespace BlockChainCore {
                 std::string message = "There was a problem during the parsing of the public key."
                                       " Cant validate public key. ss >> x >> y set failbit\n"
                                       " Public key: "s + publicKey.first + " " + publicKey.second ;
-                ConstructDefaultLog("BlockChainCore::ImportPublicKey", LogTypeEnum::Warn, message,
+                auto log = ConstructDefaultLog("BlockChainCore::ImportPublicKey", LogTypeEnum::Warn, message,
                                     ConstructWhatHappened("ss >> x >> y set failbit\n "
                                                           "ss has type std::istringstream"));
+                Log(log);
                 return {};
             }
             const CryptoPP::ECPPoint point(x, y);
@@ -43,8 +49,9 @@ namespace BlockChainCore {
                 std::string message = "There was a problem during the import of the public key."
                                       " Cant validate public key. result.value().Validate(rng, 3) return false\n"
                                       " Public key: "s + publicKey.first + " " + publicKey.second ;
-                ConstructDefaultLog("BlockChainCore::ImportPublicKey", LogTypeEnum::Warn, message,
+                auto log = ConstructDefaultLog("BlockChainCore::ImportPublicKey", LogTypeEnum::Warn, message,
                                     ConstructWhatHappened("result.value().Validate(rng, 3) return false"));
+                Log(log);
                 result.reset();
             }
         }
@@ -56,8 +63,9 @@ namespace BlockChainCore {
                                        " so it was not possible to get accurate information."
                                        " Public key: "s + publicKey.first + " " + publicKey.second ;
             auto exceptionContext = ConstructExceptionAdditionalContext("Unknown"sv);
-            ConstructDefaultLog("BlockChainCore::ImportPublicKey", LogTypeEnum::Warn, message,
+            auto log = ConstructDefaultLog("BlockChainCore::ImportPublicKey", LogTypeEnum::Warn, message,
                                 exceptionContext.first, exceptionContext.second);
+            Log(log);
             result.reset();
         }
         return result;
@@ -65,6 +73,10 @@ namespace BlockChainCore {
     [[nodiscard]]
     bool Crypto::TryToVerifyECDSA_CryptoPP(const ByteVector& signature, const ByteVector& blockData, const std::pair<std::string, std::string>& publicKey) noexcept{
         try {
+            {
+                auto log = ConstructTraceStartingLog("BlockChainCore::Crypto::TryToVerifyECDSA_CryptoPP");
+                Log(log);
+            }
             auto pubKeyImported = ImportPublicKey(publicKey);
             if(!pubKeyImported.has_value()){
                 return false; //уже логируется. Если же начать выводить сигнатуру и данные блока, получится слишком много.
@@ -81,8 +93,9 @@ namespace BlockChainCore {
                                       //" signature:\n "s + std::string((char*)signature.data()) +"\n"+
                                       //" BlockData: \n"s + std::string((char*)signature.data())
                                       " Public key: "s + publicKey.first + " " + publicKey.second ;
-                ConstructDefaultLog("BlockChainCore::ImportPublicKey", LogTypeEnum::Warn, message,
+                auto log = ConstructDefaultLog("BlockChainCore::Crypto::TryToVerifyECDSA_CryptoPP", LogTypeEnum::Warn, message,
                                     ConstructWhatHappened("verifier.VerifyMessage return false"));
+                Log(log);
             }
             return isOk;
         } catch(...){

@@ -3,7 +3,7 @@
 //
 
 #include "Block.h"
-#include "Crypto.h"
+#include "../Crypto/Crypto.h"
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 namespace BlockChainCore {
