@@ -11,14 +11,18 @@ namespace BlockChainCore {
           const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
           const BlockContainedData& contData) : hashInfo(hashInfo), timestamp(timestamp),
                                                 minedBy(minedBy), ledgerId(ledgerId), consensusInfo(consensusInfo), containedData(contData)
-    {}
+    {
+        LogStartTrace();
+    }
     Block::Block(BlockHashInfo&& hashInfo, const UnixTime& timestamp, std::pair<std::string, std::string>&& minedBy,
                  const BigNums::mpz_int& ledgerId, const BlockConsensusInfo& consensusInfo,
                  BlockContainedData&& contData) : hashInfo(std::move(hashInfo)), timestamp(timestamp),
                                                   minedBy(std::move(minedBy)), ledgerId(ledgerId),
                                                   consensusInfo(consensusInfo),
                                                   containedData(std::move(contData))
-    {}
+    {
+        LogStartTrace();
+    }
     auto Block::GetHashInfo() const noexcept {
         return this->hashInfo;
     }
@@ -29,6 +33,7 @@ namespace BlockChainCore {
         boost::random::random_device gen;
         boost::uniform_real<BigNums::mpq_rational> distr(0, 1000000);
         this->consensusInfo.luck = distr(gen);
+        LogStartTrace();
     }
     Block Block::ConstructFromChain(const BlockChain& currentBlockChain) noexcept(false){
         return Block(currentBlockChain);
@@ -122,17 +127,17 @@ namespace BlockChainCore {
             oar << *this;
             return true;
         } catch (boost::archive::archive_exception& ex){
-            //write loggers
+            BlockLogs::LogBlockException(ex, "boost::archive::archive_exception");
             return false;
-        } catch (std::runtime_error& er){
-            //write loggers
+        } catch (std::runtime_error& ex){
+            BlockLogs::LogBlockException(ex, "std::runtime_error");
             return false;
         }
         catch (std::exception& ex){
-            //write loggers
+            BlockLogs::LogBlockException(ex, "std::exception");
             return false;
         } catch (...){
-            //write loggers
+            BlockLogs::LogBlockUnknownException("Unknown exception catched in Block::TryWriteToStream");
             return false;
         }
     }
@@ -143,17 +148,17 @@ namespace BlockChainCore {
             iar >> block;
             return {std::move(block)};
         }catch (boost::archive::archive_exception& ex){
-            //write loggers
+            BlockLogs::LogBlockException(ex, "boost::archive::archive_exception");
             return {};
-        } catch (std::runtime_error& er){
-            //write loggers
+        } catch (std::runtime_error& ex){
+            BlockLogs::LogBlockException(ex, "std::runtime_error");
             return {};
         }
         catch (std::exception& ex){
-            //write loggers
+            BlockLogs::LogBlockException(ex, "std::exception");
             return {};
         } catch (...){
-            //write loggers
+            BlockLogs::LogBlockUnknownException("Unknown exception catched in Block::TryWriteToStream");
             return {};
         }
     }

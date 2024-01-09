@@ -6,6 +6,7 @@
 #define BLOCKCHAINCORE_BLOCKCONTAINEDDATA_H
 #include <boost/serialization/serialization.hpp>
 #include <vector>
+#include "../Logger/DefaultLoggers.h"
 namespace BlockChainCore {
     using ByteVector = std::vector<unsigned char>;
     /*! \brief Класс для хранения хранящихся в блоке данных в произвольном формате.
@@ -20,6 +21,7 @@ namespace BlockChainCore {
         ByteVector data;
         template <typename Archive>
         void serialize(Archive &ar, const unsigned int version){
+            LogStartTrace();
             ar & data;
         }
     public:

@@ -188,6 +188,7 @@ namespace BigNums = boost::multiprecision;
     private:
         template <typename Archive>
         void save(Archive &ar, const unsigned int version) const{
+            LogStartTrace();
             ar & this->hashInfo;
             {
                 std::ostringstream oss;
@@ -209,6 +210,7 @@ namespace BigNums = boost::multiprecision;
 
         template<class Archive>
         void load(Archive &ar, const unsigned int version){
+            LogStartTrace();
             ar & this->hashInfo;
             {
                 std::string containedTimestamp;

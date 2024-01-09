@@ -33,7 +33,9 @@ namespace BlockChainCore {
         return std::make_pair(ConstructWhatHappened("Throw Exception"sv), ConstructExceptionType(exceptionType));
     }
 
+
+
     LogPackage ConstructTraceStartingLog(const std::source_location& location) noexcept {
-        return ConstructDefaultLog(location, LogTypeEnum::Trace, "", ConstructWhatHappened("Starting func"));
+        return ConstructDefaultLog(location, LogTypeEnum::Trace, "", ConstructWhatHappened("Starting_func"));
     }
 }
