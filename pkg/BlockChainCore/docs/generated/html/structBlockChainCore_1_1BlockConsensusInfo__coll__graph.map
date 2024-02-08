@@ -1,0 +1,5 @@
+<map id="BlockChainCore::BlockConsensusInfo" name="BlockChainCore::BlockConsensusInfo">
+<area shape="rect" id="node1" title="Информация, необходимая алгоритму консенсуса" alt="" coords="5,95,269,121"/>
+<area shape="rect" id="node2" title=" " alt="" coords="43,5,117,32"/>
+<area shape="rect" id="node3" title=" " alt="" coords="142,5,250,32"/>
+</map>

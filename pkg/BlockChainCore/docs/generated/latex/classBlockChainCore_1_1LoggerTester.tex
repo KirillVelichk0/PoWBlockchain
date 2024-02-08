@@ -1,0 +1,21 @@
+\hypertarget{classBlockChainCore_1_1LoggerTester}{}\doxysection{Класс Block\+Chain\+Core\+::Logger\+Tester}
+\label{classBlockChainCore_1_1LoggerTester}\index{BlockChainCore::LoggerTester@{BlockChainCore::LoggerTester}}
+
+
+{\ttfamily \#include $<$ILogger.\+h$>$}
+
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1LoggerTester_aa663c5998fc31a6ab63e806f7e08f210}\label{classBlockChainCore_1_1LoggerTester_aa663c5998fc31a6ab63e806f7e08f210}} 
+{\bfseries Logger\+Tester} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classBlockChainCore_1_1ILogger}{ILogger}} $>$ logger)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Класс для тестирования логгера. Использует RAII, подсовывая переданный логгер в Singleton и возвращая \mbox{\hyperlink{classBlockChainCore_1_1DisabledLogger}{Disabled\+Logger}} после уничтожения. Так как используется синглтон, следует быть аккуратным при тестах при запуске тестов в параллельном режиме. 
+
+Объявления и описания членов классов находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Logger/ILogger.\+h\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Logger/ILogger.\+cpp\end{DoxyCompactItemize}

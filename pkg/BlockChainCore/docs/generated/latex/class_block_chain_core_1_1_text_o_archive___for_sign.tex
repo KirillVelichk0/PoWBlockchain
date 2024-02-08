@@ -1,0 +1,40 @@
+\hypertarget{class_block_chain_core_1_1_text_o_archive___for_sign}{}\doxysection{Класс Block\+Chain\+Core\+::Text\+OArchive\+\_\+\+For\+Sign}
+\label{class_block_chain_core_1_1_text_o_archive___for_sign}\index{BlockChainCore::TextOArchive\_ForSign@{BlockChainCore::TextOArchive\_ForSign}}
+
+
+{\ttfamily \#include $<$Block.\+h$>$}
+
+
+
+Граф наследования\+:Block\+Chain\+Core\+::Text\+OArchive\+\_\+\+For\+Sign\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=247pt]{class_block_chain_core_1_1_text_o_archive___for_sign__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Граф связей класса Block\+Chain\+Core\+::Text\+OArchive\+\_\+\+For\+Sign\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=247pt]{class_block_chain_core_1_1_text_o_archive___for_sign__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_block_chain_core_1_1_text_o_archive___for_sign_a2a648948764fdef93891458ae6b30930}\label{class_block_chain_core_1_1_text_o_archive___for_sign_a2a648948764fdef93891458ae6b30930}} 
+{\bfseries Text\+OArchive\+\_\+\+For\+Sign} (std\+::ostream \&os\+\_\+, unsigned int flags=0)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Данный класс полностью повторяет функционал класса boost\+::archive\+::text\+\_\+oarchive. Его единственная задача -\/ обеспечить дополнительный сценарий сериализации для верификации блока. Достигается это путем перегрузки шаблона serialize в структуре \mbox{\hyperlink{struct_block_chain_core_1_1_block_hash_info}{Block\+Hash\+Info}}. 
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+Block/Block.\+h\end{DoxyCompactItemize}

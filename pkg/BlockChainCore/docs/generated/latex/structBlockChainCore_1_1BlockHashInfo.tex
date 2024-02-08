@@ -1,0 +1,55 @@
+\hypertarget{structBlockChainCore_1_1BlockHashInfo}{}\doxysection{Структура Block\+Chain\+Core\+::Block\+Hash\+Info}
+\label{structBlockChainCore_1_1BlockHashInfo}\index{BlockChainCore::BlockHashInfo@{BlockChainCore::BlockHashInfo}}
+
+
+Информация о хэше блока  
+
+
+
+
+{\ttfamily \#include $<$Block.\+h$>$}
+
+\doxysubsection*{Открытые атрибуты}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1BlockHashInfo_a2058b2c7607b1b910e0a77e675bab618}\label{structBlockChainCore_1_1BlockHashInfo_a2058b2c7607b1b910e0a77e675bab618}} 
+Byte\+Vector {\bfseries prev\+Signed\+Hash}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1BlockHashInfo_a425989e63918a060f74d94659055e975}\label{structBlockChainCore_1_1BlockHashInfo_a425989e63918a060f74d94659055e975}} 
+Byte\+Vector {\bfseries cur\+Signed\+Hash}
+\end{DoxyCompactItemize}
+\doxysubsection*{Закрытые члены}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Archive $>$ }\\void \mbox{\hyperlink{structBlockChainCore_1_1BlockHashInfo_a576dd93feb7f26afc0788c0929b795a2}{serialize}} (Archive \&ar, const unsigned int version)
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1BlockHashInfo_af25606ec45f11995b62bfcb4eb36a808}\label{structBlockChainCore_1_1BlockHashInfo_af25606ec45f11995b62bfcb4eb36a808}} 
+template$<$$>$ void {\bfseries serialize} (\mbox{\hyperlink{classBlockChainCore_1_1TextOArchive__ForSign}{Text\+OArchive\+\_\+\+For\+Sign}} \&ar, const unsigned int version)
+\end{DoxyCompactItemize}
+\doxysubsection*{Друзья}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1BlockHashInfo_ac98d07dd8f7b70e16ccb9a01abf56b9c}\label{structBlockChainCore_1_1BlockHashInfo_ac98d07dd8f7b70e16ccb9a01abf56b9c}} 
+class {\bfseries boost\+::serialization\+::access}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Информация о хэше блока 
+
+Информация о хэше блока. Хранит подписанный хэш предыдущей и текущей записи. 
+
+\doxysubsection{Методы}
+\mbox{\Hypertarget{structBlockChainCore_1_1BlockHashInfo_a576dd93feb7f26afc0788c0929b795a2}\label{structBlockChainCore_1_1BlockHashInfo_a576dd93feb7f26afc0788c0929b795a2}} 
+\index{BlockChainCore::BlockHashInfo@{BlockChainCore::BlockHashInfo}!serialize@{serialize}}
+\index{serialize@{serialize}!BlockChainCore::BlockHashInfo@{BlockChainCore::BlockHashInfo}}
+\doxysubsubsection{\texorpdfstring{serialize()}{serialize()}}
+{\footnotesize\ttfamily template$<$typename Archive $>$ \\
+void Block\+Chain\+Core\+::\+Block\+Hash\+Info\+::serialize (\begin{DoxyParamCaption}\item[{Archive \&}]{ar,  }\item[{const unsigned int}]{version }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+Версия сериализатора, сохраняющая всю информацию о хеше блока, в том числе и о текущем подписанном хеше. Используется для последующего хранения данных о блоке. 
+
+Объявления и описания членов структур находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Block/Block.\+h\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Block/Block.\+cpp\end{DoxyCompactItemize}

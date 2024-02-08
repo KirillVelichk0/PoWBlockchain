@@ -1,0 +1,31 @@
+\hypertarget{classBlockChainCore_1_1ILogger}{}\doxysection{Класс Block\+Chain\+Core\+::ILogger}
+\label{classBlockChainCore_1_1ILogger}\index{BlockChainCore::ILogger@{BlockChainCore::ILogger}}
+
+
+{\ttfamily \#include $<$ILogger.\+h$>$}
+
+
+
+Граф наследования\+:Block\+Chain\+Core\+::ILogger\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=223pt]{classBlockChainCore_1_1ILogger__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1ILogger_aee6a02007c036a1ba02a05dd21fd8123}\label{classBlockChainCore_1_1ILogger_aee6a02007c036a1ba02a05dd21fd8123}} 
+virtual void {\bfseries Log} (const \mbox{\hyperlink{structBlockChainCore_1_1LogPackage}{Log\+Package}} \&log)=0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Интерфейс, с помощью которого осуществляется логирование. Важно! Так как существуют различные виды логгеров по наличию или отсутствию перехвата ошибок и прочего, данный интерфейс отвечает лишь за доставку данных до логгера. Следует учитывать, что экземпляр данного класса будет создан на саммых ранних стадиях начала функционирования ядра и в дальнейшем редактированию не подлежит. Со всеми аварийными ситуациями должен справляться сам механизм логирования. ~\newline
+Важно! Под капотом используется shared\+\_\+ptr. В общем, нужно грамотно определить, как деструктор влияет на время жизни объекта. (например, ресурсами объекта владеет go-\/шный логгер) ~\newline
+Для обеспечения потокобезопасности Logger не должен менять свои состояния во время работы, или же должен быть защищен примитивами синхронизации. 
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Logger/ILogger.\+h\end{DoxyCompactItemize}

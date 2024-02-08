@@ -1,0 +1,169 @@
+\hypertarget{classBlockChainCore_1_1Block}{}\doxysection{Класс Block\+Chain\+Core\+::Block}
+\label{classBlockChainCore_1_1Block}\index{BlockChainCore::Block@{BlockChainCore::Block}}
+
+
+Класс, хранящий информацию о блоке  
+
+
+
+
+{\ttfamily \#include $<$Block.\+h$>$}
+
+
+
+Граф связей класса Block\+Chain\+Core\+::Block\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classBlockChainCore_1_1Block__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_ad097ca899905c9a6c8e2cd8dff39a1c3}\label{classBlockChainCore_1_1Block_ad097ca899905c9a6c8e2cd8dff39a1c3}} 
+{\bfseries Block} (const \mbox{\hyperlink{structBlockChainCore_1_1BlockHashInfo}{Block\+Hash\+Info}} \&hash\+Info, const Unix\+Time \&timestamp, const std\+::pair$<$ std\+::string, std\+::string $>$ \&mined\+By, const Big\+Nums\+::mpz\+\_\+int \&ledger\+Id, const \mbox{\hyperlink{structBlockChainCore_1_1BlockConsensusInfo}{Block\+Consensus\+Info}} \&consensus\+Info, const \mbox{\hyperlink{classBlockChainCore_1_1BlockContainedData}{Block\+Contained\+Data}} \&contained\+Data)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_afc0a0fa1f03942de2560bc1596f28070}\label{classBlockChainCore_1_1Block_afc0a0fa1f03942de2560bc1596f28070}} 
+{\bfseries Block} (\mbox{\hyperlink{structBlockChainCore_1_1BlockHashInfo}{Block\+Hash\+Info}} \&\&hash\+Info, const Unix\+Time \&timestamp, std\+::pair$<$ std\+::string, std\+::string $>$ \&\&mined\+By, const Big\+Nums\+::mpz\+\_\+int \&ledger\+Id, const \mbox{\hyperlink{structBlockChainCore_1_1BlockConsensusInfo}{Block\+Consensus\+Info}} \&consensus\+Info, \mbox{\hyperlink{classBlockChainCore_1_1BlockContainedData}{Block\+Contained\+Data}} \&\&contained\+Data)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a5d3f3fc0de599fc0e64ef2554ed84a9a}\label{classBlockChainCore_1_1Block_a5d3f3fc0de599fc0e64ef2554ed84a9a}} 
+auto {\bfseries Get\+Hash\+Info} () const noexcept
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a4c5977bc071911682727f442cc6c0249}\label{classBlockChainCore_1_1Block_a4c5977bc071911682727f442cc6c0249}} 
+Byte\+Vector \mbox{\hyperlink{classBlockChainCore_1_1Block_a4c5977bc071911682727f442cc6c0249}{Serialize\+For\+Hashing}} () const
+\begin{DoxyCompactList}\small\item\em Осуществляет сериализацию блока для подсчета его хеша. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a244e14c901cb328cbdce4da1212a6a5a}\label{classBlockChainCore_1_1Block_a244e14c901cb328cbdce4da1212a6a5a}} 
+Byte\+Vector {\bfseries Get\+Block\+Bytes} () const
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a373a60621e32f2f14b26491b2ada680f}\label{classBlockChainCore_1_1Block_a373a60621e32f2f14b26491b2ada680f}} 
+void {\bfseries Set\+Cur\+Hash} (Byte\+Vector \&\&cur\+Hash)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a744c427be714c90b1b7deb7650dd6cb7}\label{classBlockChainCore_1_1Block_a744c427be714c90b1b7deb7650dd6cb7}} 
+void {\bfseries Set\+Prev\+Hash} (const Byte\+Vector \&prev\+Hash)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a46686a91472f1c3c0cda3c731a5ed419}\label{classBlockChainCore_1_1Block_a46686a91472f1c3c0cda3c731a5ed419}} 
+void {\bfseries Set\+Prev\+Hash} (Byte\+Vector \&\&prev\+Hash)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_abd9b44d5f1c4cc5b8c7a202c8f05e0cd}\label{classBlockChainCore_1_1Block_abd9b44d5f1c4cc5b8c7a202c8f05e0cd}} 
+void {\bfseries Set\+Transaction\+Id} (const Big\+Nums\+::mpz\+\_\+int \&ledger\+Id)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_ae22f99ba25899d3a13e4d831e617f8c6}\label{classBlockChainCore_1_1Block_ae22f99ba25899d3a13e4d831e617f8c6}} 
+void {\bfseries Set\+Transaction\+Id} (Big\+Nums\+::mpz\+\_\+int \&\&ledger\+Id)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_ac15f4835686a293c0b54c47637556c22}\label{classBlockChainCore_1_1Block_ac15f4835686a293c0b54c47637556c22}} 
+auto {\bfseries Get\+Timestamp} () const noexcept
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a7f669331949b3ca60411794472156806}\label{classBlockChainCore_1_1Block_a7f669331949b3ca60411794472156806}} 
+void {\bfseries Set\+Timestamp} (const Unix\+Time \&timestamp)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a22d8e8931093cda2f5a5e4e29733b804}\label{classBlockChainCore_1_1Block_a22d8e8931093cda2f5a5e4e29733b804}} 
+auto {\bfseries Get\+Mined\+By} () const noexcept
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_aae26f3a9e7b85f5c9438cc91b1643dca}\label{classBlockChainCore_1_1Block_aae26f3a9e7b85f5c9438cc91b1643dca}} 
+void {\bfseries Set\+Mined\+By} (const std\+::pair$<$ std\+::string, std\+::string $>$ \&mined\+By)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_ac28d49cf292d84236eb680b4b854f753}\label{classBlockChainCore_1_1Block_ac28d49cf292d84236eb680b4b854f753}} 
+void {\bfseries Set\+Mined\+By} (std\+::pair$<$ std\+::string, std\+::string $>$ \&\&mined\+By)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_aa2614bdfccdb5af0c02268edea4b6f66}\label{classBlockChainCore_1_1Block_aa2614bdfccdb5af0c02268edea4b6f66}} 
+auto {\bfseries Get\+Consensus\+Info} () const noexcept
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a0ac49dc05cc57eb1aeb8bdf31349dc50}\label{classBlockChainCore_1_1Block_a0ac49dc05cc57eb1aeb8bdf31349dc50}} 
+void {\bfseries Set\+Luck} (const Big\+Nums\+::mpq\+\_\+rational \&luck)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a690eeb473b306908e52da4d5e022046f}\label{classBlockChainCore_1_1Block_a690eeb473b306908e52da4d5e022046f}} 
+void {\bfseries Set\+Mining\+Point} (const Big\+Nums\+::mpz\+\_\+int \&mining\+Point)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a6aee74d4e19b2a39868ef653cb27b117}\label{classBlockChainCore_1_1Block_a6aee74d4e19b2a39868ef653cb27b117}} 
+auto {\bfseries Get\+Contained\+Data} () const noexcept
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a9a2696a60f07dc5e99ede53169b1cd17}\label{classBlockChainCore_1_1Block_a9a2696a60f07dc5e99ede53169b1cd17}} 
+void {\bfseries Set\+Contained\+Data} (const \mbox{\hyperlink{classBlockChainCore_1_1BlockContainedData}{Block\+Contained\+Data}} \&cont\+Data)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a1bec1dfd7509000d549d5c069eace3b4}\label{classBlockChainCore_1_1Block_a1bec1dfd7509000d549d5c069eace3b4}} 
+void {\bfseries Set\+Contained\+Data} (\mbox{\hyperlink{classBlockChainCore_1_1BlockContainedData}{Block\+Contained\+Data}} \&\&cont\+Data)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a5b994762e334d4640186389e6678d178}\label{classBlockChainCore_1_1Block_a5b994762e334d4640186389e6678d178}} 
+bool {\bfseries Try\+Write\+To\+Stream} (std\+::ostream \&out\+Stream) noexcept
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые статические члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a5eefeac627aa3d3ee6c70eaa6dd0bb67}\label{classBlockChainCore_1_1Block_a5eefeac627aa3d3ee6c70eaa6dd0bb67}} 
+static \mbox{\hyperlink{classBlockChainCore_1_1Block}{Block}} \mbox{\hyperlink{classBlockChainCore_1_1Block_a5eefeac627aa3d3ee6c70eaa6dd0bb67}{Construct\+From\+Chain}} (const Block\+Chain \&current\+Block\+Chain) noexcept(false)
+\begin{DoxyCompactList}\small\item\em Частично конструирует блок, цепляя его к переданной ветке блокчейна \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a3ee0fdb69dcb24d666fbcdf483845611}\label{classBlockChainCore_1_1Block_a3ee0fdb69dcb24d666fbcdf483845611}} 
+static \mbox{\hyperlink{classBlockChainCore_1_1Block}{Block}} \mbox{\hyperlink{classBlockChainCore_1_1Block_a3ee0fdb69dcb24d666fbcdf483845611}{init}} ()
+\begin{DoxyCompactList}\small\item\em Инициализирует начальный блок. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a0aeb5aae46ed7789e14b22c5f59d7172}\label{classBlockChainCore_1_1Block_a0aeb5aae46ed7789e14b22c5f59d7172}} 
+static std\+::optional$<$ \mbox{\hyperlink{classBlockChainCore_1_1Block}{Block}} $>$ {\bfseries Get\+From\+Stream} (std\+::istream \&input\+Stream) noexcept
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые атрибуты}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class Callable\+Verifier $>$ }\\bool Is\+Valid(Callable\+Verifier \&\&callable) requires std void \mbox{\hyperlink{classBlockChainCore_1_1Block_a76437c443aa73b7d9eed989f1289eeb4}{Set\+Cur\+Hash}} (const Byte\+Vector \&cur\+Hash)
+\end{DoxyCompactItemize}
+\doxysubsection*{Закрытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a7be21932d561423d92cfa69464a0071b}\label{classBlockChainCore_1_1Block_a7be21932d561423d92cfa69464a0071b}} 
+{\bfseries Block} (const Block\+Chain \&current\+Block\+Chain) noexcept(false)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a72252008e9453b5dc6556d89bcdf5b6e}\label{classBlockChainCore_1_1Block_a72252008e9453b5dc6556d89bcdf5b6e}} 
+{\footnotesize template$<$typename Archive $>$ }\\void {\bfseries save} (Archive \&ar, const unsigned int version) const
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a5f89c33cbe4bc30259e40a1f8ab2df2d}\label{classBlockChainCore_1_1Block_a5f89c33cbe4bc30259e40a1f8ab2df2d}} 
+{\footnotesize template$<$class Archive $>$ }\\void {\bfseries load} (Archive \&ar, const unsigned int version)
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a0895d6487dab8604cb81b1454cdb7809}\label{classBlockChainCore_1_1Block_a0895d6487dab8604cb81b1454cdb7809}} 
+{\bfseries BOOST\+\_\+\+SERIALIZATION\+\_\+\+SPLIT\+\_\+\+MEMBER} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Закрытые данные}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_ae38ddb1f9dbf963c97011018afe55132}\label{classBlockChainCore_1_1Block_ae38ddb1f9dbf963c97011018afe55132}} 
+\mbox{\hyperlink{structBlockChainCore_1_1BlockHashInfo}{Block\+Hash\+Info}} {\bfseries hash\+Info}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a297cade2e48f326371b6b9295d6cd955}\label{classBlockChainCore_1_1Block_a297cade2e48f326371b6b9295d6cd955}} 
+Unix\+Time {\bfseries timestamp}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a6d9f17ec5b1ad2cd1cda6a64ce0bf1de}\label{classBlockChainCore_1_1Block_a6d9f17ec5b1ad2cd1cda6a64ce0bf1de}} 
+std\+::pair$<$ std\+::string, std\+::string $>$ {\bfseries mined\+By}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_add526e225f54b4cb56a26ece8b753424}\label{classBlockChainCore_1_1Block_add526e225f54b4cb56a26ece8b753424}} 
+Big\+Nums\+::mpz\+\_\+int {\bfseries ledger\+Id} = 1
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_adf9f9add5a8851c6e69d2f720992fb72}\label{classBlockChainCore_1_1Block_adf9f9add5a8851c6e69d2f720992fb72}} 
+\mbox{\hyperlink{structBlockChainCore_1_1BlockConsensusInfo}{Block\+Consensus\+Info}} {\bfseries consensus\+Info}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_af3f9ea03f6a34255a8a6c65c1f6aabdb}\label{classBlockChainCore_1_1Block_af3f9ea03f6a34255a8a6c65c1f6aabdb}} 
+\mbox{\hyperlink{classBlockChainCore_1_1BlockContainedData}{Block\+Contained\+Data}} {\bfseries contained\+Data}
+\end{DoxyCompactItemize}
+\doxysubsection*{Друзья}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_ac98d07dd8f7b70e16ccb9a01abf56b9c}\label{classBlockChainCore_1_1Block_ac98d07dd8f7b70e16ccb9a01abf56b9c}} 
+class {\bfseries boost\+::serialization\+::access}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Класс, хранящий информацию о блоке 
+
+Класс, хранящий информацию о блоке. По сути, его основная задача -\/ обеспечение сериализации данных. 
+
+\doxysubsection{Данные класса}
+\mbox{\Hypertarget{classBlockChainCore_1_1Block_a76437c443aa73b7d9eed989f1289eeb4}\label{classBlockChainCore_1_1Block_a76437c443aa73b7d9eed989f1289eeb4}} 
+\index{BlockChainCore::Block@{BlockChainCore::Block}!SetCurHash@{SetCurHash}}
+\index{SetCurHash@{SetCurHash}!BlockChainCore::Block@{BlockChainCore::Block}}
+\doxysubsubsection{\texorpdfstring{SetCurHash}{SetCurHash}}
+{\footnotesize\ttfamily template$<$class Callable\+Verifier $>$ \\
+void Block\+Chain\+Core\+::\+Block\+::\+Set\+Cur\+Hash}
+
+Шаблонная фукнция, осуществляющая сравнение посчитанного хеша с текущими данными 
+
+Объявления и описания членов классов находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Block/Block.\+h\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Block/Block.\+cpp\end{DoxyCompactItemize}

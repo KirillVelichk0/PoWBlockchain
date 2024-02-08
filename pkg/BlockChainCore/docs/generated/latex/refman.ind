@@ -1,0 +1,27 @@
+\begin{theindex}
+
+  \item {BlockChainCore::Block}, \hyperpage{5}
+    \subitem {SetCurHash}, \hyperpage{7}
+  \item {BlockChainCore::BlockConsensusInfo}, \hyperpage{7}
+  \item {BlockChainCore::BlockContainedData}, \hyperpage{8}
+  \item {BlockChainCore::BlockHashInfo}, \hyperpage{9}
+    \subitem {serialize}, \hyperpage{9}
+  \item {BlockChainCore::BlockLogs}, \hyperpage{10}
+  \item {BlockChainCore::Crypto}, \hyperpage{10}
+  \item {BlockChainCore::CryptoLogs\_ImportPubKey}, \hyperpage{10}
+  \item {BlockChainCore::CryptoLogs\_TryToVerifyECDSA\_CryptoPP}, 
+		\hyperpage{11}
+  \item {BlockChainCore::DisabledLogger}, \hyperpage{11}
+  \item {BlockChainCore::ILogger}, \hyperpage{12}
+  \item {BlockChainCore::LoggerTester}, \hyperpage{13}
+  \item {BlockChainCore::LogPackage}, \hyperpage{13}
+  \item {BlockChainCore::TextOArchive\_ForSign}, \hyperpage{14}
+
+  \indexspace
+
+  \item {serialize}
+    \subitem {BlockChainCore::BlockHashInfo}, \hyperpage{9}
+  \item {SetCurHash}
+    \subitem {BlockChainCore::Block}, \hyperpage{7}
+
+\end{theindex}

@@ -1,0 +1,48 @@
+\hypertarget{structBlockChainCore_1_1LogPackage}{}\doxysection{Структура Block\+Chain\+Core\+::Log\+Package}
+\label{structBlockChainCore_1_1LogPackage}\index{BlockChainCore::LogPackage@{BlockChainCore::LogPackage}}
+
+
+Структура, характеризующая отдельную запись в логах.  
+
+
+
+
+{\ttfamily \#include $<$ILogger.\+h$>$}
+
+\doxysubsection*{Открытые атрибуты}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1LogPackage_a7b3a3531f1e7373c5fb92c0d72b92f4c}\label{structBlockChainCore_1_1LogPackage_a7b3a3531f1e7373c5fb92c0d72b92f4c}} 
+Log\+Type\+Enum {\bfseries log\+Type}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1LogPackage_a85a6716007a262d821193385f7ffd583}\label{structBlockChainCore_1_1LogPackage_a85a6716007a262d821193385f7ffd583}} 
+std\+::string\+\_\+view {\bfseries system\+Info}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1LogPackage_a57e67e66e027915a986493c646a16ba8}\label{structBlockChainCore_1_1LogPackage_a57e67e66e027915a986493c646a16ba8}} 
+boost\+::posix\+\_\+time\+::ptime {\bfseries timestamp}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1LogPackage_a158a4f8940027a32c3a34d0cb5a2b2a2}\label{structBlockChainCore_1_1LogPackage_a158a4f8940027a32c3a34d0cb5a2b2a2}} 
+std\+::string\+\_\+view {\bfseries message}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1LogPackage_a82626337cbf3847188f5303b62a8be99}\label{structBlockChainCore_1_1LogPackage_a82626337cbf3847188f5303b62a8be99}} 
+std\+::string\+\_\+view {\bfseries context}
+\item 
+\mbox{\Hypertarget{structBlockChainCore_1_1LogPackage_a293ef9ed963227ba76e2b2ad2c724468}\label{structBlockChainCore_1_1LogPackage_a293ef9ed963227ba76e2b2ad2c724468}} 
+std\+::string\+\_\+view {\bfseries source\+Type}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Структура, характеризующая отдельную запись в логах. 
+
+Структура \mbox{\hyperlink{structBlockChainCore_1_1LogPackage}{Log\+Package}} содержит следующий набор полей\+: ~\newline
+log\+Type -\/ отвечает за уровень записи ~\newline
+system\+Info -\/ любая дополнительная информация о системе (timestamp вынесен отдельно) ~\newline
+timestamp -\/ временная метка в формате Posix. Характеризует время, в которое был сгенерирован лог ~\newline
+message -\/ сообщение об ошибке ~\newline
+context -\/ любой дополнительный контекст об ошибке ~\newline
+source\+Type -\/ тип источника в формате строки. Самое щекотливое с точки зрения формата поле. По умолчанию все логи от ядра генерируются с source\+Type Block\+Chain\+Core. Возможно, что данное поле вообще будет игнорироваться. Однако, так как ваш логгер может работать не только с логами ядра, а ядро вообще ничего не должно знать о том, куда и как оно логирует, данное поле было добавлено для возможности дополнительной кастомизации маршрутизации логов 
+
+Объявления и описания членов структуры находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Logger/ILogger.\+h\end{DoxyCompactItemize}

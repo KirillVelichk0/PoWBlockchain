@@ -1,0 +1,46 @@
+\hypertarget{classBlockChainCore_1_1BlockContainedData}{}\doxysection{Класс Block\+Chain\+Core\+::Block\+Contained\+Data}
+\label{classBlockChainCore_1_1BlockContainedData}\index{BlockChainCore::BlockContainedData@{BlockChainCore::BlockContainedData}}
+
+
+Класс для хранения хранящихся в блоке данных в произвольном формате.  
+
+
+
+
+{\ttfamily \#include $<$Block\+Contained\+Data.\+h$>$}
+
+\doxysubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1BlockContainedData_ace33f989485c0c9178705f7d9823a3c7}\label{classBlockChainCore_1_1BlockContainedData_ace33f989485c0c9178705f7d9823a3c7}} 
+Byte\+Vector \& {\bfseries Get\+Data} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsection*{Закрытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1BlockContainedData_a8bef7cec7395d0b1bae2d81f9943eceb}\label{classBlockChainCore_1_1BlockContainedData_a8bef7cec7395d0b1bae2d81f9943eceb}} 
+{\footnotesize template$<$typename Archive $>$ }\\void {\bfseries serialize} (Archive \&ar, const unsigned int version)
+\end{DoxyCompactItemize}
+\doxysubsection*{Закрытые данные}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1BlockContainedData_a7dcf3ac3ac1d207328215345e187cb35}\label{classBlockChainCore_1_1BlockContainedData_a7dcf3ac3ac1d207328215345e187cb35}} 
+Byte\+Vector {\bfseries data}
+\end{DoxyCompactItemize}
+\doxysubsection*{Друзья}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBlockChainCore_1_1BlockContainedData_ac98d07dd8f7b70e16ccb9a01abf56b9c}\label{classBlockChainCore_1_1BlockContainedData_ac98d07dd8f7b70e16ccb9a01abf56b9c}} 
+class {\bfseries boost\+::serialization\+::access}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Класс для хранения хранящихся в блоке данных в произвольном формате. 
+
+Единственное, за что отвечает класс \mbox{\hyperlink{classBlockChainCore_1_1BlockContainedData}{Block\+Contained\+Data}} -\/ это хранения и сериализация данных. Данные, хранимые в нем, абсолютно произвольны. За валидацию хранимых данных отвечают внешние ресурсы, никакого отношения к ядру абсолютно не имеющие. 
+
+Объявления и описания членов классов находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Block/Block\+Contained\+Data.\+h\item 
+/home/houdini/development/\+Cpp/\+Po\+WBlockchain/src/\+Block\+Chain\+Core/src/\+Block/Block\+Contained\+Data.\+cpp\end{DoxyCompactItemize}

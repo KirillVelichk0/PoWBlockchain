@@ -1,0 +1,6 @@
+<map id="BlockChainCore::Block" name="BlockChainCore::Block">
+<area shape="rect" id="node1" title="Класс, хранящий информацию о блоке" alt="" coords="420,56,589,83"/>
+<area shape="rect" id="node2" href="$structBlockChainCore_1_1BlockConsensusInfo.html" title="Информация, необходимая алгоритму консенсуса" alt="" coords="7,5,271,32"/>
+<area shape="rect" id="node3" href="$classBlockChainCore_1_1BlockContainedData.html" title="Класс для хранения хранящихся в блоке данных в произвольном формате." alt="" coords="5,56,272,83"/>
+<area shape="rect" id="node4" href="$structBlockChainCore_1_1BlockHashInfo.html" title="Информация о хэше блока" alt="" coords="25,107,252,133"/>
+</map>

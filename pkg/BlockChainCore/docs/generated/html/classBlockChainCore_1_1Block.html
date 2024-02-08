@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BlockChainCore: Класс BlockChainCore::Block</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">BlockChainCore
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Поиск','.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>BlockChainCore</b></li><li class="navelem"><a class="el" href="classBlockChainCore_1_1Block.html">Block</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Открытые члены</a> &#124;
+<a href="#pub-static-methods">Открытые статические члены</a> &#124;
+<a href="#pub-attribs">Открытые атрибуты</a> &#124;
+<a href="#pri-methods">Закрытые члены</a> &#124;
+<a href="#pri-attribs">Закрытые данные</a> &#124;
+<a href="#friends">Друзья</a> &#124;
+<a href="classBlockChainCore_1_1Block-members.html">Полный список членов класса</a>  </div>
+  <div class="headertitle">
+<div class="title">Класс BlockChainCore::Block</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Класс, хранящий информацию о блоке  
+ <a href="classBlockChainCore_1_1Block.html#details">Подробнее...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Block_8h_source.html">Block.h</a>&gt;</code></p>
+<div class="dynheader">
+Граф связей класса BlockChainCore::Block:</div>
+<div class="dyncontent">
+<div class="center"><img src="classBlockChainCore_1_1Block__coll__graph.png" border="0" usemap="#aBlockChainCore_1_1Block_coll__map" alt="Collaboration graph"/></div>
+<map name="aBlockChainCore_1_1Block_coll__map" id="aBlockChainCore_1_1Block_coll__map">
+<area shape="rect" title="Класс, хранящий информацию о блоке" alt="" coords="420,56,589,83"/>
+<area shape="rect" href="structBlockChainCore_1_1BlockConsensusInfo.html" title="Информация, необходимая алгоритму консенсуса" alt="" coords="7,5,271,32"/>
+<area shape="rect" href="classBlockChainCore_1_1BlockContainedData.html" title="Класс для хранения хранящихся в блоке данных в произвольном формате." alt="" coords="5,56,272,83"/>
+<area shape="rect" href="structBlockChainCore_1_1BlockHashInfo.html" title="Информация о хэше блока" alt="" coords="25,107,252,133"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">см. легенду</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Открытые члены</h2></td></tr>
+<tr class="memitem:ad097ca899905c9a6c8e2cd8dff39a1c3"><td class="memItemLeft" align="right" valign="top"><a id="ad097ca899905c9a6c8e2cd8dff39a1c3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Block</b> (const <a class="el" href="structBlockChainCore_1_1BlockHashInfo.html">BlockHashInfo</a> &amp;hashInfo, const UnixTime &amp;timestamp, const std::pair&lt; std::string, std::string &gt; &amp;minedBy, const BigNums::mpz_int &amp;ledgerId, const <a class="el" href="structBlockChainCore_1_1BlockConsensusInfo.html">BlockConsensusInfo</a> &amp;consensusInfo, const <a class="el" href="classBlockChainCore_1_1BlockContainedData.html">BlockContainedData</a> &amp;containedData)</td></tr>
+<tr class="separator:ad097ca899905c9a6c8e2cd8dff39a1c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc0a0fa1f03942de2560bc1596f28070"><td class="memItemLeft" align="right" valign="top"><a id="afc0a0fa1f03942de2560bc1596f28070"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Block</b> (<a class="el" href="structBlockChainCore_1_1BlockHashInfo.html">BlockHashInfo</a> &amp;&amp;hashInfo, const UnixTime &amp;timestamp, std::pair&lt; std::string, std::string &gt; &amp;&amp;minedBy, const BigNums::mpz_int &amp;ledgerId, const <a class="el" href="structBlockChainCore_1_1BlockConsensusInfo.html">BlockConsensusInfo</a> &amp;consensusInfo, <a class="el" href="classBlockChainCore_1_1BlockContainedData.html">BlockContainedData</a> &amp;&amp;containedData)</td></tr>
+<tr class="separator:afc0a0fa1f03942de2560bc1596f28070"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d3f3fc0de599fc0e64ef2554ed84a9a"><td class="memItemLeft" align="right" valign="top"><a id="a5d3f3fc0de599fc0e64ef2554ed84a9a"></a>
+auto&#160;</td><td class="memItemRight" valign="bottom"><b>GetHashInfo</b> () const noexcept</td></tr>
+<tr class="separator:a5d3f3fc0de599fc0e64ef2554ed84a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c5977bc071911682727f442cc6c0249"><td class="memItemLeft" align="right" valign="top"><a id="a4c5977bc071911682727f442cc6c0249"></a>
+ByteVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockChainCore_1_1Block.html#a4c5977bc071911682727f442cc6c0249">SerializeForHashing</a> () const</td></tr>
+<tr class="memdesc:a4c5977bc071911682727f442cc6c0249"><td class="mdescLeft">&#160;</td><td class="mdescRight">Осуществляет сериализацию блока для подсчета его хеша. <br /></td></tr>
+<tr class="separator:a4c5977bc071911682727f442cc6c0249"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a244e14c901cb328cbdce4da1212a6a5a"><td class="memItemLeft" align="right" valign="top"><a id="a244e14c901cb328cbdce4da1212a6a5a"></a>
+ByteVector&#160;</td><td class="memItemRight" valign="bottom"><b>GetBlockBytes</b> () const</td></tr>
+<tr class="separator:a244e14c901cb328cbdce4da1212a6a5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a373a60621e32f2f14b26491b2ada680f"><td class="memItemLeft" align="right" valign="top"><a id="a373a60621e32f2f14b26491b2ada680f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetCurHash</b> (ByteVector &amp;&amp;curHash)</td></tr>
+<tr class="separator:a373a60621e32f2f14b26491b2ada680f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a744c427be714c90b1b7deb7650dd6cb7"><td class="memItemLeft" align="right" valign="top"><a id="a744c427be714c90b1b7deb7650dd6cb7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetPrevHash</b> (const ByteVector &amp;prevHash)</td></tr>
+<tr class="separator:a744c427be714c90b1b7deb7650dd6cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46686a91472f1c3c0cda3c731a5ed419"><td class="memItemLeft" align="right" valign="top"><a id="a46686a91472f1c3c0cda3c731a5ed419"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetPrevHash</b> (ByteVector &amp;&amp;prevHash)</td></tr>
+<tr class="separator:a46686a91472f1c3c0cda3c731a5ed419"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd9b44d5f1c4cc5b8c7a202c8f05e0cd"><td class="memItemLeft" align="right" valign="top"><a id="abd9b44d5f1c4cc5b8c7a202c8f05e0cd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetTransactionId</b> (const BigNums::mpz_int &amp;ledgerId)</td></tr>
+<tr class="separator:abd9b44d5f1c4cc5b8c7a202c8f05e0cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae22f99ba25899d3a13e4d831e617f8c6"><td class="memItemLeft" align="right" valign="top"><a id="ae22f99ba25899d3a13e4d831e617f8c6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetTransactionId</b> (BigNums::mpz_int &amp;&amp;ledgerId)</td></tr>
+<tr class="separator:ae22f99ba25899d3a13e4d831e617f8c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac15f4835686a293c0b54c47637556c22"><td class="memItemLeft" align="right" valign="top"><a id="ac15f4835686a293c0b54c47637556c22"></a>
+auto&#160;</td><td class="memItemRight" valign="bottom"><b>GetTimestamp</b> () const noexcept</td></tr>
+<tr class="separator:ac15f4835686a293c0b54c47637556c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f669331949b3ca60411794472156806"><td class="memItemLeft" align="right" valign="top"><a id="a7f669331949b3ca60411794472156806"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetTimestamp</b> (const UnixTime &amp;timestamp)</td></tr>
+<tr class="separator:a7f669331949b3ca60411794472156806"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22d8e8931093cda2f5a5e4e29733b804"><td class="memItemLeft" align="right" valign="top"><a id="a22d8e8931093cda2f5a5e4e29733b804"></a>
+auto&#160;</td><td class="memItemRight" valign="bottom"><b>GetMinedBy</b> () const noexcept</td></tr>
+<tr class="separator:a22d8e8931093cda2f5a5e4e29733b804"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae26f3a9e7b85f5c9438cc91b1643dca"><td class="memItemLeft" align="right" valign="top"><a id="aae26f3a9e7b85f5c9438cc91b1643dca"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetMinedBy</b> (const std::pair&lt; std::string, std::string &gt; &amp;minedBy)</td></tr>
+<tr class="separator:aae26f3a9e7b85f5c9438cc91b1643dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac28d49cf292d84236eb680b4b854f753"><td class="memItemLeft" align="right" valign="top"><a id="ac28d49cf292d84236eb680b4b854f753"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetMinedBy</b> (std::pair&lt; std::string, std::string &gt; &amp;&amp;minedBy)</td></tr>
+<tr class="separator:ac28d49cf292d84236eb680b4b854f753"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2614bdfccdb5af0c02268edea4b6f66"><td class="memItemLeft" align="right" valign="top"><a id="aa2614bdfccdb5af0c02268edea4b6f66"></a>
+auto&#160;</td><td class="memItemRight" valign="bottom"><b>GetConsensusInfo</b> () const noexcept</td></tr>
+<tr class="separator:aa2614bdfccdb5af0c02268edea4b6f66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ac49dc05cc57eb1aeb8bdf31349dc50"><td class="memItemLeft" align="right" valign="top"><a id="a0ac49dc05cc57eb1aeb8bdf31349dc50"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetLuck</b> (const BigNums::mpq_rational &amp;luck)</td></tr>
+<tr class="separator:a0ac49dc05cc57eb1aeb8bdf31349dc50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a690eeb473b306908e52da4d5e022046f"><td class="memItemLeft" align="right" valign="top"><a id="a690eeb473b306908e52da4d5e022046f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetMiningPoint</b> (const BigNums::mpz_int &amp;miningPoint)</td></tr>
+<tr class="separator:a690eeb473b306908e52da4d5e022046f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6aee74d4e19b2a39868ef653cb27b117"><td class="memItemLeft" align="right" valign="top"><a id="a6aee74d4e19b2a39868ef653cb27b117"></a>
+auto&#160;</td><td class="memItemRight" valign="bottom"><b>GetContainedData</b> () const noexcept</td></tr>
+<tr class="separator:a6aee74d4e19b2a39868ef653cb27b117"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a2696a60f07dc5e99ede53169b1cd17"><td class="memItemLeft" align="right" valign="top"><a id="a9a2696a60f07dc5e99ede53169b1cd17"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetContainedData</b> (const <a class="el" href="classBlockChainCore_1_1BlockContainedData.html">BlockContainedData</a> &amp;contData)</td></tr>
+<tr class="separator:a9a2696a60f07dc5e99ede53169b1cd17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bec1dfd7509000d549d5c069eace3b4"><td class="memItemLeft" align="right" valign="top"><a id="a1bec1dfd7509000d549d5c069eace3b4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetContainedData</b> (<a class="el" href="classBlockChainCore_1_1BlockContainedData.html">BlockContainedData</a> &amp;&amp;contData)</td></tr>
+<tr class="separator:a1bec1dfd7509000d549d5c069eace3b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b994762e334d4640186389e6678d178"><td class="memItemLeft" align="right" valign="top"><a id="a5b994762e334d4640186389e6678d178"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>TryWriteToStream</b> (std::ostream &amp;outStream) noexcept</td></tr>
+<tr class="separator:a5b994762e334d4640186389e6678d178"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Открытые статические члены</h2></td></tr>
+<tr class="memitem:a5eefeac627aa3d3ee6c70eaa6dd0bb67"><td class="memItemLeft" align="right" valign="top"><a id="a5eefeac627aa3d3ee6c70eaa6dd0bb67"></a>
+static <a class="el" href="classBlockChainCore_1_1Block.html">Block</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockChainCore_1_1Block.html#a5eefeac627aa3d3ee6c70eaa6dd0bb67">ConstructFromChain</a> (const BlockChain &amp;currentBlockChain) noexcept(false)</td></tr>
+<tr class="memdesc:a5eefeac627aa3d3ee6c70eaa6dd0bb67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Частично конструирует блок, цепляя его к переданной ветке блокчейна <br /></td></tr>
+<tr class="separator:a5eefeac627aa3d3ee6c70eaa6dd0bb67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ee0fdb69dcb24d666fbcdf483845611"><td class="memItemLeft" align="right" valign="top"><a id="a3ee0fdb69dcb24d666fbcdf483845611"></a>
+static <a class="el" href="classBlockChainCore_1_1Block.html">Block</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockChainCore_1_1Block.html#a3ee0fdb69dcb24d666fbcdf483845611">init</a> ()</td></tr>
+<tr class="memdesc:a3ee0fdb69dcb24d666fbcdf483845611"><td class="mdescLeft">&#160;</td><td class="mdescRight">Инициализирует начальный блок. <br /></td></tr>
+<tr class="separator:a3ee0fdb69dcb24d666fbcdf483845611"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0aeb5aae46ed7789e14b22c5f59d7172"><td class="memItemLeft" align="right" valign="top"><a id="a0aeb5aae46ed7789e14b22c5f59d7172"></a>
+static std::optional&lt; <a class="el" href="classBlockChainCore_1_1Block.html">Block</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetFromStream</b> (std::istream &amp;inputStream) noexcept</td></tr>
+<tr class="separator:a0aeb5aae46ed7789e14b22c5f59d7172"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Открытые атрибуты</h2></td></tr>
+<tr class="memitem:a76437c443aa73b7d9eed989f1289eeb4"><td class="memTemplParams" colspan="2">template&lt;class CallableVerifier &gt; </td></tr>
+<tr class="memitem:a76437c443aa73b7d9eed989f1289eeb4"><td class="memTemplItemLeft" align="right" valign="top">bool IsValid(CallableVerifier &amp;&amp;callable) requires std void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classBlockChainCore_1_1Block.html#a76437c443aa73b7d9eed989f1289eeb4">SetCurHash</a> (const ByteVector &amp;curHash)</td></tr>
+<tr class="separator:a76437c443aa73b7d9eed989f1289eeb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Закрытые члены</h2></td></tr>
+<tr class="memitem:a7be21932d561423d92cfa69464a0071b"><td class="memItemLeft" align="right" valign="top"><a id="a7be21932d561423d92cfa69464a0071b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Block</b> (const BlockChain &amp;currentBlockChain) noexcept(false)</td></tr>
+<tr class="separator:a7be21932d561423d92cfa69464a0071b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72252008e9453b5dc6556d89bcdf5b6e"><td class="memTemplParams" colspan="2"><a id="a72252008e9453b5dc6556d89bcdf5b6e"></a>
+template&lt;typename Archive &gt; </td></tr>
+<tr class="memitem:a72252008e9453b5dc6556d89bcdf5b6e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>save</b> (Archive &amp;ar, const unsigned int version) const</td></tr>
+<tr class="separator:a72252008e9453b5dc6556d89bcdf5b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f89c33cbe4bc30259e40a1f8ab2df2d"><td class="memTemplParams" colspan="2"><a id="a5f89c33cbe4bc30259e40a1f8ab2df2d"></a>
+template&lt;class Archive &gt; </td></tr>
+<tr class="memitem:a5f89c33cbe4bc30259e40a1f8ab2df2d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>load</b> (Archive &amp;ar, const unsigned int version)</td></tr>
+<tr class="separator:a5f89c33cbe4bc30259e40a1f8ab2df2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0895d6487dab8604cb81b1454cdb7809"><td class="memItemLeft" align="right" valign="top"><a id="a0895d6487dab8604cb81b1454cdb7809"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>BOOST_SERIALIZATION_SPLIT_MEMBER</b> ()</td></tr>
+<tr class="separator:a0895d6487dab8604cb81b1454cdb7809"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Закрытые данные</h2></td></tr>
+<tr class="memitem:ae38ddb1f9dbf963c97011018afe55132"><td class="memItemLeft" align="right" valign="top"><a id="ae38ddb1f9dbf963c97011018afe55132"></a>
+<a class="el" href="structBlockChainCore_1_1BlockHashInfo.html">BlockHashInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><b>hashInfo</b></td></tr>
+<tr class="separator:ae38ddb1f9dbf963c97011018afe55132"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a297cade2e48f326371b6b9295d6cd955"><td class="memItemLeft" align="right" valign="top"><a id="a297cade2e48f326371b6b9295d6cd955"></a>
+UnixTime&#160;</td><td class="memItemRight" valign="bottom"><b>timestamp</b></td></tr>
+<tr class="separator:a297cade2e48f326371b6b9295d6cd955"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d9f17ec5b1ad2cd1cda6a64ce0bf1de"><td class="memItemLeft" align="right" valign="top"><a id="a6d9f17ec5b1ad2cd1cda6a64ce0bf1de"></a>
+std::pair&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>minedBy</b></td></tr>
+<tr class="separator:a6d9f17ec5b1ad2cd1cda6a64ce0bf1de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add526e225f54b4cb56a26ece8b753424"><td class="memItemLeft" align="right" valign="top"><a id="add526e225f54b4cb56a26ece8b753424"></a>
+BigNums::mpz_int&#160;</td><td class="memItemRight" valign="bottom"><b>ledgerId</b> = 1</td></tr>
+<tr class="separator:add526e225f54b4cb56a26ece8b753424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf9f9add5a8851c6e69d2f720992fb72"><td class="memItemLeft" align="right" valign="top"><a id="adf9f9add5a8851c6e69d2f720992fb72"></a>
+<a class="el" href="structBlockChainCore_1_1BlockConsensusInfo.html">BlockConsensusInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><b>consensusInfo</b></td></tr>
+<tr class="separator:adf9f9add5a8851c6e69d2f720992fb72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3f9ea03f6a34255a8a6c65c1f6aabdb"><td class="memItemLeft" align="right" valign="top"><a id="af3f9ea03f6a34255a8a6c65c1f6aabdb"></a>
+<a class="el" href="classBlockChainCore_1_1BlockContainedData.html">BlockContainedData</a>&#160;</td><td class="memItemRight" valign="bottom"><b>containedData</b></td></tr>
+<tr class="separator:af3f9ea03f6a34255a8a6c65c1f6aabdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Друзья</h2></td></tr>
+<tr class="memitem:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memItemLeft" align="right" valign="top"><a id="ac98d07dd8f7b70e16ccb9a01abf56b9c"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>boost::serialization::access</b></td></tr>
+<tr class="separator:ac98d07dd8f7b70e16ccb9a01abf56b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Класс, хранящий информацию о блоке </p>
+<p>Класс, хранящий информацию о блоке. По сути, его основная задача - обеспечение сериализации данных. </p>
+</div><h2 class="groupheader">Данные класса</h2>
+<a id="a76437c443aa73b7d9eed989f1289eeb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76437c443aa73b7d9eed989f1289eeb4">&#9670;&nbsp;</a></span>SetCurHash</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class CallableVerifier &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockChainCore::Block::SetCurHash</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Шаблонная фукнция, осуществляющая сравнение посчитанного хеша с текущими данными </p>
+
+</div>
+</div>
+<hr/>Объявления и описания членов классов находятся в файлах:<ul>
+<li>/home/houdini/development/Cpp/PoWBlockchain/src/BlockChainCore/src/Block/<a class="el" href="Block_8h_source.html">Block.h</a></li>
+<li>/home/houdini/development/Cpp/PoWBlockchain/src/BlockChainCore/src/Block/Block.cpp</li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
+</body>
+</html>
