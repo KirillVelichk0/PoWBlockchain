@@ -4,19 +4,24 @@
 
 #ifndef BLOCKCHAINCORE_CRYPTO_H
 #define BLOCKCHAINCORE_CRYPTO_H
-#include <vector>
+#include "../nested_error/nested_error.h"
 #include <string>
+#include <tl/expected.hpp>
+#include <type_traits>
+#include <vector>
 namespace BlockChainCore {
-    class Crypto {
-    private:
-        Crypto() = default;
-    public:
-        using ByteVector = std::vector<unsigned char>;
-        [[nodiscard]]
-        static bool TryToVerifyECDSA_CryptoPP(const ByteVector& signature, const ByteVector& blockData, const std::pair<std::string, std::string>& publicKey) noexcept;
+class Crypto {
+private:
+  Crypto() = default;
 
-    };
+public:
+  using ByteVector = std::vector<unsigned char>;
+  [[nodiscard]] static tl::expected<std::true_type, NestedError>
+  TryToVerifyECDSA_CryptoPP(
+      const ByteVector &signature, const ByteVector &blockData,
+      const std::pair<std::string, std::string> &publicKey) noexcept;
+};
 
-} // BlockChainCore
+} // namespace BlockChainCore
 
-#endif //BLOCKCHAINCORE_CRYPTO_H
+#endif // BLOCKCHAINCORE_CRYPTO_H

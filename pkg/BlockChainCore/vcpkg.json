@@ -3,48 +3,45 @@
   "version-string": "1.0.0",
   "builtin-baseline": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31",
   "dependencies": [
+    "boost-contract",
+    "boost-multiprecision",
+    "boost-serialization",
+    "boost-random",
+    "boost-date-time",
+    "cryptopp",
+    "fmt",
+    "tl-expected"
+  ],
+  "overrides":[
     {
+      "name":"tl-expected",
+      "version":"1.1.0"
+    },
+    {
+      "name":"fmt",
+      "version":"10.1.1"
+    },
+    {
+      "name": "cryptopp",
+      "version": "8.8.0"
+    }, {
+      "name": "boost-random",
+      "version": "1.82.0#2"
+    }, {
       "name": "boost-contract",
-      "version>=": "1.82.0#2"
+      "version": "1.82.0#2"
     },
     {
       "name": "boost-multiprecision",
-      "version>=": "1.82.0#2"
+      "version": "1.82.0#2"
     },
     {
       "name": "boost-serialization",
-      "version>=": "1.82.0#2"
+      "version": "1.82.0#2"
     },
     {
       "name": "boost-date-time",
-      "version>=": "1.82.0#2"
-    },
-    "cryptopp",
-    {
-      "name": "boost-random",
-      "version>=": "1.82.0#2"
-    },
-    {
-      "name": "boost-test",
-      "version>=": "1.82.0#2"
-    },
-    {
-      "name": "boost-stacktrace",
-      "version>=": "1.82.0#2"
-    },
-    {
-      "name": "boost-json",
-      "version>=": "1.82.0#2"
-    },
-    {
-      "name": "boost-predef",
-      "version>=": "1.82.0#2"
-    }
-  ],
-  "overrides":[
-  {
-      "name": "cryptopp",
-      "version": "8.8.0"
+      "version": "1.82.0#2"
     }
   ]
 }

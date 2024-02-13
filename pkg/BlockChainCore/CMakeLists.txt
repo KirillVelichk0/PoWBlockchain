@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.20)
+project(BlockChainCore)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+find_package(Boost REQUIRED COMPONENTS serialization contract random)
+find_package(cryptopp CONFIG REQUIRED)
+find_package(tl-expected CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+add_library(BlockChainCore src/Block/Block.cpp src/Block/Block.h src/Crypto/Crypto.h src/Crypto/Crypto.cpp src/Block/BlockContainedData.h src/Block/BlockContainedData.cpp)
+target_link_libraries(BlockChainCore PRIVATE Boost::boost Boost::random Boost::serialization Boost::contract cryptopp::cryptopp fmt::fmt tl::expected)

@@ -1,65 +1,90 @@
 //
 // Created by houdini on 08.09.2023.
 //
-
 #include "Crypto.h"
-#include <cryptopp/eccrypto.h>
 #include <cryptopp/asn.h>
+#include <cryptopp/eccrypto.h>
+#include <cryptopp/integer.h>
 #include <cryptopp/oids.h>
 #include <cryptopp/seckey.h>
-#include <optional>
-#include "../Logger/DefaultLoggers.h"
-#include "CryptoLogs_ImportPubKey.h"
+#include <fmt/core.h>
+#include <fmt/format.h>
+#include <source_location>
 #include <sstream>
+#include <tl/expected.hpp>
+#include <type_traits>
 namespace BlockChainCore {
-    namespace ASN1 = CryptoPP::ASN1;
-    using ECDSA256 = CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>;
+namespace ASN1 = CryptoPP::ASN1;
+using ECDSA256 = CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>;
 
-    std::optional<ECDSA256::PublicKey> ImportPublicKey(const std::pair<std::string, std::string>& publicKey) noexcept{
-        std::optional<ECDSA256::PublicKey> result = ECDSA256 ::PublicKey{};
-        LogStartTrace(); //логируем запуск импорта
-        try {
-            CryptoPP::RandomNumberGenerator rng;
-            std::istringstream ss(publicKey.first + " " + publicKey.second);
-            CryptoPP::Integer x;
-            CryptoPP::Integer y;
-            ss >> x >> y;
-            if (ss.fail()){
-                CryptoLogs_ImportPubKey::LogStringStreamFail(publicKey);
-                return {};
-            }
-            const CryptoPP::ECPPoint point(x, y);
-            result.value().Initialize(ASN1::secp256k1(), point);
-            auto isOk = result.value().Validate(rng, 3);
-            if(!isOk){
-                CryptoLogs_ImportPubKey::LogValidatingFail(publicKey);
-                result.reset();
-            }
-        }
-        catch (...){
-            CryptoLogs_ImportPubKey::LogCatchedUknownException(publicKey);
-            result.reset();
-        }
-        return result;
+auto CreateValidator(CryptoPP::Integer &x, CryptoPP::Integer &y,
+                     std::source_location loc) {
+  return [&x, &y, loc](ECDSA256::PublicKey &key)
+             -> tl::expected<ECDSA256::PublicKey, NestedError> {
+    CryptoPP::RandomNumberGenerator rng;
+    const CryptoPP::ECPPoint point(x, y);
+    key.Initialize(ASN1::secp256k1(), point);
+    auto isOk = key.Validate(rng, 3);
+    if (!isOk) {
+      std::ostringstream oss;
+      oss << "X: " << x << "\n Y:" << y;
+      std::string numbersConv = oss.str();
+      return tl::unexpected(
+
+          NestedError(fmt::format("Key is not valid\n X: {0}", numbersConv),
+                      loc));
     }
-    [[nodiscard]]
-    bool Crypto::TryToVerifyECDSA_CryptoPP(const ByteVector& signature, const ByteVector& blockData, const std::pair<std::string, std::string>& publicKey) noexcept{
-        try {
-            LogStartTrace(); //логируем
-            auto pubKeyImported = ImportPublicKey(publicKey);
-            if(!pubKeyImported.has_value()){
-                return false; //уже логируется. Если же начать выводить сигнатуру и данные блока, получится слишком много.
-            }
-            ECDSA256 ::Verifier verifier(pubKeyImported.value());
-            auto isOk = verifier.VerifyMessage((CryptoPP::byte*)(blockData.data()), blockData.size(),
-                                   (CryptoPP::byte*)(signature.data()), signature.size());
-            if (!isOk){
-                CryptoLogs_TryToVerifyECDSA_CryptoPP::LogVerifyMessageFail(signature, blockData, publicKey);
-            }
-            return isOk;
-        } catch(...){
-            CryptoLogs_TryToVerifyECDSA_CryptoPP::LogUknownExceptionCatched(signature, blockData, publicKey);
-            return false;
-        }
+    return key;
+  };
+}
+
+tl::expected<ECDSA256::PublicKey, NestedError>
+ImportPublicKey(const std::pair<std::string, std::string> &publicKey) noexcept {
+  tl::expected<ECDSA256::PublicKey, NestedError> result =
+      ECDSA256 ::PublicKey{};
+  try {
+    std::istringstream ss(publicKey.first + " " + publicKey.second);
+    CryptoPP::Integer x;
+    CryptoPP::Integer y;
+    ss >> x >> y;
+    if (ss.fail()) {
+      return tl::unexpected(NestedError(
+          fmt::format("Cant convert\n{0}\nand\n{1}\n to ECDSA256 public key",
+                      publicKey.first, publicKey.second),
+          std::source_location::current()));
     }
-} // BlockChainCore
+    result =
+        result.and_then(CreateValidator(x, y, std::source_location::current()));
+  } catch (...) {
+    result = tl::unexpected(
+        NestedError("Some uknown exception", std::source_location::current()));
+  }
+  return result;
+}
+[[nodiscard]] tl::expected<std::true_type, NestedError>
+Crypto::TryToVerifyECDSA_CryptoPP(
+    const ByteVector &signature, const ByteVector &blockData,
+    const std::pair<std::string, std::string> &publicKey) noexcept {
+  auto loc = std::source_location::current();
+
+  try {
+    return ImportPublicKey(publicKey)
+        .and_then([&blockData, &signature, &loc](ECDSA256::PublicKey &&key)
+                      -> tl::expected<std::true_type, NestedError> {
+          ECDSA256 ::Verifier verifier(key);
+          auto isOk = verifier.VerifyMessage(
+              (CryptoPP::byte *)(blockData.data()), blockData.size(),
+              (CryptoPP::byte *)(signature.data()), signature.size());
+          if (!isOk) {
+            return tl::unexpected(NestedError("Cant verify message", loc));
+          }
+          return std::true_type{};
+        })
+        .map_error([&loc](NestedError &&err) {
+          return NestedError("Cant verify. Not correct public key", err, loc);
+        });
+  } catch (...) {
+    return tl::unexpected(NestedError("Some uknown exception", loc));
+  }
+}
+} // namespace BlockChainCore

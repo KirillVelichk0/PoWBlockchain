@@ -4,7 +4,6 @@
 
 #ifndef BLOCKCHAINCORE_BLOCKCONTAINEDDATA_H
 #define BLOCKCHAINCORE_BLOCKCONTAINEDDATA_H
-#include "../Logger/DefaultLoggers.h"
 #include <boost/serialization/serialization.hpp>
 #include <vector>
 namespace BlockChainCore {
@@ -23,7 +22,6 @@ private:
   ByteVector data;
   template <typename Archive>
   void serialize(Archive &ar, const unsigned int version) {
-    LogStartTrace();
     ar & data;
   }
 

@@ -4,9 +4,7 @@
 
 #ifndef BLOCKCHAINCORE_BLOCK_H
 #define BLOCKCHAINCORE_BLOCK_H
-#include "../Logger/DefaultLoggers.h"
 #include "BlockContainedData.h"
-#include "BlockLogs.h"
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -65,7 +63,6 @@ private:
    */
   template <typename Archive>
   void serialize(Archive &ar, const unsigned int version) {
-    LogStartTrace();
     ar & prevSignedHash;
     ar & curSignedHash;
   }
@@ -79,7 +76,6 @@ struct BlockConsensusInfo {
 private:
   template <typename Archive>
   void save(Archive &ar, const unsigned int version) const {
-    LogStartTrace();
     {
       std::ostringstream oss;
       oss << this->miningPoint;
@@ -95,7 +91,6 @@ private:
   }
 
   template <class Archive> void load(Archive &ar, const unsigned int version) {
-    LogStartTrace();
     std::string miningPointStr;
     std::string luckStr;
     ar & miningPointStr;
@@ -162,8 +157,6 @@ public:
                               this->hashInfo.curSignedHash,
                               this->SerializeForHashing(), this->minedBy))>>
   {
-    LogStartTrace();
-    BlockLogs::LogIsValidInfo(this->ledgerId);
 
     return callable(this->hashInfo.curSignedHash, this->SerializeForHashing(),
                     this->minedBy);
@@ -190,7 +183,6 @@ public:
 private:
   template <typename Archive>
   void save(Archive &ar, const unsigned int version) const {
-    LogStartTrace();
     ar &this->hashInfo;
     {
       std::ostringstream oss;
@@ -211,7 +203,6 @@ private:
   }
 
   template <class Archive> void load(Archive &ar, const unsigned int version) {
-    LogStartTrace();
     ar &this->hashInfo;
     {
       std::string containedTimestamp;

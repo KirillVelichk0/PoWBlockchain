@@ -3,7 +3,6 @@
 //
 
 #include "Block.h"
-#include "../Crypto/Crypto.h"
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 namespace BlockChainCore {
@@ -14,9 +13,7 @@ Block::Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
              const BlockContainedData &contData)
     : hashInfo(hashInfo), timestamp(timestamp), minedBy(minedBy),
       ledgerId(ledgerId), consensusInfo(consensusInfo),
-      containedData(contData) {
-  LogStartTrace();
-}
+      containedData(contData) {}
 Block::Block(BlockHashInfo &&hashInfo, const UnixTime &timestamp,
              std::pair<std::string, std::string> &&minedBy,
              const BigNums::mpz_int &ledgerId,
@@ -24,9 +21,7 @@ Block::Block(BlockHashInfo &&hashInfo, const UnixTime &timestamp,
              BlockContainedData &&contData)
     : hashInfo(std::move(hashInfo)), timestamp(timestamp),
       minedBy(std::move(minedBy)), ledgerId(ledgerId),
-      consensusInfo(consensusInfo), containedData(std::move(contData)) {
-  LogStartTrace();
-}
+      consensusInfo(consensusInfo), containedData(std::move(contData)) {}
 auto Block::GetHashInfo() const noexcept { return this->hashInfo; }
 Block::Block(const BlockChain &currentBlockChain) noexcept(false) {
   Block lastBlock = currentBlockChain.at(currentBlockChain.size() - 1);
@@ -35,7 +30,6 @@ Block::Block(const BlockChain &currentBlockChain) noexcept(false) {
   boost::random::random_device gen;
   boost::uniform_real<BigNums::mpq_rational> distr(0, 1000000);
   this->consensusInfo.luck = distr(gen);
-  LogStartTrace();
 }
 Block Block::ConstructFromChain(const BlockChain &currentBlockChain) noexcept(
     false) {
@@ -53,7 +47,6 @@ void Block::SetCurHash(ByteVector &&curHash) {
 template <>
 void BlockHashInfo::serialize<TextOArchive_ForSign>(
     TextOArchive_ForSign &ar, const unsigned int version) {
-  LogStartTrace();
   ar & prevSignedHash;
 }
 void Block::SetPrevHash(const ByteVector &prevHash) {
@@ -124,17 +117,12 @@ bool Block::TryWriteToStream(std::ostream &outStream) noexcept {
     oar << *this;
     return true;
   } catch (boost::archive::archive_exception &ex) {
-    BlockLogs::LogBlockException(ex, "boost::archive::archive_exception");
     return false;
   } catch (std::runtime_error &ex) {
-    BlockLogs::LogBlockException(ex, "std::runtime_error");
     return false;
   } catch (std::exception &ex) {
-    BlockLogs::LogBlockException(ex, "std::exception");
     return false;
   } catch (...) {
-    BlockLogs::LogBlockUnknownException(
-        "Unknown exception catched in Block::TryWriteToStream");
     return false;
   }
 }
@@ -145,17 +133,12 @@ std::optional<Block> Block::GetFromStream(std::istream &inputStream) noexcept {
     iar >> block;
     return {std::move(block)};
   } catch (boost::archive::archive_exception &ex) {
-    BlockLogs::LogBlockException(ex, "boost::archive::archive_exception");
     return {};
   } catch (std::runtime_error &ex) {
-    BlockLogs::LogBlockException(ex, "std::runtime_error");
     return {};
   } catch (std::exception &ex) {
-    BlockLogs::LogBlockException(ex, "std::exception");
     return {};
   } catch (...) {
-    BlockLogs::LogBlockUnknownException(
-        "Unknown exception catched in Block::TryWriteToStream");
     return {};
   }
 }
