@@ -9,7 +9,10 @@ std::string_view NestedError::CurErrorMsg() const noexcept {
 std::source_location NestedError::GetLocation() const noexcept {
   return this->internal->loc;
 }
-NestedError NestedError::GetNested() const noexcept {
+std::optional<NestedError> NestedError::GetNested() const noexcept {
+  if (this->internal->nested == nullptr) {
+    return {};
+  }
   return NestedError(this->internal->nested);
 }
 bool NestedError::TrySetLocation(const std::source_location &loc) noexcept {

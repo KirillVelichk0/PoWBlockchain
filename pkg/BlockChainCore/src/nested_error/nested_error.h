@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <optional>
 #include <source_location>
 #include <string_view>
 namespace BlockChainCore {
@@ -17,7 +18,7 @@ public:
   NestedError(const std::source_location &loc);
   [[nodiscard]] std::source_location GetLocation() const noexcept;
   [[nodiscard]] std::string_view CurErrorMsg() const noexcept;
-  [[nodiscard]] NestedError GetNested() const noexcept;
+  [[nodiscard]] std::optional<NestedError> GetNested() const noexcept;
   [[maybe_unused]] bool TrySetErrorMsg(std::string_view msg) noexcept;
   [[maybe_unused]] bool TrySetNested(NestedError nested) noexcept;
   [[maybe_unused]] bool
