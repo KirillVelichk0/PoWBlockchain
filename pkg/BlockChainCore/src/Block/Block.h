@@ -102,8 +102,10 @@ public:
   void SetContainedData(ByteVector &&contData);
   //! Размер данных только для хэширования
   std::uint64_t GetHashingBlockSize() const noexcept;
+  //! Преобразует блок в его представление в protobuf
   static tl::expected<std::string, NestedError>
   ConvertToProto(Block &block) noexcept;
+  //! Создает блок из его представления в protobuf
   static tl::expected<Block, NestedError>
   CreateFromProto(const std::string &data) noexcept;
 };

@@ -14,6 +14,7 @@
 #include <exception>
 #include <fmt/core.h>
 #include <fmt/format.h>
+#include <iterator>
 #include <limits>
 #include <source_location>
 #include <sstream>
@@ -136,47 +137,41 @@ std::uint64_t Block::GetHashingBlockSize() const noexcept {
   result += 16; // BlockConsensusInfo
   static_assert(sizeof(boost::posix_time::time_duration::sec_type) == 8);
   result += 8; // timestamp
-  std::ostringstream oss;
-  oss << this->ledgerId;
-  result += oss.str().size();
+  result += sizeof(this->ledgerId);
   result += this->containedData.size();
   return result;
 }
 ByteVector Block::SerializeForHashing() const {
-  auto size = this->GetHashingBlockSize();
-  char *buf;
-  buf = new char[size];
-  std::strstream ss(buf, size);
-  // пока все операции не пройдут успешно, деаллоцируем размер буфера и удаляем
-  // его
-  ss.freeze(false);
-  ss.write((const char *)this->hashInfo.prevSignedHash.data(),
-           this->hashInfo.prevSignedHash.size());
-  auto minedByFirstPart = this->minedBy.first;
-  auto minedBySecondPart = this->minedBy.second;
-  ChangeToLittleEndian(minedByFirstPart);
-  ChangeToLittleEndian(minedBySecondPart);
-  ss.write((char *)&minedByFirstPart, 8);
-  ss.write((char *)&minedBySecondPart, 8);
-  auto points = this->consensusInfo.miningPoint;
-  ChangeToLittleEndian(points);
-  auto luckHashAble = GetHashAbleReprOfDouble(this->consensusInfo.luck);
-  ss.write((char *)&points, 8);
-  ss.write((char *)&luckHashAble, 8);
+  ByteVector result;
+  result.reserve(this->GetHashingBlockSize());
+  std::copy(this->hashInfo.prevSignedHash.begin(),
+            this->hashInfo.prevSignedHash.end(), std::back_inserter(result));
   UnixTime epoch(boost::gregorian::date(1970, 1, 1));
   // если вдруг кто-то умудрится выставить время до 1970 года, то ловим UB.
   // Хы.
-  std::uint64_t secondsSinseEpoch = (this->timestamp - epoch).total_seconds();
+  std::uint64_t secondsSinseEpoch =
+      (this->timestamp - epoch).total_nanoseconds();
   ChangeToLittleEndian(secondsSinseEpoch);
-  ss.write((char *)(&secondsSinseEpoch), 8);
-  std::ostringstream oss;
-  oss << this->ledgerId;
-  ss.write(oss.str().data(), oss.str().size());
-  ss.write((const char *)this->containedData.data(), containedData.size());
-  ByteVector result(buf, buf + ss.tellg());
-  // если вектор создан, то можно вызывать ss.freeze(), чтобы не удалять буфер,
-  // т.к. он передан
-  ss.freeze(true);
+  std::copy(&secondsSinseEpoch, &secondsSinseEpoch + sizeof(secondsSinseEpoch),
+            std::back_inserter(result));
+  auto x = this->minedBy.first;
+  auto y = this->minedBy.second;
+  ChangeToLittleEndian(x);
+  ChangeToLittleEndian(y);
+  std::copy(&x, &x + sizeof(x), std::back_inserter(result));
+  std::copy(&y, &y + sizeof(y), std::back_inserter(result));
+  auto ledgerId = this->ledgerId;
+  ChangeToLittleEndian(ledgerId);
+  std::copy(&ledgerId, &ledgerId + sizeof(ledgerId),
+            std::back_inserter(result));
+  auto miningPoint = this->consensusInfo.miningPoint;
+  ChangeToLittleEndian(miningPoint);
+  std::copy(&miningPoint, &miningPoint + sizeof(miningPoint),
+            std::back_inserter(result));
+  auto luck = GetHashAbleReprOfDouble(this->consensusInfo.luck);
+  std::copy(&luck, &luck + sizeof(luck), std::back_inserter(result));
+  std::copy(this->containedData.begin(), this->containedData.end(),
+            std::back_inserter(result));
   return result;
 }
 
