@@ -34,6 +34,19 @@ void ChangeToLittleEndian(std::uint64_t &num) {
     std::swap(interpr[3], interpr[4]);
   }
 }
+void ChangeToLittleEndian(std::int64_t &num) {
+  constexpr bool isBigEndian = std::endian::native == std::endian::big;
+  constexpr bool isLittleEndian = std::endian::native == std::endian::little;
+  static_assert(sizeof(double) == 8);
+  static_assert(isBigEndian || isLittleEndian);
+  if constexpr (isBigEndian) {
+    unsigned char *interpr = (unsigned char *)&num;
+    std::swap(interpr[0], interpr[7]);
+    std::swap(interpr[1], interpr[6]);
+    std::swap(interpr[2], interpr[5]);
+    std::swap(interpr[3], interpr[4]);
+  }
+}
 std::uint64_t GetHashAbleReprOfDouble(double val) {
   std::uint64_t result;
   std::memcpy(&result, &val, 8);
@@ -41,7 +54,7 @@ std::uint64_t GetHashAbleReprOfDouble(double val) {
   return result;
 }
 Block::Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
-             const std::pair<std::uint64_t, std::uint64_t> &minedBy,
+             const std::pair<std::int64_t, std::int64_t> &minedBy,
              const std::uint64_t &ledgerId,
              const BlockConsensusInfo &consensusInfo,
              const ByteVector &contData)
@@ -49,7 +62,7 @@ Block::Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
       ledgerId(ledgerId), consensusInfo(consensusInfo),
       containedData(contData) {}
 Block::Block(BlockHashInfo &&hashInfo, const UnixTime &timestamp,
-             std::pair<std::uint64_t, std::uint64_t> &&minedBy,
+             std::pair<std::int64_t, std::int64_t> &&minedBy,
              const std::uint64_t &ledgerId,
              const BlockConsensusInfo &consensusInfo, ByteVector &&contData)
     : hashInfo(std::move(hashInfo)), timestamp(timestamp),
@@ -98,10 +111,10 @@ void Block::SetTimestamp(const UnixTime &timestamp) {
   this->timestamp = timestamp;
 }
 auto Block::GetMinedBy() const noexcept { return this->minedBy; }
-void Block::SetMinedBy(const std::pair<std::uint64_t, std::uint64_t> &minedBy) {
+void Block::SetMinedBy(const std::pair<std::int64_t, std::int64_t> &minedBy) {
   this->minedBy = minedBy;
 }
-void Block::SetMinedBy(std::pair<std::uint64_t, std::uint64_t> &&minedBy) {
+void Block::SetMinedBy(std::pair<std::int64_t, std::int64_t> &&minedBy) {
   this->minedBy = std::move(minedBy);
 }
 auto Block::GetConsensusInfo() const noexcept { return this->consensusInfo; }
