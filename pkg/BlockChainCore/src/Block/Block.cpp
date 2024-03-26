@@ -8,6 +8,7 @@
 #include <bit>
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <exception>
@@ -274,5 +275,52 @@ Block::ConvertToProto(Block &block) noexcept {
         NestedError("unexpected error", std::source_location::current()));
   }
 }
-
+tl::expected<Block, NestedError>
+Block::CreateFromProto(const std::string &data) noexcept {
+  try {
+    block_external::v1::Block protoBlock;
+    if (!protoBlock.ParseFromString(data)) {
+      return tl::unexpected(NestedError("Cant parse proto from string",
+                                        std::source_location::current()));
+    }
+    Block result;
+    {
+      auto &curHash = protoBlock.cur_hash();
+      result.hashInfo.curSignedHash.resize(curHash.size());
+      std::memcpy(result.hashInfo.curSignedHash.data(), curHash.data(),
+                  curHash.size());
+    }
+    {
+      auto &prevHash = protoBlock.prev_hash();
+      result.hashInfo.prevSignedHash.resize(prevHash.size());
+      std::memcpy(result.hashInfo.prevSignedHash.data(), prevHash.data(),
+                  prevHash.size());
+    }
+    {
+      auto nanos = protoBlock.unix_timestamp().nanos();
+      result.timestamp = boost::posix_time::ptime(
+          {1970, 1, 1}, boost::posix_time::time_duration(0, 0, 0, nanos));
+    }
+    {
+      result.minedBy.first = protoBlock.mined_by().x();
+      result.minedBy.second = protoBlock.mined_by().y();
+    }
+    result.ledgerId = protoBlock.ledger_id();
+    result.consensusInfo.miningPoint = protoBlock.mining_points();
+    result.consensusInfo.luck = protoBlock.luck();
+    {
+      result.containedData.resize(protoBlock.contained_data().size());
+      std::memcpy(result.containedData.data(),
+                  protoBlock.contained_data().data(),
+                  result.containedData.size());
+    }
+    return result;
+  } catch (std::exception &e) {
+    return tl::unexpected(
+        NestedError(e.what(), std::source_location::current()));
+  } catch (...) {
+    return tl::unexpected(
+        NestedError("unexpected error", std::source_location::current()));
+  }
+}
 } // namespace BlockChainCore

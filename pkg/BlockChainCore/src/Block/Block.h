@@ -12,7 +12,7 @@
 #include <vector>
 namespace BlockChainCore {
 #ifdef BLOCKCHAICNCORE_BLOCK_SIZE_CUSTOM
-consteconstexpr std::uint32_t BlockSize = BLOCKCHAICNCORE_BLOCK_SIZE_CUSTOM;
+constexpr std::uint32_t BlockSize = BLOCKCHAICNCORE_BLOCK_SIZE_CUSTOM;
 #else
 constexpr std::uint32_t BlockSize = 2000000;
 #endif
@@ -104,6 +104,8 @@ public:
   std::uint64_t GetHashingBlockSize() const noexcept;
   static tl::expected<std::string, NestedError>
   ConvertToProto(Block &block) noexcept;
+  static tl::expected<Block, NestedError>
+  CreateFromProto(const std::string &data) noexcept;
 };
 
 } // namespace BlockChainCore
