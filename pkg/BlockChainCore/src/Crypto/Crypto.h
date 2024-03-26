@@ -5,7 +5,7 @@
 #ifndef BLOCKCHAINCORE_CRYPTO_H
 #define BLOCKCHAINCORE_CRYPTO_H
 #include "../nested_error/nested_error.h"
-#include <string>
+#include <cstdint>
 #include <tl/expected.hpp>
 #include <type_traits>
 #include <vector>
@@ -19,7 +19,7 @@ public:
   [[nodiscard]] static tl::expected<std::true_type, NestedError>
   TryToVerifyECDSA_CryptoPP(
       const ByteVector &signature, const ByteVector &blockData,
-      const std::pair<std::string, std::string> &publicKey) noexcept;
+      const std::pair<std::uint64_t, std::uint64_t> &publicKey) noexcept;
 };
 
 } // namespace BlockChainCore

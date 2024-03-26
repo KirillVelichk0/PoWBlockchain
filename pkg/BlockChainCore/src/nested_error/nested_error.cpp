@@ -15,35 +15,6 @@ std::optional<NestedError> NestedError::GetNested() const noexcept {
   }
   return NestedError(this->internal->nested);
 }
-bool NestedError::TrySetLocation(const std::source_location &loc) noexcept {
-  try {
-    this->internal->loc = loc;
-    return true;
-  } catch (...) {
-    return false;
-  }
-}
-bool NestedError::TrySetErrorMsg(std::string_view msg) noexcept {
-  try {
-    this->internal->curErrorMsg = std::string(msg);
-    return true;
-  } catch (...) {
-    return false;
-  }
-}
-bool NestedError::TrySetNested(NestedError nested) noexcept {
-  try {
-    this->internal->nested = nested.internal;
-    return true;
-  } catch (...) {
-    return false;
-  }
-}
-NestedError::NestedError(const std::source_location &loc) {
-  this->internal =
-      std::shared_ptr<NestedErrorInternal>(new NestedErrorInternal);
-  this->internal->loc = loc;
-}
 NestedError::NestedError(std::string_view curErrorMsg,
                          const std::source_location &loc) {
   this->internal =

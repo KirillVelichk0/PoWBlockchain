@@ -7,6 +7,7 @@
 #include <cryptopp/integer.h>
 #include <cryptopp/oids.h>
 #include <cryptopp/seckey.h>
+#include <cstdint>
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <source_location>
@@ -38,21 +39,13 @@ auto CreateValidator(CryptoPP::Integer &x, CryptoPP::Integer &y,
   };
 }
 
-tl::expected<ECDSA256::PublicKey, NestedError>
-ImportPublicKey(const std::pair<std::string, std::string> &publicKey) noexcept {
+tl::expected<ECDSA256::PublicKey, NestedError> ImportPublicKey(
+    const std::pair<std::uint64_t, std::uint64_t> &publicKey) noexcept {
   tl::expected<ECDSA256::PublicKey, NestedError> result =
       ECDSA256 ::PublicKey{};
   try {
-    std::istringstream ss(publicKey.first + " " + publicKey.second);
-    CryptoPP::Integer x;
-    CryptoPP::Integer y;
-    ss >> x >> y;
-    if (ss.fail()) {
-      return tl::unexpected(NestedError(
-          fmt::format("Cant convert\n{0}\nand\n{1}\n to ECDSA256 public key",
-                      publicKey.first, publicKey.second),
-          std::source_location::current()));
-    }
+    CryptoPP::Integer x = publicKey.first;
+    CryptoPP::Integer y = publicKey.second;
     result =
         result.and_then(CreateValidator(x, y, std::source_location::current()));
   } catch (...) {
@@ -64,11 +57,14 @@ ImportPublicKey(const std::pair<std::string, std::string> &publicKey) noexcept {
 [[nodiscard]] tl::expected<std::true_type, NestedError>
 Crypto::TryToVerifyECDSA_CryptoPP(
     const ByteVector &signature, const ByteVector &blockData,
-    const std::pair<std::string, std::string> &publicKey) noexcept {
+    const std::pair<std::uint64_t, std::uint64_t> &publicKey) noexcept {
   auto loc = std::source_location::current();
 
   try {
     return ImportPublicKey(publicKey)
+        .map_error([&loc](NestedError &&err) {
+          return NestedError("Cant verify. Not correct public key", err, loc);
+        })
         .and_then([&blockData, &signature, &loc](ECDSA256::PublicKey &&key)
                       -> tl::expected<std::true_type, NestedError> {
           ECDSA256 ::Verifier verifier(key);
@@ -79,9 +75,6 @@ Crypto::TryToVerifyECDSA_CryptoPP(
             return tl::unexpected(NestedError("Cant verify message", loc));
           }
           return std::true_type{};
-        })
-        .map_error([&loc](NestedError &&err) {
-          return NestedError("Cant verify. Not correct public key", err, loc);
         });
   } catch (...) {
     return tl::unexpected(NestedError("Some uknown exception", loc));

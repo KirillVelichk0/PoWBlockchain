@@ -15,14 +15,9 @@ private:
   NestedError(std::shared_ptr<NestedErrorInternal>);
 
 public:
-  NestedError(const std::source_location &loc);
   [[nodiscard]] std::source_location GetLocation() const noexcept;
   [[nodiscard]] std::string_view CurErrorMsg() const noexcept;
   [[nodiscard]] std::optional<NestedError> GetNested() const noexcept;
-  [[maybe_unused]] bool TrySetErrorMsg(std::string_view msg) noexcept;
-  [[maybe_unused]] bool TrySetNested(NestedError nested) noexcept;
-  [[maybe_unused]] bool
-  TrySetLocation(const std::source_location &loc) noexcept;
   NestedError(std::string_view curErrorMsg, const std::source_location &loc);
   NestedError(std::string_view curErrorMsg, const NestedError &nested,
               const std::source_location &loc);
