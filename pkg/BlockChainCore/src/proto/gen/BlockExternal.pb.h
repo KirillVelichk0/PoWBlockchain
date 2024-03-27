@@ -188,22 +188,32 @@ class Block_Key final :
     kXFieldNumber = 1,
     kYFieldNumber = 2,
   };
-  // uint64 x = 1;
+  // bytes x = 1;
   void clear_x();
-  uint64_t x() const;
-  void set_x(uint64_t value);
+  const std::string& x() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_x(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_x();
+  PROTOBUF_NODISCARD std::string* release_x();
+  void set_allocated_x(std::string* x);
   private:
-  uint64_t _internal_x() const;
-  void _internal_set_x(uint64_t value);
+  const std::string& _internal_x() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_x(const std::string& value);
+  std::string* _internal_mutable_x();
   public:
 
-  // uint64 y = 2;
+  // bytes y = 2;
   void clear_y();
-  uint64_t y() const;
-  void set_y(uint64_t value);
+  const std::string& y() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_y(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_y();
+  PROTOBUF_NODISCARD std::string* release_y();
+  void set_allocated_y(std::string* y);
   private:
-  uint64_t _internal_y() const;
-  void _internal_set_y(uint64_t value);
+  const std::string& _internal_y() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_y(const std::string& value);
+  std::string* _internal_mutable_y();
   public:
 
   // @@protoc_insertion_point(class_scope:block_external.v1.Block.Key)
@@ -214,8 +224,8 @@ class Block_Key final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t x_;
-    uint64_t y_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr x_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr y_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -492,44 +502,104 @@ class Block final :
 #endif  // __GNUC__
 // Block_Key
 
-// uint64 x = 1;
+// bytes x = 1;
 inline void Block_Key::clear_x() {
-  _impl_.x_ = uint64_t{0u};
+  _impl_.x_.ClearToEmpty();
 }
-inline uint64_t Block_Key::_internal_x() const {
-  return _impl_.x_;
-}
-inline uint64_t Block_Key::x() const {
+inline const std::string& Block_Key::x() const {
   // @@protoc_insertion_point(field_get:block_external.v1.Block.Key.x)
   return _internal_x();
 }
-inline void Block_Key::_internal_set_x(uint64_t value) {
-  
-  _impl_.x_ = value;
-}
-inline void Block_Key::set_x(uint64_t value) {
-  _internal_set_x(value);
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void Block_Key::set_x(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.x_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:block_external.v1.Block.Key.x)
 }
+inline std::string* Block_Key::mutable_x() {
+  std::string* _s = _internal_mutable_x();
+  // @@protoc_insertion_point(field_mutable:block_external.v1.Block.Key.x)
+  return _s;
+}
+inline const std::string& Block_Key::_internal_x() const {
+  return _impl_.x_.Get();
+}
+inline void Block_Key::_internal_set_x(const std::string& value) {
+  
+  _impl_.x_.Set(value, GetArenaForAllocation());
+}
+inline std::string* Block_Key::_internal_mutable_x() {
+  
+  return _impl_.x_.Mutable(GetArenaForAllocation());
+}
+inline std::string* Block_Key::release_x() {
+  // @@protoc_insertion_point(field_release:block_external.v1.Block.Key.x)
+  return _impl_.x_.Release();
+}
+inline void Block_Key::set_allocated_x(std::string* x) {
+  if (x != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.x_.SetAllocated(x, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.x_.IsDefault()) {
+    _impl_.x_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:block_external.v1.Block.Key.x)
+}
 
-// uint64 y = 2;
+// bytes y = 2;
 inline void Block_Key::clear_y() {
-  _impl_.y_ = uint64_t{0u};
+  _impl_.y_.ClearToEmpty();
 }
-inline uint64_t Block_Key::_internal_y() const {
-  return _impl_.y_;
-}
-inline uint64_t Block_Key::y() const {
+inline const std::string& Block_Key::y() const {
   // @@protoc_insertion_point(field_get:block_external.v1.Block.Key.y)
   return _internal_y();
 }
-inline void Block_Key::_internal_set_y(uint64_t value) {
-  
-  _impl_.y_ = value;
-}
-inline void Block_Key::set_y(uint64_t value) {
-  _internal_set_y(value);
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void Block_Key::set_y(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.y_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:block_external.v1.Block.Key.y)
+}
+inline std::string* Block_Key::mutable_y() {
+  std::string* _s = _internal_mutable_y();
+  // @@protoc_insertion_point(field_mutable:block_external.v1.Block.Key.y)
+  return _s;
+}
+inline const std::string& Block_Key::_internal_y() const {
+  return _impl_.y_.Get();
+}
+inline void Block_Key::_internal_set_y(const std::string& value) {
+  
+  _impl_.y_.Set(value, GetArenaForAllocation());
+}
+inline std::string* Block_Key::_internal_mutable_y() {
+  
+  return _impl_.y_.Mutable(GetArenaForAllocation());
+}
+inline std::string* Block_Key::release_y() {
+  // @@protoc_insertion_point(field_release:block_external.v1.Block.Key.y)
+  return _impl_.y_.Release();
+}
+inline void Block_Key::set_allocated_y(std::string* y) {
+  if (y != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.y_.SetAllocated(y, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.y_.IsDefault()) {
+    _impl_.y_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:block_external.v1.Block.Key.y)
 }
 
 // -------------------------------------------------------------------

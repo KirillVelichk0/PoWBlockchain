@@ -24,8 +24,8 @@ namespace block_external {
 namespace v1 {
 PROTOBUF_CONSTEXPR Block_Key::Block_Key(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.x_)*/uint64_t{0u}
-  , /*decltype(_impl_.y_)*/uint64_t{0u}
+    /*decltype(_impl_.x_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.y_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct Block_KeyDefaultTypeInternal {
   PROTOBUF_CONSTEXPR Block_KeyDefaultTypeInternal()
@@ -105,7 +105,7 @@ const char descriptor_table_protodef_src_2fproto_2fBlockExternal_2eproto[] PROTO
   "2\034.block_external.v1.Block.Key\022\021\n\tledger"
   "_id\030\005 \001(\004\022\025\n\rmining_points\030\006 \001(\004\022\014\n\004luck"
   "\030\007 \001(\001\022\026\n\016contained_data\030\010 \001(\014\032\033\n\003Key\022\t\n"
-  "\001x\030\001 \001(\004\022\t\n\001y\030\002 \001(\004b\006proto3"
+  "\001x\030\001 \001(\014\022\t\n\001y\030\002 \001(\014b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_src_2fproto_2fBlockExternal_2eproto_deps[1] = {
   &::descriptor_table_google_2fprotobuf_2ftimestamp_2eproto,
@@ -149,9 +149,22 @@ Block_Key::Block_Key(const Block_Key& from)
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.x_, &from._impl_.x_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.y_) -
-    reinterpret_cast<char*>(&_impl_.x_)) + sizeof(_impl_.y_));
+  _impl_.x_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.x_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_x().empty()) {
+    _this->_impl_.x_.Set(from._internal_x(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.y_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.y_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_y().empty()) {
+    _this->_impl_.y_.Set(from._internal_y(), 
+      _this->GetArenaForAllocation());
+  }
   // @@protoc_insertion_point(copy_constructor:block_external.v1.Block.Key)
 }
 
@@ -160,10 +173,18 @@ inline void Block_Key::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.x_){uint64_t{0u}}
-    , decltype(_impl_.y_){uint64_t{0u}}
+      decltype(_impl_.x_){}
+    , decltype(_impl_.y_){}
     , /*decltype(_impl_._cached_size_)*/{}
   };
+  _impl_.x_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.x_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.y_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.y_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 Block_Key::~Block_Key() {
@@ -177,6 +198,8 @@ Block_Key::~Block_Key() {
 
 inline void Block_Key::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.x_.Destroy();
+  _impl_.y_.Destroy();
 }
 
 void Block_Key::SetCachedSize(int size) const {
@@ -189,9 +212,8 @@ void Block_Key::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&_impl_.x_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.y_) -
-      reinterpret_cast<char*>(&_impl_.x_)) + sizeof(_impl_.y_));
+  _impl_.x_.ClearToEmpty();
+  _impl_.y_.ClearToEmpty();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -201,18 +223,20 @@ const char* Block_Key::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // uint64 x = 1;
+      // bytes x = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.x_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_x();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // uint64 y = 2;
+      // bytes y = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _impl_.y_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_y();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -246,16 +270,16 @@ uint8_t* Block_Key::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint64 x = 1;
-  if (this->_internal_x() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_x(), target);
+  // bytes x = 1;
+  if (!this->_internal_x().empty()) {
+    target = stream->WriteBytesMaybeAliased(
+        1, this->_internal_x(), target);
   }
 
-  // uint64 y = 2;
-  if (this->_internal_y() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_y(), target);
+  // bytes y = 2;
+  if (!this->_internal_y().empty()) {
+    target = stream->WriteBytesMaybeAliased(
+        2, this->_internal_y(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -274,14 +298,18 @@ size_t Block_Key::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // uint64 x = 1;
-  if (this->_internal_x() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_x());
+  // bytes x = 1;
+  if (!this->_internal_x().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_x());
   }
 
-  // uint64 y = 2;
-  if (this->_internal_y() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_y());
+  // bytes y = 2;
+  if (!this->_internal_y().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_y());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -302,10 +330,10 @@ void Block_Key::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_x() != 0) {
+  if (!from._internal_x().empty()) {
     _this->_internal_set_x(from._internal_x());
   }
-  if (from._internal_y() != 0) {
+  if (!from._internal_y().empty()) {
     _this->_internal_set_y(from._internal_y());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -324,13 +352,17 @@ bool Block_Key::IsInitialized() const {
 
 void Block_Key::InternalSwap(Block_Key* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Block_Key, _impl_.y_)
-      + sizeof(Block_Key::_impl_.y_)
-      - PROTOBUF_FIELD_OFFSET(Block_Key, _impl_.x_)>(
-          reinterpret_cast<char*>(&_impl_.x_),
-          reinterpret_cast<char*>(&other->_impl_.x_));
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.x_, lhs_arena,
+      &other->_impl_.x_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.y_, lhs_arena,
+      &other->_impl_.y_, rhs_arena
+  );
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Block_Key::GetMetadata() const {

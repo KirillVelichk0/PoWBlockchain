@@ -55,7 +55,7 @@ std::uint64_t GetHashAbleReprOfDouble(double val) {
   return result;
 }
 Block::Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
-             const std::pair<std::int64_t, std::int64_t> &minedBy,
+             const std::pair<std::string, std::string> &minedBy,
              const std::uint64_t &ledgerId,
              const BlockConsensusInfo &consensusInfo,
              const ByteVector &contData)
@@ -63,7 +63,7 @@ Block::Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
       ledgerId(ledgerId), consensusInfo(consensusInfo),
       containedData(contData) {}
 Block::Block(BlockHashInfo &&hashInfo, const UnixTime &timestamp,
-             std::pair<std::int64_t, std::int64_t> &&minedBy,
+             std::pair<std::string, std::string> &&minedBy,
              const std::uint64_t &ledgerId,
              const BlockConsensusInfo &consensusInfo, ByteVector &&contData)
     : hashInfo(std::move(hashInfo)), timestamp(timestamp),
@@ -112,10 +112,10 @@ void Block::SetTimestamp(const UnixTime &timestamp) {
   this->timestamp = timestamp;
 }
 auto Block::GetMinedBy() const noexcept { return this->minedBy; }
-void Block::SetMinedBy(const std::pair<std::int64_t, std::int64_t> &minedBy) {
+void Block::SetMinedBy(const std::pair<std::string, std::string> &minedBy) {
   this->minedBy = minedBy;
 }
-void Block::SetMinedBy(std::pair<std::int64_t, std::int64_t> &&minedBy) {
+void Block::SetMinedBy(std::pair<std::string, std::string> &&minedBy) {
   this->minedBy = std::move(minedBy);
 }
 auto Block::GetConsensusInfo() const noexcept { return this->consensusInfo; }
@@ -133,7 +133,7 @@ void Block::SetContainedData(ByteVector &&contData) {
 std::uint64_t Block::GetHashingBlockSize() const noexcept {
   std::uint64_t result = 0;
   result += this->hashInfo.prevSignedHash.size();
-  result += 16; // minedBy
+  result += this->minedBy.first.size() + this->minedBy.second.size(); // minedBy
   result += 16; // BlockConsensusInfo
   static_assert(sizeof(boost::posix_time::time_duration::sec_type) == 8);
   result += 8; // timestamp
@@ -154,12 +154,10 @@ ByteVector Block::SerializeForHashing() const {
   ChangeToLittleEndian(secondsSinseEpoch);
   std::copy(&secondsSinseEpoch, &secondsSinseEpoch + sizeof(secondsSinseEpoch),
             std::back_inserter(result));
-  auto x = this->minedBy.first;
-  auto y = this->minedBy.second;
-  ChangeToLittleEndian(x);
-  ChangeToLittleEndian(y);
-  std::copy(&x, &x + sizeof(x), std::back_inserter(result));
-  std::copy(&y, &y + sizeof(y), std::back_inserter(result));
+  auto &x = this->minedBy.first;
+  auto &y = this->minedBy.second;
+  std::copy(x.begin(), x.end(), std::back_inserter(result));
+  std::copy(y.begin(), y.end(), std::back_inserter(result));
   auto ledgerId = this->ledgerId;
   ChangeToLittleEndian(ledgerId);
   std::copy(&ledgerId, &ledgerId + sizeof(ledgerId),

@@ -8,7 +8,6 @@
 #include <cryptopp/oids.h>
 #include <cryptopp/osrng.h>
 #include <cryptopp/seckey.h>
-#include <cstdint>
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <source_location>
@@ -60,13 +59,14 @@ auto CreatePrivateKeyValidator(CryptoPP::Integer &x, std::source_location loc) {
     return key;
   };
 }
-tl::expected<ECDSA256::PublicKey, NestedError> ImportPublicKey(
-    const std::pair<std::int64_t, std::int64_t> &publicKey) noexcept {
+tl::expected<ECDSA256::PublicKey, NestedError>
+ImportPublicKey(const std::pair<std::string, std::string> &publicKey) noexcept {
   tl::expected<ECDSA256::PublicKey, NestedError> result =
       ECDSA256 ::PublicKey{};
   try {
-    CryptoPP::Integer x = publicKey.first;
-    CryptoPP::Integer y = publicKey.second;
+
+    CryptoPP::Integer x(publicKey.first.c_str());
+    CryptoPP::Integer y(publicKey.second.c_str());
     result = result.and_then(
         CreatePublicKeyValidator(x, y, std::source_location::current()));
   } catch (...) {
@@ -76,11 +76,11 @@ tl::expected<ECDSA256::PublicKey, NestedError> ImportPublicKey(
   return result;
 }
 tl::expected<ECDSA256::PrivateKey, NestedError>
-ImportPrivateKey(std::int64_t privateKey) noexcept {
+ImportPrivateKey(std::string privateKey) noexcept {
   tl::expected<ECDSA256::PrivateKey, NestedError> result =
       ECDSA256 ::PrivateKey{};
   try {
-    CryptoPP::Integer x = privateKey;
+    CryptoPP::Integer x(privateKey.c_str());
     result = result.and_then(
         CreatePrivateKeyValidator(x, std::source_location::current()));
   } catch (...) {
@@ -92,7 +92,7 @@ ImportPrivateKey(std::int64_t privateKey) noexcept {
 [[nodiscard]] tl::expected<std::true_type, NestedError>
 Crypto::TryToVerifyECDSA_CryptoPP(
     const ByteVector &signature, const ByteVector &blockData,
-    const std::pair<std::int64_t, std::int64_t> &publicKey) noexcept {
+    const std::pair<std::string, std::string> &publicKey) noexcept {
   auto loc = std::source_location::current();
 
   try {
@@ -118,7 +118,7 @@ Crypto::TryToVerifyECDSA_CryptoPP(
   }
 }
 tl::expected<Crypto::ByteVector, NestedError>
-Crypto::TryToSign(const ByteVector &data, std::int64_t privateKey) {
+Crypto::TryToSign(const ByteVector &data, std::string privateKey) {
   auto loc = std::source_location::current();
   try {
     return ImportPrivateKey(privateKey)

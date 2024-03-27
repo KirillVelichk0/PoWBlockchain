@@ -19,9 +19,9 @@ public:
   [[nodiscard]] static tl::expected<std::true_type, NestedError>
   TryToVerifyECDSA_CryptoPP(
       const ByteVector &signature, const ByteVector &blockData,
-      const std::pair<std::int64_t, std::int64_t> &publicKey) noexcept;
+      const std::pair<std::string, std::string> &publicKey) noexcept;
   [[nodiscard]] static tl::expected<ByteVector, NestedError>
-  TryToSign(const ByteVector &data, std::int64_t privateKey);
+  TryToSign(const ByteVector &data, std::string privateKey);
 };
 
 } // namespace BlockChainCore

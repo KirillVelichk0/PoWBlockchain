@@ -7,8 +7,8 @@ message Block {
   bytes prev_hash = 2;
   google.protobuf.Timestamp unix_timestamp = 3;
   message Key {
-    uint64 x = 1;
-    uint64 y = 2;
+    bytes x = 1;
+    bytes y = 2;
   }
   Key mined_by = 4;
   uint64 ledger_id = 5;

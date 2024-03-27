@@ -22,9 +22,9 @@ using ByteVector = std::vector<unsigned char>;
 
 using CryptValidator = tl::expected<std::true_type, NestedError> (*)(
     const ByteVector &, const ByteVector &,
-    const std::pair<std::uint64_t, std::uint64_t> &);
+    const std::pair<std::string, std::string> &);
 using CryptSigner = tl::expected<ByteVector, NestedError> (*)(
-    const ByteVector &, const std::pair<std::uint64_t, std::uint64_t> &);
+    const ByteVector &, const std::string &);
 using UnixTime = boost::posix_time::ptime;
 
 //! \brief Информация о хэше блока
@@ -47,7 +47,7 @@ class Block {
 private:
   BlockHashInfo hashInfo;
   UnixTime timestamp;
-  std::pair<std::int64_t, std::int64_t>
+  std::pair<std::string, std::string>
       minedBy; // два числа в тексовом виде, разделенные точкой
   std::uint64_t ledgerId = 1; // для идентификации в БД
   BlockConsensusInfo consensusInfo;
@@ -56,12 +56,12 @@ private:
 
 public:
   explicit Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
-                 const std::pair<std::int64_t, std::int64_t> &minedBy,
+                 const std::pair<std::string, std::string> &minedBy,
                  const std::uint64_t &ledgerId,
                  const BlockConsensusInfo &consensusInfo,
                  const ByteVector &containedData);
   explicit Block(BlockHashInfo &&hashInfo, const UnixTime &timestamp,
-                 std::pair<std::int64_t, std::int64_t> &&minedBy,
+                 std::pair<std::string, std::string> &&minedBy,
                  const std::uint64_t &ledgerId,
                  const BlockConsensusInfo &consensusInfo,
                  ByteVector &&containedData);
@@ -92,8 +92,8 @@ public:
   [[nodiscard]] auto GetTimestamp() const noexcept;
   void SetTimestamp(const UnixTime &timestamp);
   [[nodiscard]] auto GetMinedBy() const noexcept;
-  void SetMinedBy(const std::pair<std::int64_t, std::int64_t> &minedBy);
-  void SetMinedBy(std::pair<std::int64_t, std::int64_t> &&minedBy);
+  void SetMinedBy(const std::pair<std::string, std::string> &minedBy);
+  void SetMinedBy(std::pair<std::string, std::string> &&minedBy);
   [[nodiscard]] auto GetConsensusInfo() const noexcept;
   void SetLuck(double luck);
   void SetMiningPoint(std::uint64_t miningPoint);
