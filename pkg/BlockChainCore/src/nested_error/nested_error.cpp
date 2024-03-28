@@ -35,16 +35,16 @@ std::string NestedError::GetFullErrorMsg() const noexcept {
   auto curInternal = this->internal;
   std::string result;
   int counter = 0;
-  do {
+  while (curInternal != nullptr) {
     result = fmt::format(
         "{0} {1}({2}:{3}) `{4}` : {5}\n", counter, curInternal->loc.file_name(),
         curInternal->loc.line(), curInternal->loc.column(),
         curInternal->loc.function_name(), curInternal->curErrorMsg);
     counter++;
     curInternal = curInternal->nested;
-  } while (curInternal != nullptr);
+  }
   return result;
 }
 NestedError::NestedError(std::shared_ptr<NestedErrorInternal> nested)
-    : internal(nested) {}
+    : internal(std::move(nested)) {}
 } // namespace BlockChainCore

@@ -105,7 +105,7 @@ void Block::SetTransactionId(const std::uint64_t &ledgerId) {
   this->ledgerId = ledgerId;
 }
 void Block::SetTransactionId(std::uint64_t &&ledgerId) {
-  this->ledgerId = std::move(ledgerId);
+  this->ledgerId = ledgerId;
 }
 auto Block::GetTimestamp() const noexcept { return this->timestamp; }
 void Block::SetTimestamp(const UnixTime &timestamp) {
@@ -154,8 +154,8 @@ ByteVector Block::SerializeForHashing() const {
   ChangeToLittleEndian(secondsSinseEpoch);
   std::copy(&secondsSinseEpoch, &secondsSinseEpoch + sizeof(secondsSinseEpoch),
             std::back_inserter(result));
-  auto &x = this->minedBy.first;
-  auto &y = this->minedBy.second;
+  const auto &x = this->minedBy.first;
+  const auto &y = this->minedBy.second;
   std::copy(x.begin(), x.end(), std::back_inserter(result));
   std::copy(y.begin(), y.end(), std::back_inserter(result));
   auto ledgerId = this->ledgerId;
@@ -198,10 +198,9 @@ Block::CheckBlockIsCryptValid(CryptValidator validator) noexcept {
         .map_error([&loc, this](NestedError &&nested) -> NestedError {
           std::ostringstream oss;
           oss << this->ledgerId;
-          return NestedError(
-              fmt::format("Error with external validator. ledgerId - {0}",
-                          oss.str()),
-              nested, loc);
+          return {fmt::format("Error with external validator. ledgerId - {0}",
+                              oss.str()),
+                  nested, loc};
         });
 
   } catch (std::exception &ex) {
@@ -229,13 +228,13 @@ Block::ConvertToProto(Block &block) noexcept {
   try {
     block_external::v1::Block converted;
     {
-      std::string curHashTrans('a', block.hashInfo.curSignedHash.size());
+      std::string curHashTrans(block.hashInfo.curSignedHash.size(), 'a');
       std::memcpy((void *)curHashTrans.data(),
                   block.hashInfo.curSignedHash.data(), curHashTrans.size());
       converted.set_cur_hash(std::move(curHashTrans));
     }
     {
-      std::string prevHashTrans('a', block.hashInfo.prevSignedHash.size());
+      std::string prevHashTrans(block.hashInfo.prevSignedHash.size(), 'a');
       std::memcpy((void *)prevHashTrans.data(),
                   block.hashInfo.prevSignedHash.data(), prevHashTrans.size());
       converted.set_prev_hash(std::move(prevHashTrans));
@@ -262,7 +261,7 @@ Block::ConvertToProto(Block &block) noexcept {
     converted.set_mining_points(block.consensusInfo.miningPoint);
     converted.set_luck(block.consensusInfo.luck);
     {
-      std::string data('a', block.containedData.size());
+      std::string data(block.containedData.size(), 'a');
       std::memcpy((void *)data.data(), block.containedData.data(), data.size());
       converted.set_contained_data(std::move(data));
     }
