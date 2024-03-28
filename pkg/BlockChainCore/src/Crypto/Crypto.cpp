@@ -76,7 +76,7 @@ ImportPublicKey(const std::pair<std::string, std::string> &publicKey) noexcept {
   return result;
 }
 tl::expected<ECDSA256::PrivateKey, NestedError>
-ImportPrivateKey(std::string privateKey) noexcept {
+ImportPrivateKey(const std::string &privateKey) noexcept {
   tl::expected<ECDSA256::PrivateKey, NestedError> result =
       ECDSA256 ::PrivateKey{};
   try {
@@ -118,7 +118,7 @@ Crypto::TryToVerifyECDSA_CryptoPP(
   }
 }
 tl::expected<Crypto::ByteVector, NestedError>
-Crypto::TryToSign(const ByteVector &data, std::string privateKey) {
+Crypto::TryToSign(const ByteVector &data, const std::string &privateKey) {
   auto loc = std::source_location::current();
   try {
     return ImportPrivateKey(privateKey)

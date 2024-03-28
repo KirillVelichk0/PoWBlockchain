@@ -3,6 +3,11 @@ project(BlockChainCore)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+find_program(CLANG_TIDY_EXE NAMS clang-tidy)
+if(CLANG_TIDY_EXE)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})
+endif()
+
 find_package(protobuf CONFIG REQUIRED)
 
 #protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ./src/proto/BlockExternal.proto)

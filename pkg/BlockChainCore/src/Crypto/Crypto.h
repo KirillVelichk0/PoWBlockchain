@@ -21,7 +21,7 @@ public:
       const ByteVector &signature, const ByteVector &blockData,
       const std::pair<std::string, std::string> &publicKey) noexcept;
   [[nodiscard]] static tl::expected<ByteVector, NestedError>
-  TryToSign(const ByteVector &data, std::string privateKey);
+  TryToSign(const ByteVector &data, const std::string &privateKey);
 };
 
 } // namespace BlockChainCore

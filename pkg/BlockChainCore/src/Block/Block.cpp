@@ -241,8 +241,8 @@ Block::ConvertToProto(Block &block) noexcept {
       converted.set_prev_hash(std::move(prevHashTrans));
     }
     {
-      std::unique_ptr<google::protobuf::Timestamp> timestamp(
-          new google::protobuf::Timestamp());
+      std::unique_ptr<google::protobuf::Timestamp> timestamp =
+          std::make_unique<google::protobuf::Timestamp>();
       UnixTime epoch(boost::gregorian::date(1970, 1, 1));
       // если вдруг кто-то умудрится выставить время до 1970 года, то ловим UB.
       // Хы.
@@ -252,8 +252,8 @@ Block::ConvertToProto(Block &block) noexcept {
       converted.set_allocated_unix_timestamp(timestamp.release());
     }
     {
-      std::unique_ptr<block_external::v1::Block::Key> minedBy(
-          new block_external::v1::Block::Key());
+      std::unique_ptr<block_external::v1::Block::Key> minedBy =
+          std::make_unique<block_external::v1::Block::Key>();
       minedBy->set_x(block.minedBy.first);
       minedBy->set_y(block.minedBy.second);
       converted.set_allocated_mined_by(minedBy.release());
