@@ -12,7 +12,7 @@ private:
     std::source_location loc;
   };
   std::shared_ptr<NestedErrorInternal> internal;
-  NestedError(std::shared_ptr<NestedErrorInternal>);
+  explicit NestedError(std::shared_ptr<NestedErrorInternal>);
 
 public:
   [[nodiscard]] std::source_location GetLocation() const noexcept;

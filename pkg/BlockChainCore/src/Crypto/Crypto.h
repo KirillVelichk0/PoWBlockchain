@@ -22,6 +22,13 @@ public:
       const std::pair<std::string, std::string> &publicKey) noexcept;
   [[nodiscard]] static tl::expected<ByteVector, NestedError>
   TryToSign(const ByteVector &data, const std::string &privateKey);
+  //! Создает приватный и публичные ключи
+  [[nodiscard]] static std::pair<std::string,
+                                 std::pair<std::string, std::string>>
+  GenerateKeys();
+  //! Создает публичный ключ из приватного
+  [[nodiscard]] static std::pair<std::string, std::string>
+  ConstructPublicKey(const std::string &privateKey);
 };
 
 } // namespace BlockChainCore

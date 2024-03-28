@@ -12,6 +12,7 @@
 #include <fmt/format.h>
 #include <source_location>
 #include <sstream>
+#include <stdexcept>
 #include <tl/expected.hpp>
 #include <type_traits>
 namespace BlockChainCore {
@@ -141,5 +142,67 @@ Crypto::TryToSign(const ByteVector &data, const std::string &privateKey) {
   } catch (...) {
     return tl::unexpected(NestedError("Some uknown exception", loc));
   }
+}
+ECDSA256::PublicKey
+MakePublicFromPrivateInternal(const ECDSA256::PrivateKey &privateKey,
+                              CryptoPP::AutoSeededRandomPool &prng) {
+  ECDSA256::PublicKey publicKey;
+  privateKey.MakePublicKey(publicKey);
+  bool isOk = publicKey.Validate(prng, 3);
+  if (!isOk) {
+    throw std::runtime_error("Cant validate created public key");
+  }
+  return publicKey;
+}
+std::pair<std::string, std::pair<std::string, std::string>>
+Crypto::GenerateKeys() {
+  CryptoPP::AutoSeededRandomPool prng;
+  ECDSA256::PrivateKey privateKey;
+
+  privateKey.Initialize(prng, ASN1::secp256k1());
+  bool isOk = privateKey.Validate(prng, 3);
+  if (!isOk) {
+    throw std::runtime_error("Cant validate created private key");
+  }
+  const auto &privateExponent = privateKey.GetPrivateExponent();
+  auto publicKey = MakePublicFromPrivateInternal(privateKey, prng);
+  decltype(auto) publicPoint = publicKey.GetPublicElement();
+  auto getStringFromInteger = [](const CryptoPP::Integer &val) -> std::string {
+    std::ostringstream oss;
+    oss << val;
+    if (oss.bad()) {
+      throw std::runtime_error("Cant convert key to string");
+    }
+    return oss.str();
+  };
+  std::pair<std::string, std::pair<std::string, std::string>> result;
+  result.first = getStringFromInteger(privateExponent);
+  result.second.first = getStringFromInteger(publicPoint.x);
+  result.second.second = getStringFromInteger(publicPoint.y);
+  return result;
+}
+std::pair<std::string, std::string>
+Crypto::ConstructPublicKey(const std::string &privateKey) {
+  CryptoPP::Integer privateExp(privateKey.c_str());
+  CryptoPP::AutoSeededRandomPool prng;
+  ECDSA256::PrivateKey privateKeyImported;
+  privateKeyImported.Initialize(ASN1::secp256k1(), privateExp);
+  bool isOk = privateKeyImported.Validate(prng, 3);
+  if (!isOk) {
+    throw std::runtime_error("Cant validate created private key");
+  }
+  auto publicKey = MakePublicFromPrivateInternal(privateKeyImported, prng);
+  auto getStringFromInteger = [](const CryptoPP::Integer &val) -> std::string {
+    std::ostringstream oss;
+    oss << val;
+    if (oss.bad()) {
+      throw std::runtime_error("Cant convert key to string");
+    }
+    return oss.str();
+  };
+  std::pair<std::string, std::string> result;
+  result.first = getStringFromInteger(publicKey.GetPublicElement().x);
+  result.second = getStringFromInteger(publicKey.GetPublicElement().y);
+  return result;
 }
 } // namespace BlockChainCore
