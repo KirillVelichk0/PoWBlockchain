@@ -22,6 +22,14 @@ NestedError::NestedError(std::string_view curErrorMsg,
   this->internal->curErrorMsg = std::string(curErrorMsg);
   this->internal->loc = loc;
 }
+NestedError::NestedError(std::string_view curErrorMsg, NestedError &&nested,
+                         const std::source_location &loc) {
+  this->internal =
+      std::shared_ptr<NestedErrorInternal>(new NestedErrorInternal);
+  this->internal->nested = std::move(nested.internal);
+  this->internal->curErrorMsg = std::string(curErrorMsg);
+  this->internal->loc = loc;
+}
 NestedError::NestedError(std::string_view curErrorMsg,
                          const NestedError &nested,
                          const std::source_location &loc) {

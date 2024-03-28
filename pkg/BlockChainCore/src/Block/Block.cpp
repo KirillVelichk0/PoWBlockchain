@@ -50,7 +50,7 @@ void ChangeToLittleEndian(std::int64_t &num) {
 }
 std::uint64_t GetHashAbleReprOfDouble(double val) {
   std::uint64_t result;
-  std::memcpy(&result, &val, 8);
+  std::memcpy(&result, &val, sizeof(result));
   ChangeToLittleEndian(result);
   return result;
 }
@@ -104,9 +104,7 @@ void Block::SetPrevHash(ByteVector &&prevHash) {
 void Block::SetTransactionId(const std::uint64_t &ledgerId) {
   this->ledgerId = ledgerId;
 }
-void Block::SetTransactionId(std::uint64_t &&ledgerId) {
-  this->ledgerId = ledgerId;
-}
+
 auto Block::GetTimestamp() const noexcept { return this->timestamp; }
 void Block::SetTimestamp(const UnixTime &timestamp) {
   this->timestamp = timestamp;
@@ -185,7 +183,7 @@ Block::CheckBlockIsCryptValid() noexcept {
         return NestedError(
             fmt::format("Error with standart validator. ledgerId - {0}",
                         oss.str()),
-            nested, loc);
+            std::move(nested), loc);
       });
 }
 tl::expected<std::true_type, NestedError>
@@ -200,7 +198,7 @@ Block::CheckBlockIsCryptValid(CryptValidator validator) noexcept {
           oss << this->ledgerId;
           return {fmt::format("Error with external validator. ledgerId - {0}",
                               oss.str()),
-                  nested, loc};
+                  std::move(nested), loc};
         });
 
   } catch (std::exception &ex) {
@@ -266,12 +264,11 @@ Block::ConvertToProto(Block &block) noexcept {
       converted.set_contained_data(std::move(data));
     }
     std::string result;
-    if (converted.SerializeToString(&result)) {
-      return result;
-    } else {
+    if (!converted.SerializeToString(&result)) {
       return tl::unexpected(NestedError("protobuf cant serialize to string",
                                         std::source_location::current()));
     }
+    return result;
   } catch (std::exception &e) {
     return tl::unexpected(
         NestedError(e.what(), std::source_location::current()));
@@ -290,13 +287,13 @@ Block::CreateFromProto(const std::string &data) noexcept {
     }
     Block result;
     {
-      auto &curHash = protoBlock.cur_hash();
+      const auto &curHash = protoBlock.cur_hash();
       result.hashInfo.curSignedHash.resize(curHash.size());
       std::memcpy(result.hashInfo.curSignedHash.data(), curHash.data(),
                   curHash.size());
     }
     {
-      auto &prevHash = protoBlock.prev_hash();
+      const auto &prevHash = protoBlock.prev_hash();
       result.hashInfo.prevSignedHash.resize(prevHash.size());
       std::memcpy(result.hashInfo.prevSignedHash.data(), prevHash.data(),
                   prevHash.size());

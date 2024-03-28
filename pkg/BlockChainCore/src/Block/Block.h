@@ -88,7 +88,6 @@ public:
   void SetPrevHash(const ByteVector &prevHash);
   void SetPrevHash(ByteVector &&prevHash);
   void SetTransactionId(const std::uint64_t &ledgerId);
-  void SetTransactionId(std::uint64_t &&ledgerId);
   [[nodiscard]] auto GetTimestamp() const noexcept;
   void SetTimestamp(const UnixTime &timestamp);
   [[nodiscard]] auto GetMinedBy() const noexcept;
@@ -100,7 +99,9 @@ public:
   [[nodiscard]] auto GetContainedData() const noexcept;
   void SetContainedData(const ByteVector &contData);
   void SetContainedData(ByteVector &&contData);
-  //! Размер данных только для хэширования
+  //! Размер данных только для хэширования. Этот метод нужен для того, чтобы
+  //! избавиться от лишних выделений памяит при сериализации для хэширования.
+  //! Таки данный метод использует захардкоженные размеры.
   std::uint64_t GetHashingBlockSize() const noexcept;
   //! Преобразует блок в его представление в protobuf
   static tl::expected<std::string, NestedError>

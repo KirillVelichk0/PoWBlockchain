@@ -104,7 +104,7 @@ Crypto::TryToVerifyECDSA_CryptoPP(
         })
         .and_then([&blockData, &signature, &loc](ECDSA256::PublicKey &&key)
                       -> tl::expected<std::true_type, NestedError> {
-          ECDSA256 ::Verifier verifier(std::move(key));
+          ECDSA256 ::Verifier verifier(key);
           auto isOk = verifier.VerifyMessage(
               (CryptoPP::byte *)(blockData.data()), blockData.size(),
               (CryptoPP::byte *)(signature.data()), signature.size());
@@ -125,12 +125,13 @@ Crypto::TryToSign(const ByteVector &data, const std::string &privateKey) {
   try {
     return ImportPrivateKey(privateKey)
         .map_error([&loc](NestedError &&err) {
-          return NestedError("Cant sign. Not correct private key", err, loc);
+          return NestedError("Cant sign. Not correct private key",
+                             std::move(err), loc);
         })
         .and_then([&data, &loc](ECDSA256::PrivateKey &&key)
                       -> tl::expected<ByteVector, NestedError> {
           CryptoPP::AutoSeededRandomPool prng;
-          ECDSA256::Signer signer(std::move(key));
+          ECDSA256::Signer signer(key);
           auto sigLen = signer.MaxSignatureLength();
           ByteVector result(sigLen, 0);
           sigLen =

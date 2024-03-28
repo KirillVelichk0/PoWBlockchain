@@ -21,6 +21,8 @@ public:
   NestedError(std::string_view curErrorMsg, const std::source_location &loc);
   NestedError(std::string_view curErrorMsg, const NestedError &nested,
               const std::source_location &loc);
+  NestedError(std::string_view curErrorMsg, NestedError &&nested,
+              const std::source_location &loc);
   [[nodiscard]] std::string GetFullErrorMsg() const noexcept;
 };
 } // namespace BlockChainCore
