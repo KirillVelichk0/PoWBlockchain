@@ -227,4 +227,112 @@ Crypto::ConstructPublicKey(const std::string &privateKey) {
   result.second = getStringFromInteger(publicKey.GetPublicElement().y);
   return result;
 }
+ECDSA256::PublicKey
+GetInternalPublicKeyFormat(const PublicKeyOptimizedImpl &key) {
+  return *reinterpret_cast<ECDSA256::PublicKey *>(key.GetImpl().get());
+}
+ECDSA256::PrivateKey
+GetInternalPrivateKeyFormat(const PrivateKeyOptimizedImpl &key) {
+  return *reinterpret_cast<ECDSA256::PrivateKey *>(key.GetImpl().get());
+}
+PublicKeyOptimizedImpl PublicKeyOptimizedImpl::FromClassicFormat(
+    const std::pair<std::string, std::string> &publicKey) noexcept(false) {
+  auto importedPublicKey = ImportPublicKey(publicKey, true);
+  if (!importedPublicKey.has_value()) {
+    throw std::runtime_error(importedPublicKey.error().GetFullErrorMsg());
+  }
+  std::shared_ptr<void> impl =
+      std::make_shared<ECDSA256::PublicKey>(importedPublicKey.value());
+  return {std::move(impl)};
+}
+std::pair<std::string, std::string>
+PublicKeyOptimizedImpl::ToClassicFormat() const noexcept(false) {
+  auto internalKeyFormat = GetInternalPublicKeyFormat(*this);
+  const auto &publicElem = internalKeyFormat.GetPublicElement();
+  std::pair<std::string, std::string> result;
+  {
+    std::ostringstream oss;
+    oss << publicElem.x;
+    if (oss.bad()) {
+      throw std::runtime_error("Error while casting public x to string format");
+    }
+    result.first = oss.str();
+  }
+  {
+    std::ostringstream oss;
+    oss << publicElem.y;
+    if (oss.bad()) {
+      throw std::runtime_error("Error while casting public y to string format");
+    }
+    result.second = oss.str();
+  }
+  return result;
+}
+PrivateKeyOptimizedImpl PrivateKeyOptimizedImpl::FromClassicFormat(
+    const std::string &key) noexcept(false) {
+  auto importedPrivateKey = ImportPrivateKey(key, true);
+  if (!importedPrivateKey.has_value()) {
+    throw std::runtime_error(importedPrivateKey.error().GetFullErrorMsg());
+  }
+  std::shared_ptr<void> impl =
+      std::make_shared<ECDSA256::PrivateKey>(importedPrivateKey.value());
+  return {std::move(impl)};
+}
+[[nodiscard]] std::string PrivateKeyOptimizedImpl::ToClassicFormat() const
+    noexcept(false) {
+  auto internalKeyFormat = GetInternalPrivateKeyFormat(*this);
+  const auto &privateElem = internalKeyFormat.GetPrivateExponent();
+  std::string result;
+  {
+    std::ostringstream oss;
+    oss << privateElem;
+    if (oss.bad()) {
+      throw std::runtime_error("Error while casting private to string format");
+    }
+    result = oss.str();
+  }
+
+  return result;
+}
+tl::expected<std::true_type, NestedError>
+Crypto::TryToVerifyECDSA_CryptoPPOptimized(
+    const ByteVector &signature, const ByteVector &blockData,
+    const PublicKeyOptimizedImpl &publicKey) noexcept {
+  auto loc = std::source_location::current();
+  try {
+    auto internalPublicKey = GetInternalPublicKeyFormat(publicKey);
+    ECDSA256 ::Verifier verifier(internalPublicKey);
+    auto isOk = verifier.VerifyMessage(
+        (CryptoPP::byte *)(blockData.data()), blockData.size(),
+        (CryptoPP::byte *)(signature.data()), signature.size());
+    if (!isOk) {
+      return tl::unexpected(NestedError("Cant verify message", loc));
+    }
+    return std::true_type{};
+  } catch (std::exception &ex) {
+    return tl::unexpected(NestedError(ex.what(), loc));
+  } catch (...) {
+    return tl::unexpected(NestedError("Some uknown exception", loc));
+  }
+}
+tl::expected<Crypto::ByteVector, NestedError>
+Crypto::TryToSignOptimized(const ByteVector &data,
+                           const PrivateKeyOptimizedImpl &privateKey) {
+  auto loc = std::source_location::current();
+
+  try {
+    auto privateKeyInternal = GetInternalPrivateKeyFormat(privateKey);
+    CryptoPP::AutoSeededRandomPool prng;
+    ECDSA256::Signer signer(privateKeyInternal);
+    auto sigLen = signer.MaxSignatureLength();
+    ByteVector result(sigLen, 0);
+    sigLen = signer.SignMessage(prng, data.data(), data.size(), result.data());
+    result.resize(sigLen);
+    return result;
+  } catch (std::exception &ex) {
+    return tl::unexpected(NestedError(ex.what(), loc));
+  } catch (...) {
+    return tl::unexpected(NestedError("Some uknown exception", loc));
+  }
+}
 } // namespace BlockChainCore

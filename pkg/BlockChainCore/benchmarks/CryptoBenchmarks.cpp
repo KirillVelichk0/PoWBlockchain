@@ -3,6 +3,7 @@
 #include <benchmark/benchmark.h>
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
+#include <memory>
 #include <tuple>
 #include <vector>
 using ByteVector = BlockChainCore::Crypto::ByteVector;
@@ -117,3 +118,88 @@ static void BM_VerifyWithoutValidating(benchmark::State &state) {
   }
 }
 BENCHMARK(BM_VerifyWithoutValidating);
+
+// there is optimized versions ------------------------
+static void BM_PrevateOptimizedKeyConstructing(benchmark::State &state) {
+  std::vector<decltype(BlockChainCore::Crypto::GenerateKeys())> keysCont(100);
+  for (auto &keys : keysCont) {
+    keys = BlockChainCore::Crypto::GenerateKeys();
+  }
+  int i = 0;
+  for (auto _ : state) {
+    BlockChainCore::PrivateKeyOptimizedImpl::FromClassicFormat(
+        keysCont[i].first);
+    i = (i + 1) % 100;
+  }
+}
+BENCHMARK(BM_PrevateOptimizedKeyConstructing);
+static void BM_PublicOptimizedKeysConstructing(benchmark::State &state) {
+  std::vector<decltype(BlockChainCore::Crypto::GenerateKeys())> keysCont(100);
+  for (auto &keys : keysCont) {
+    keys = BlockChainCore::Crypto::GenerateKeys();
+  }
+  int i = 0;
+  for (auto _ : state) {
+    BlockChainCore::PublicKeyOptimizedImpl::FromClassicFormat(
+        keysCont[i].second);
+    i = (i + 1) % 100;
+  }
+}
+BENCHMARK(BM_PublicOptimizedKeysConstructing);
+static void BM_SignDataOptimized(benchmark::State &state) {
+  std::vector<BlockChainCore::Crypto::ByteVector> randomData(100);
+  boost::random::random_device rnd;
+  boost::uniform_int<unsigned char> distr(0, 255);
+  for (auto &byteVector : randomData) {
+    byteVector = ByteVector(1000);
+    std::for_each(byteVector.begin(), byteVector.end(),
+                  [&rnd, &distr](auto &elem) { elem = distr(rnd); });
+  }
+  auto keys = BlockChainCore::Crypto::GenerateKeys();
+  auto privateOptimized =
+      BlockChainCore::PrivateKeyOptimizedImpl::FromClassicFormat(keys.first);
+  int i = 0;
+  for (auto _ : state) {
+    BlockChainCore::Crypto::TryToSignOptimized(randomData[i], privateOptimized);
+    i = (i + 1) % 100;
+  }
+}
+BENCHMARK(BM_SignDataOptimized);
+
+static void BM_VerifyOptimized(benchmark::State &state) {
+  std::vector<std::tuple<
+      ByteVector, ByteVector,
+      std::pair<std::shared_ptr<BlockChainCore::PrivateKeyOptimizedImpl>,
+                std::shared_ptr<BlockChainCore::PublicKeyOptimizedImpl>>>>
+      randomDataAndSigns(100); // данные, подпись, ключ
+  boost::random::random_device rnd;
+  boost::uniform_int<unsigned char> distr(0, 255);
+  for (auto &elem : randomDataAndSigns) {
+    auto &[data, sign, keys] = elem;
+    data = ByteVector(1000);
+    std::for_each(data.begin(), data.end(),
+                  [&rnd, &distr](auto &elem) { elem = distr(rnd); });
+    auto generatedKeys = BlockChainCore::Crypto::GenerateKeys();
+    keys = std::make_pair(
+        std::make_shared<BlockChainCore::PrivateKeyOptimizedImpl>(
+            BlockChainCore::PrivateKeyOptimizedImpl::FromClassicFormat(
+                generatedKeys.first)),
+        std::make_shared<BlockChainCore::PublicKeyOptimizedImpl>(
+            BlockChainCore::PublicKeyOptimizedImpl::FromClassicFormat(
+                generatedKeys.second)));
+    auto signPacked =
+        BlockChainCore::Crypto::TryToSignOptimized(data, *keys.first);
+    if (!signPacked.has_value()) {
+      state.SkipWithError("Uncorrect sign generated");
+    }
+    sign = signPacked.value();
+  }
+  int i = 0;
+  for (auto _ : state) {
+    auto &[data, sign, keys] = randomDataAndSigns[i];
+    BlockChainCore::Crypto::TryToVerifyECDSA_CryptoPPOptimized(sign, data,
+                                                               *keys.second);
+    i = (i + 1) % 100;
+  }
+}
+BENCHMARK(BM_VerifyOptimized);
