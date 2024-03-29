@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(SourcesProject)
+add_subdirectory(nested_error)
+add_subdirectory(Crypto)
+add_subdirectory(proto)
+add_subdirectory(Block)

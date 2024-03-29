@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(CryptoProject)
+include_directories(../nested_error)
+link_directories(../nested_error)
+add_library(Crypto ./Crypto.h ./Crypto.cpp)
+target_link_libraries(Crypto NestedError cryptopp::cryptopp fmt::fmt tl::expected)

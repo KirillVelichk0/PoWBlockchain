@@ -8,7 +8,8 @@
     "cryptopp",
     "fmt",
     "tl-expected",
-    "protobuf"
+    "protobuf",
+    "gtest"
   ],
   "overrides": [
     {
@@ -34,6 +35,10 @@
     {
       "name": "boost-date-time",
       "version": "1.82.0#2"
+    },
+    {
+      "name": "gtest",
+      "version": "1.14.0"
     }
   ]
 }
