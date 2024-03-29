@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(BenchmarksProject)
+include_directories(../src)
+link_directories(../src)
+add_executable(Benchmarks main.cpp)
+target_link_libraries(Benchmarks Crypto benchmark::benchmark benchmark::benchmark_main)
+add_test(NAME BlockChainCoreBenchmarks COMMAND Benchmarks)
+set_tests_properties(BlockChainCoreBenchmarks PROPERTIES DEPENDS BlockChainCoreTests)
