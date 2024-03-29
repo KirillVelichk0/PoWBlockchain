@@ -32,6 +32,7 @@ static void BM_SignDataWithoutValidating(benchmark::State &state) {
   boost::random::random_device rnd;
   boost::uniform_int<unsigned char> distr(0, 255);
   for (auto &byteVector : randomData) {
+    byteVector = ByteVector(1000);
     std::for_each(byteVector.begin(), byteVector.end(),
                   [&rnd, &distr](auto &elem) { elem = distr(rnd); });
   }
@@ -48,6 +49,7 @@ static void BM_SignDataWithValidating(benchmark::State &state) {
   boost::random::random_device rnd;
   boost::uniform_int<unsigned char> distr(0, 255);
   for (auto &byteVector : randomData) {
+    byteVector = ByteVector(1000);
     std::for_each(byteVector.begin(), byteVector.end(),
                   [&rnd, &distr](auto &elem) { elem = distr(rnd); });
   }
@@ -67,6 +69,7 @@ static void BM_VerifyWithValidating(benchmark::State &state) {
   boost::uniform_int<unsigned char> distr(0, 255);
   for (auto &elem : randomDataAndSigns) {
     auto &[data, sign, keys] = elem;
+    data = ByteVector(1000);
     std::for_each(data.begin(), data.end(),
                   [&rnd, &distr](auto &elem) { elem = distr(rnd); });
     keys = BlockChainCore::Crypto::GenerateKeys();
@@ -94,6 +97,7 @@ static void BM_VerifyWithoutValidating(benchmark::State &state) {
   boost::uniform_int<unsigned char> distr(0, 255);
   for (auto &elem : randomDataAndSigns) {
     auto &[data, sign, keys] = elem;
+    data = ByteVector(1000);
     std::for_each(data.begin(), data.end(),
                   [&rnd, &distr](auto &elem) { elem = distr(rnd); });
     keys = BlockChainCore::Crypto::GenerateKeys();
