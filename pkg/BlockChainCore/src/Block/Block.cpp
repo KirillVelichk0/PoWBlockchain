@@ -176,7 +176,7 @@ Block::CheckBlockIsCryptValid() noexcept {
   auto loc = std::source_location::current();
   return Crypto::TryToVerifyECDSA_CryptoPP(this->hashInfo.curSignedHash,
                                            this->SerializeForHashing(),
-                                           this->minedBy)
+                                           this->minedBy, false)
       .map_error([&loc, this](NestedError &&nested) {
         std::ostringstream oss;
         oss << this->ledgerId;

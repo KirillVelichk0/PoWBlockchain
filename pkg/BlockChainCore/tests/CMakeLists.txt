@@ -3,5 +3,6 @@ project(TestsProject)
 include_directories(../src)
 link_directories(../src)
 add_executable(Tests ./main.cpp ./CryptoTests.cpp)
-target_link_libraries(Tests Crypto fmt::fmt GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+target_link_libraries(Tests Crypto Boost::boost Boost::random fmt::fmt GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+add_test(NAME BlockChainCoreTests COMMAND Tests)
 

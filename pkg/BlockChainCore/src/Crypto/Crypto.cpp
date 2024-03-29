@@ -20,56 +20,74 @@ namespace ASN1 = CryptoPP::ASN1;
 using ECDSA256 = CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>;
 
 auto CreatePublicKeyValidator(CryptoPP::Integer &x, CryptoPP::Integer &y,
-                              std::source_location loc) {
-  return [&x, &y, loc](ECDSA256::PublicKey &key)
+                              std::source_location loc, bool needToValidate) {
+  return [&x, &y, loc, needToValidate](ECDSA256::PublicKey &key)
              -> tl::expected<ECDSA256::PublicKey, NestedError> {
-    CryptoPP::RandomNumberGenerator rng;
-    const CryptoPP::ECPPoint point(x, y);
-    key.Initialize(ASN1::secp256k1(), point);
-    auto isOk = key.Validate(rng, 3);
-    if (!isOk) {
-      std::ostringstream oss;
-      oss << "X: " << x << "\n Y:" << y;
-      std::string numbersConv = oss.str();
-      return tl::unexpected(
+    try {
+      const CryptoPP::ECPPoint point(x, y);
+      key.Initialize(ASN1::secp256k1(), point);
+      if (needToValidate) {
+        CryptoPP::AutoSeededRandomPool rng;
+        auto isOk = key.Validate(rng, 3);
+        if (!isOk) {
+          std::ostringstream oss;
+          oss << "X: " << x << "\n Y:" << y;
+          std::string numbersConv = oss.str();
+          return tl::unexpected(
 
-          NestedError(
-              fmt::format("Public key is not valid\n X: {0}", numbersConv),
-              loc));
+              NestedError(
+                  fmt::format("Public key is not valid\n X: {0}", numbersConv),
+                  loc));
+        }
+      }
+      return key;
+    } catch (std::exception &ex) {
+      return tl::unexpected(NestedError(ex.what(), loc));
+    } catch (...) {
+      return tl::unexpected(NestedError("Unknown error", loc));
     }
-    return key;
   };
 }
-auto CreatePrivateKeyValidator(CryptoPP::Integer &x, std::source_location loc) {
-  return [&x, loc](ECDSA256::PrivateKey &key)
+auto CreatePrivateKeyValidator(CryptoPP::Integer &x, std::source_location loc,
+                               bool needToValidate) {
+  return [&x, loc, needToValidate](ECDSA256::PrivateKey &key)
              -> tl::expected<ECDSA256::PrivateKey, NestedError> {
-    key.Initialize(ASN1::secp256k1(), x);
-    ECDSA256::Signer signer(key);
-    CryptoPP::RandomNumberGenerator rng;
-    auto isOk = key.Validate(rng, 3);
-    if (!isOk) {
-      std::ostringstream oss;
-      oss << "X: " << x << "\n";
-      std::string numbersConv = oss.str();
-      return tl::unexpected(
+    try {
+      key.Initialize(ASN1::secp256k1(), x);
+      if (needToValidate) {
+        CryptoPP::AutoSeededRandomPool rng;
+        auto isOk = key.Validate(rng, 3);
 
-          NestedError(
-              fmt::format("Private key is not valid\n X: {0}", numbersConv),
-              loc));
+        if (!isOk) {
+          std::ostringstream oss;
+          oss << "X: " << x << "\n";
+          std::string numbersConv = oss.str();
+          return tl::unexpected(
+
+              NestedError(
+                  fmt::format("Private key is not valid\n X: {0}", numbersConv),
+                  loc));
+        }
+      }
+      return key;
+    } catch (std::exception &ex) {
+      return tl::unexpected(NestedError(ex.what(), loc));
+    } catch (...) {
+      return tl::unexpected(NestedError("Unknown error", loc));
     }
-    return key;
   };
 }
 tl::expected<ECDSA256::PublicKey, NestedError>
-ImportPublicKey(const std::pair<std::string, std::string> &publicKey) noexcept {
+ImportPublicKey(const std::pair<std::string, std::string> &publicKey,
+                bool needToValidate) noexcept {
   tl::expected<ECDSA256::PublicKey, NestedError> result =
       ECDSA256 ::PublicKey{};
   try {
 
     CryptoPP::Integer x(publicKey.first.c_str());
     CryptoPP::Integer y(publicKey.second.c_str());
-    result = result.and_then(
-        CreatePublicKeyValidator(x, y, std::source_location::current()));
+    result = result.and_then(CreatePublicKeyValidator(
+        x, y, std::source_location::current(), needToValidate));
   } catch (...) {
     result = tl::unexpected(
         NestedError("Some uknown exception", std::source_location::current()));
@@ -77,13 +95,13 @@ ImportPublicKey(const std::pair<std::string, std::string> &publicKey) noexcept {
   return result;
 }
 tl::expected<ECDSA256::PrivateKey, NestedError>
-ImportPrivateKey(const std::string &privateKey) noexcept {
+ImportPrivateKey(const std::string &privateKey, bool needToValidate) noexcept {
   tl::expected<ECDSA256::PrivateKey, NestedError> result =
       ECDSA256 ::PrivateKey{};
   try {
     CryptoPP::Integer x(privateKey.c_str());
-    result = result.and_then(
-        CreatePrivateKeyValidator(x, std::source_location::current()));
+    result = result.and_then(CreatePrivateKeyValidator(
+        x, std::source_location::current(), needToValidate));
   } catch (...) {
     result = tl::unexpected(
         NestedError("Some uknown exception", std::source_location::current()));
@@ -93,11 +111,12 @@ ImportPrivateKey(const std::string &privateKey) noexcept {
 [[nodiscard]] tl::expected<std::true_type, NestedError>
 Crypto::TryToVerifyECDSA_CryptoPP(
     const ByteVector &signature, const ByteVector &blockData,
-    const std::pair<std::string, std::string> &publicKey) noexcept {
+    const std::pair<std::string, std::string> &publicKey,
+    bool needToValidate) noexcept {
   auto loc = std::source_location::current();
 
   try {
-    return ImportPublicKey(publicKey)
+    return ImportPublicKey(publicKey, needToValidate)
         .map_error([&loc](NestedError &&err) {
           return NestedError("Cant verify. Not correct public key",
                              std::move(err), loc);
@@ -120,10 +139,11 @@ Crypto::TryToVerifyECDSA_CryptoPP(
   }
 }
 tl::expected<Crypto::ByteVector, NestedError>
-Crypto::TryToSign(const ByteVector &data, const std::string &privateKey) {
+Crypto::TryToSign(const ByteVector &data, const std::string &privateKey,
+                  bool needToValidate) {
   auto loc = std::source_location::current();
   try {
-    return ImportPrivateKey(privateKey)
+    return ImportPrivateKey(privateKey, needToValidate)
         .map_error([&loc](NestedError &&err) {
           return NestedError("Cant sign. Not correct private key",
                              std::move(err), loc);

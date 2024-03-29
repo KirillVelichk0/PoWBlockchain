@@ -16,12 +16,20 @@ private:
 
 public:
   using ByteVector = std::vector<unsigned char>;
+  //! Проверяет подпись переданных данных.
+  //! needToValidateKey определяет, доверяем ли мы переданному ключу и нужно ли
+  //! его валидировать. Валидация ключа - достаточно дорогая операция
   [[nodiscard]] static tl::expected<std::true_type, NestedError>
   TryToVerifyECDSA_CryptoPP(
       const ByteVector &signature, const ByteVector &blockData,
-      const std::pair<std::string, std::string> &publicKey) noexcept;
+      const std::pair<std::string, std::string> &publicKey,
+      bool needToValidateKey) noexcept;
+  //! Подписывает переданные данные с помощью переданного ключа.
+  //! needToValidateKey определяет, доверяем ли мы переданному ключу и нужно ли
+  //! его валидировать. Валидация ключа - достаточно дорогая операция
   [[nodiscard]] static tl::expected<ByteVector, NestedError>
-  TryToSign(const ByteVector &data, const std::string &privateKey);
+  TryToSign(const ByteVector &data, const std::string &privateKey,
+            bool needToValidateKey);
   //! Создает приватный и публичные ключи
   [[nodiscard]] static std::pair<std::string,
                                  std::pair<std::string, std::string>>

@@ -72,7 +72,9 @@ public:
   [[nodiscard]] static tl::expected<Block, NestedError>
   PrepareBlock(const Block &lastBlock);
   [[nodiscard]] auto GetHashInfo() const noexcept;
-  //! Проверяет валидность блока (с точки зрения криптографии)
+  //! Проверяет валидность блока (с точки зрения криптографии). Важно!
+  //! Валидность хранимого в блоке публичного ключа не проверяется,
+  //! предполагается, что мы доверяем хранимым в БД ключам
   [[nodiscard]] tl::expected<std::true_type, NestedError>
   CheckBlockIsCryptValid() noexcept;
   //! Проверяет валидность блока (с точки зрения криптографии) с помощью
