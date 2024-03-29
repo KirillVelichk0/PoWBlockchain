@@ -41,8 +41,8 @@ PROTOBUF_CONSTEXPR Block::Block(
     /*decltype(_impl_.cur_hash_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.prev_hash_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.contained_data_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.unix_timestamp_)*/nullptr
   , /*decltype(_impl_.mined_by_)*/nullptr
+  , /*decltype(_impl_.unix_timestamp_)*/uint64_t{0u}
   , /*decltype(_impl_.ledger_id_)*/uint64_t{0u}
   , /*decltype(_impl_.mining_points_)*/uint64_t{0u}
   , /*decltype(_impl_.luck_)*/0
@@ -98,23 +98,18 @@ static const ::_pb::Message* const file_default_instances[] = {
 
 const char descriptor_table_protodef_BlockExternal_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\023BlockExternal.proto\022\021block_external.v1"
-  "\032\037google/protobuf/timestamp.proto\"\375\001\n\005Bl"
-  "ock\022\020\n\010cur_hash\030\001 \001(\014\022\021\n\tprev_hash\030\002 \001(\014"
-  "\0222\n\016unix_timestamp\030\003 \001(\0132\032.google.protob"
-  "uf.Timestamp\022.\n\010mined_by\030\004 \001(\0132\034.block_e"
-  "xternal.v1.Block.Key\022\021\n\tledger_id\030\005 \001(\004\022"
-  "\025\n\rmining_points\030\006 \001(\004\022\014\n\004luck\030\007 \001(\001\022\026\n\016"
-  "contained_data\030\010 \001(\014\032\033\n\003Key\022\t\n\001x\030\001 \001(\014\022\t"
-  "\n\001y\030\002 \001(\014b\006proto3"
+  "\"\341\001\n\005Block\022\020\n\010cur_hash\030\001 \001(\014\022\021\n\tprev_has"
+  "h\030\002 \001(\014\022\026\n\016unix_timestamp\030\003 \001(\004\022.\n\010mined"
+  "_by\030\004 \001(\0132\034.block_external.v1.Block.Key\022"
+  "\021\n\tledger_id\030\005 \001(\004\022\025\n\rmining_points\030\006 \001("
+  "\004\022\014\n\004luck\030\007 \001(\001\022\026\n\016contained_data\030\010 \001(\014\032"
+  "\033\n\003Key\022\t\n\001x\030\001 \001(\014\022\t\n\001y\030\002 \001(\014b\006proto3"
   ;
-static const ::_pbi::DescriptorTable* const descriptor_table_BlockExternal_2eproto_deps[1] = {
-  &::descriptor_table_google_2fprotobuf_2ftimestamp_2eproto,
-};
 static ::_pbi::once_flag descriptor_table_BlockExternal_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_BlockExternal_2eproto = {
-    false, false, 337, descriptor_table_protodef_BlockExternal_2eproto,
+    false, false, 276, descriptor_table_protodef_BlockExternal_2eproto,
     "BlockExternal.proto",
-    &descriptor_table_BlockExternal_2eproto_once, descriptor_table_BlockExternal_2eproto_deps, 1, 2,
+    &descriptor_table_BlockExternal_2eproto_once, nullptr, 0, 2,
     schemas, file_default_instances, TableStruct_BlockExternal_2eproto::offsets,
     file_level_metadata_BlockExternal_2eproto, file_level_enum_descriptors_BlockExternal_2eproto,
     file_level_service_descriptors_BlockExternal_2eproto,
@@ -375,23 +370,12 @@ void Block_Key::InternalSwap(Block_Key* other) {
 
 class Block::_Internal {
  public:
-  static const ::PROTOBUF_NAMESPACE_ID::Timestamp& unix_timestamp(const Block* msg);
   static const ::block_external::v1::Block_Key& mined_by(const Block* msg);
 };
 
-const ::PROTOBUF_NAMESPACE_ID::Timestamp&
-Block::_Internal::unix_timestamp(const Block* msg) {
-  return *msg->_impl_.unix_timestamp_;
-}
 const ::block_external::v1::Block_Key&
 Block::_Internal::mined_by(const Block* msg) {
   return *msg->_impl_.mined_by_;
-}
-void Block::clear_unix_timestamp() {
-  if (GetArenaForAllocation() == nullptr && _impl_.unix_timestamp_ != nullptr) {
-    delete _impl_.unix_timestamp_;
-  }
-  _impl_.unix_timestamp_ = nullptr;
 }
 Block::Block(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -406,8 +390,8 @@ Block::Block(const Block& from)
       decltype(_impl_.cur_hash_){}
     , decltype(_impl_.prev_hash_){}
     , decltype(_impl_.contained_data_){}
-    , decltype(_impl_.unix_timestamp_){nullptr}
     , decltype(_impl_.mined_by_){nullptr}
+    , decltype(_impl_.unix_timestamp_){}
     , decltype(_impl_.ledger_id_){}
     , decltype(_impl_.mining_points_){}
     , decltype(_impl_.luck_){}
@@ -438,15 +422,12 @@ Block::Block(const Block& from)
     _this->_impl_.contained_data_.Set(from._internal_contained_data(), 
       _this->GetArenaForAllocation());
   }
-  if (from._internal_has_unix_timestamp()) {
-    _this->_impl_.unix_timestamp_ = new ::PROTOBUF_NAMESPACE_ID::Timestamp(*from._impl_.unix_timestamp_);
-  }
   if (from._internal_has_mined_by()) {
     _this->_impl_.mined_by_ = new ::block_external::v1::Block_Key(*from._impl_.mined_by_);
   }
-  ::memcpy(&_impl_.ledger_id_, &from._impl_.ledger_id_,
+  ::memcpy(&_impl_.unix_timestamp_, &from._impl_.unix_timestamp_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.luck_) -
-    reinterpret_cast<char*>(&_impl_.ledger_id_)) + sizeof(_impl_.luck_));
+    reinterpret_cast<char*>(&_impl_.unix_timestamp_)) + sizeof(_impl_.luck_));
   // @@protoc_insertion_point(copy_constructor:block_external.v1.Block)
 }
 
@@ -458,8 +439,8 @@ inline void Block::SharedCtor(
       decltype(_impl_.cur_hash_){}
     , decltype(_impl_.prev_hash_){}
     , decltype(_impl_.contained_data_){}
-    , decltype(_impl_.unix_timestamp_){nullptr}
     , decltype(_impl_.mined_by_){nullptr}
+    , decltype(_impl_.unix_timestamp_){uint64_t{0u}}
     , decltype(_impl_.ledger_id_){uint64_t{0u}}
     , decltype(_impl_.mining_points_){uint64_t{0u}}
     , decltype(_impl_.luck_){0}
@@ -493,7 +474,6 @@ inline void Block::SharedDtor() {
   _impl_.cur_hash_.Destroy();
   _impl_.prev_hash_.Destroy();
   _impl_.contained_data_.Destroy();
-  if (this != internal_default_instance()) delete _impl_.unix_timestamp_;
   if (this != internal_default_instance()) delete _impl_.mined_by_;
 }
 
@@ -510,17 +490,13 @@ void Block::Clear() {
   _impl_.cur_hash_.ClearToEmpty();
   _impl_.prev_hash_.ClearToEmpty();
   _impl_.contained_data_.ClearToEmpty();
-  if (GetArenaForAllocation() == nullptr && _impl_.unix_timestamp_ != nullptr) {
-    delete _impl_.unix_timestamp_;
-  }
-  _impl_.unix_timestamp_ = nullptr;
   if (GetArenaForAllocation() == nullptr && _impl_.mined_by_ != nullptr) {
     delete _impl_.mined_by_;
   }
   _impl_.mined_by_ = nullptr;
-  ::memset(&_impl_.ledger_id_, 0, static_cast<size_t>(
+  ::memset(&_impl_.unix_timestamp_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&_impl_.luck_) -
-      reinterpret_cast<char*>(&_impl_.ledger_id_)) + sizeof(_impl_.luck_));
+      reinterpret_cast<char*>(&_impl_.unix_timestamp_)) + sizeof(_impl_.luck_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -548,10 +524,10 @@ const char* Block::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
-      // .google.protobuf.Timestamp unix_timestamp = 3;
+      // uint64 unix_timestamp = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          ptr = ctx->ParseMessage(_internal_mutable_unix_timestamp(), ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.unix_timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -638,11 +614,10 @@ uint8_t* Block::_InternalSerialize(
         2, this->_internal_prev_hash(), target);
   }
 
-  // .google.protobuf.Timestamp unix_timestamp = 3;
-  if (this->_internal_has_unix_timestamp()) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(3, _Internal::unix_timestamp(this),
-        _Internal::unix_timestamp(this).GetCachedSize(), target, stream);
+  // uint64 unix_timestamp = 3;
+  if (this->_internal_unix_timestamp() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_unix_timestamp(), target);
   }
 
   // .block_external.v1.Block.Key mined_by = 4;
@@ -717,18 +692,16 @@ size_t Block::ByteSizeLong() const {
         this->_internal_contained_data());
   }
 
-  // .google.protobuf.Timestamp unix_timestamp = 3;
-  if (this->_internal_has_unix_timestamp()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.unix_timestamp_);
-  }
-
   // .block_external.v1.Block.Key mined_by = 4;
   if (this->_internal_has_mined_by()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *_impl_.mined_by_);
+  }
+
+  // uint64 unix_timestamp = 3;
+  if (this->_internal_unix_timestamp() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_unix_timestamp());
   }
 
   // uint64 ledger_id = 5;
@@ -777,13 +750,12 @@ void Block::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF
   if (!from._internal_contained_data().empty()) {
     _this->_internal_set_contained_data(from._internal_contained_data());
   }
-  if (from._internal_has_unix_timestamp()) {
-    _this->_internal_mutable_unix_timestamp()->::PROTOBUF_NAMESPACE_ID::Timestamp::MergeFrom(
-        from._internal_unix_timestamp());
-  }
   if (from._internal_has_mined_by()) {
     _this->_internal_mutable_mined_by()->::block_external::v1::Block_Key::MergeFrom(
         from._internal_mined_by());
+  }
+  if (from._internal_unix_timestamp() != 0) {
+    _this->_internal_set_unix_timestamp(from._internal_unix_timestamp());
   }
   if (from._internal_ledger_id() != 0) {
     _this->_internal_set_ledger_id(from._internal_ledger_id());
@@ -832,9 +804,9 @@ void Block::InternalSwap(Block* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(Block, _impl_.luck_)
       + sizeof(Block::_impl_.luck_)
-      - PROTOBUF_FIELD_OFFSET(Block, _impl_.unix_timestamp_)>(
-          reinterpret_cast<char*>(&_impl_.unix_timestamp_),
-          reinterpret_cast<char*>(&other->_impl_.unix_timestamp_));
+      - PROTOBUF_FIELD_OFFSET(Block, _impl_.mined_by_)>(
+          reinterpret_cast<char*>(&_impl_.mined_by_),
+          reinterpret_cast<char*>(&other->_impl_.mined_by_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Block::GetMetadata() const {

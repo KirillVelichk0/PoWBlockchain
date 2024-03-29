@@ -238,15 +238,12 @@ Block::ConvertToProto(Block &block) noexcept {
       converted.set_prev_hash(std::move(prevHashTrans));
     }
     {
-      std::unique_ptr<google::protobuf::Timestamp> timestamp =
-          std::make_unique<google::protobuf::Timestamp>();
       UnixTime epoch(boost::gregorian::date(1970, 1, 1));
       // если вдруг кто-то умудрится выставить время до 1970 года, то ловим UB.
       // Хы.
-      std::uint64_t secondsSinseEpoch =
+      std::uint64_t nanoSecondsSinseEpoch =
           (block.timestamp - epoch).total_nanoseconds();
-      timestamp->set_nanos(secondsSinseEpoch);
-      converted.set_allocated_unix_timestamp(timestamp.release());
+      converted.set_unix_timestamp(nanoSecondsSinseEpoch);
     }
     {
       std::unique_ptr<block_external::v1::Block::Key> minedBy =
@@ -299,7 +296,11 @@ Block::CreateFromProto(const std::string &data) noexcept {
                   prevHash.size());
     }
     {
-      auto nanos = protoBlock.unix_timestamp().nanos();
+      auto nanos = protoBlock.unix_timestamp();
+      // boost::posix_time::time_duration использует в качестве формата
+      // наносекунд тип данных long, размер которого зависит от платформы
+      static_assert(sizeof(long) == sizeof(std::uint64_t),
+                    "boost::posix_time::time_duration использует не 64 бита");
       result.timestamp = boost::posix_time::ptime(
           {1970, 1, 1}, boost::posix_time::time_duration(0, 0, 0, nanos));
     }

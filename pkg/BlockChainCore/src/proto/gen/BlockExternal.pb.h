@@ -30,7 +30,6 @@
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
 #include <google/protobuf/unknown_field_set.h>
-#include <google/protobuf/timestamp.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_BlockExternal_2eproto
@@ -359,8 +358,8 @@ class Block final :
     kCurHashFieldNumber = 1,
     kPrevHashFieldNumber = 2,
     kContainedDataFieldNumber = 8,
-    kUnixTimestampFieldNumber = 3,
     kMinedByFieldNumber = 4,
+    kUnixTimestampFieldNumber = 3,
     kLedgerIdFieldNumber = 5,
     kMiningPointsFieldNumber = 6,
     kLuckFieldNumber = 7,
@@ -407,24 +406,6 @@ class Block final :
   std::string* _internal_mutable_contained_data();
   public:
 
-  // .google.protobuf.Timestamp unix_timestamp = 3;
-  bool has_unix_timestamp() const;
-  private:
-  bool _internal_has_unix_timestamp() const;
-  public:
-  void clear_unix_timestamp();
-  const ::PROTOBUF_NAMESPACE_ID::Timestamp& unix_timestamp() const;
-  PROTOBUF_NODISCARD ::PROTOBUF_NAMESPACE_ID::Timestamp* release_unix_timestamp();
-  ::PROTOBUF_NAMESPACE_ID::Timestamp* mutable_unix_timestamp();
-  void set_allocated_unix_timestamp(::PROTOBUF_NAMESPACE_ID::Timestamp* unix_timestamp);
-  private:
-  const ::PROTOBUF_NAMESPACE_ID::Timestamp& _internal_unix_timestamp() const;
-  ::PROTOBUF_NAMESPACE_ID::Timestamp* _internal_mutable_unix_timestamp();
-  public:
-  void unsafe_arena_set_allocated_unix_timestamp(
-      ::PROTOBUF_NAMESPACE_ID::Timestamp* unix_timestamp);
-  ::PROTOBUF_NAMESPACE_ID::Timestamp* unsafe_arena_release_unix_timestamp();
-
   // .block_external.v1.Block.Key mined_by = 4;
   bool has_mined_by() const;
   private:
@@ -442,6 +423,15 @@ class Block final :
   void unsafe_arena_set_allocated_mined_by(
       ::block_external::v1::Block_Key* mined_by);
   ::block_external::v1::Block_Key* unsafe_arena_release_mined_by();
+
+  // uint64 unix_timestamp = 3;
+  void clear_unix_timestamp();
+  uint64_t unix_timestamp() const;
+  void set_unix_timestamp(uint64_t value);
+  private:
+  uint64_t _internal_unix_timestamp() const;
+  void _internal_set_unix_timestamp(uint64_t value);
+  public:
 
   // uint64 ledger_id = 5;
   void clear_ledger_id();
@@ -481,8 +471,8 @@ class Block final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr cur_hash_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr prev_hash_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr contained_data_;
-    ::PROTOBUF_NAMESPACE_ID::Timestamp* unix_timestamp_;
     ::block_external::v1::Block_Key* mined_by_;
+    uint64_t unix_timestamp_;
     uint64_t ledger_id_;
     uint64_t mining_points_;
     double luck_;
@@ -706,89 +696,24 @@ inline void Block::set_allocated_prev_hash(std::string* prev_hash) {
   // @@protoc_insertion_point(field_set_allocated:block_external.v1.Block.prev_hash)
 }
 
-// .google.protobuf.Timestamp unix_timestamp = 3;
-inline bool Block::_internal_has_unix_timestamp() const {
-  return this != internal_default_instance() && _impl_.unix_timestamp_ != nullptr;
+// uint64 unix_timestamp = 3;
+inline void Block::clear_unix_timestamp() {
+  _impl_.unix_timestamp_ = uint64_t{0u};
 }
-inline bool Block::has_unix_timestamp() const {
-  return _internal_has_unix_timestamp();
+inline uint64_t Block::_internal_unix_timestamp() const {
+  return _impl_.unix_timestamp_;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::Timestamp& Block::_internal_unix_timestamp() const {
-  const ::PROTOBUF_NAMESPACE_ID::Timestamp* p = _impl_.unix_timestamp_;
-  return p != nullptr ? *p : reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Timestamp&>(
-      ::PROTOBUF_NAMESPACE_ID::_Timestamp_default_instance_);
-}
-inline const ::PROTOBUF_NAMESPACE_ID::Timestamp& Block::unix_timestamp() const {
+inline uint64_t Block::unix_timestamp() const {
   // @@protoc_insertion_point(field_get:block_external.v1.Block.unix_timestamp)
   return _internal_unix_timestamp();
 }
-inline void Block::unsafe_arena_set_allocated_unix_timestamp(
-    ::PROTOBUF_NAMESPACE_ID::Timestamp* unix_timestamp) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.unix_timestamp_);
-  }
-  _impl_.unix_timestamp_ = unix_timestamp;
-  if (unix_timestamp) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:block_external.v1.Block.unix_timestamp)
-}
-inline ::PROTOBUF_NAMESPACE_ID::Timestamp* Block::release_unix_timestamp() {
+inline void Block::_internal_set_unix_timestamp(uint64_t value) {
   
-  ::PROTOBUF_NAMESPACE_ID::Timestamp* temp = _impl_.unix_timestamp_;
-  _impl_.unix_timestamp_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.unix_timestamp_ = value;
 }
-inline ::PROTOBUF_NAMESPACE_ID::Timestamp* Block::unsafe_arena_release_unix_timestamp() {
-  // @@protoc_insertion_point(field_release:block_external.v1.Block.unix_timestamp)
-  
-  ::PROTOBUF_NAMESPACE_ID::Timestamp* temp = _impl_.unix_timestamp_;
-  _impl_.unix_timestamp_ = nullptr;
-  return temp;
-}
-inline ::PROTOBUF_NAMESPACE_ID::Timestamp* Block::_internal_mutable_unix_timestamp() {
-  
-  if (_impl_.unix_timestamp_ == nullptr) {
-    auto* p = CreateMaybeMessage<::PROTOBUF_NAMESPACE_ID::Timestamp>(GetArenaForAllocation());
-    _impl_.unix_timestamp_ = p;
-  }
-  return _impl_.unix_timestamp_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::Timestamp* Block::mutable_unix_timestamp() {
-  ::PROTOBUF_NAMESPACE_ID::Timestamp* _msg = _internal_mutable_unix_timestamp();
-  // @@protoc_insertion_point(field_mutable:block_external.v1.Block.unix_timestamp)
-  return _msg;
-}
-inline void Block::set_allocated_unix_timestamp(::PROTOBUF_NAMESPACE_ID::Timestamp* unix_timestamp) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.unix_timestamp_);
-  }
-  if (unix_timestamp) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(unix_timestamp));
-    if (message_arena != submessage_arena) {
-      unix_timestamp = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, unix_timestamp, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.unix_timestamp_ = unix_timestamp;
-  // @@protoc_insertion_point(field_set_allocated:block_external.v1.Block.unix_timestamp)
+inline void Block::set_unix_timestamp(uint64_t value) {
+  _internal_set_unix_timestamp(value);
+  // @@protoc_insertion_point(field_set:block_external.v1.Block.unix_timestamp)
 }
 
 // .block_external.v1.Block.Key mined_by = 4;

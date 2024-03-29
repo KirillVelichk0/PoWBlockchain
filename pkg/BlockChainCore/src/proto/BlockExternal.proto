@@ -1,11 +1,10 @@
 syntax = "proto3";
 package block_external.v1;
 
-import "google/protobuf/timestamp.proto";
 message Block {
   bytes cur_hash = 1;
   bytes prev_hash = 2;
-  google.protobuf.Timestamp unix_timestamp = 3;
+  uint64 unix_timestamp = 3;
   message Key {
     bytes x = 1;
     bytes y = 2;
