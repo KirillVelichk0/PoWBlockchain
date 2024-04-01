@@ -71,7 +71,7 @@ public:
   //! текущий хэш
   [[nodiscard]] static tl::expected<Block, NestedError>
   PrepareBlock(const Block &lastBlock);
-  [[nodiscard]] auto GetHashInfo() const noexcept;
+  [[nodiscard]] const BlockHashInfo &GetHashInfo() const noexcept;
   //! Проверяет валидность блока (с точки зрения криптографии). Важно!
   //! Валидность хранимого в блоке публичного ключа не проверяется,
   //! предполагается, что мы доверяем хранимым в БД ключам
@@ -84,21 +84,24 @@ public:
 
   //! Осуществляет сериализацию блока для подсчета его хеша.
   [[nodiscard]] ByteVector SerializeForHashing() const;
-  [[nodiscard]] [[nodiscard]] auto GetTransactionId() const noexcept;
+  [[nodiscard]] const std::uint64_t &GetTransactionId() const noexcept;
   void SetCurHash(const ByteVector &curHash);
   void SetCurHash(ByteVector &&curHash);
+  void SetHashInfo(const BlockHashInfo &hashInfo);
+  void SetHashInfo(BlockHashInfo &&hashInfo) noexcept;
   void SetPrevHash(const ByteVector &prevHash);
   void SetPrevHash(ByteVector &&prevHash);
   void SetTransactionId(const std::uint64_t &ledgerId);
-  [[nodiscard]] auto GetTimestamp() const noexcept;
+  [[nodiscard]] const UnixTime &GetTimestamp() const noexcept;
   void SetTimestamp(const UnixTime &timestamp);
-  [[nodiscard]] auto GetMinedBy() const noexcept;
+  [[nodiscard]] const std::pair<std::string, std::string> &
+  GetMinedBy() const noexcept;
   void SetMinedBy(const std::pair<std::string, std::string> &minedBy);
   void SetMinedBy(std::pair<std::string, std::string> &&minedBy);
-  [[nodiscard]] auto GetConsensusInfo() const noexcept;
+  [[nodiscard]] const BlockConsensusInfo &GetConsensusInfo() const noexcept;
   void SetLuck(double luck);
   void SetMiningPoint(std::uint64_t miningPoint);
-  [[nodiscard]] auto GetContainedData() const noexcept;
+  [[nodiscard]] const ByteVector &GetContainedData() const noexcept;
   void SetContainedData(const ByteVector &contData);
   void SetContainedData(ByteVector &&contData);
   //! Размер данных только для хэширования. Этот метод нужен для того, чтобы
@@ -108,10 +111,16 @@ public:
   //! Преобразует блок в его представление в protobuf
   static tl::expected<std::string, NestedError>
   ConvertToProto(Block &block) noexcept;
+  //! Преобразвует блок в его представление в protobuf
+  [[nodiscard]] static tl::expected<std::true_type, NestedError>
+  ConvertToProto(Block &block, std::ostream &outputStream) noexcept;
   //! Создает блок из его представления в protobuf
   static tl::expected<Block, NestedError>
   CreateFromProto(const std::string &data) noexcept;
+  static tl::expected<Block, NestedError>
+  CreateFromProto(std::istream &inputStream) noexcept;
 };
+bool operator==(const Block &lhs, const Block &rhs);
 
 } // namespace BlockChainCore
 
