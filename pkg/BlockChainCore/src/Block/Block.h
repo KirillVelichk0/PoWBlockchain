@@ -4,7 +4,6 @@
 #ifndef BLOCKCHAINCORE_BLOCK_H
 #define BLOCKCHAINCORE_BLOCK_H
 #include "../nested_error/nested_error.h"
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include <cstdint>
 #include <string>
 #include <tl/expected.hpp>
@@ -25,7 +24,6 @@ using CryptValidator = tl::expected<std::true_type, NestedError> (*)(
     const std::pair<std::string, std::string> &);
 using CryptSigner = tl::expected<ByteVector, NestedError> (*)(
     const ByteVector &, const std::string &);
-using UnixTime = boost::posix_time::ptime;
 
 //! \brief Информация о хэше блока
 //! \details Информация о хэше блока. Хранит подписанный хэш предыдущей и
@@ -46,7 +44,7 @@ struct BlockConsensusInfo {
 class Block {
 private:
   BlockHashInfo hashInfo;
-  UnixTime timestamp;
+  std::uint64_t timestamp;
   std::pair<std::string, std::string>
       minedBy; // два числа в тексовом виде, разделенные точкой
   std::uint64_t ledgerId = 1; // для идентификации в БД
@@ -55,12 +53,12 @@ private:
   Block() = default;
 
 public:
-  explicit Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
+  explicit Block(const BlockHashInfo &hashInfo, const std::uint64_t &timestamp,
                  const std::pair<std::string, std::string> &minedBy,
                  const std::uint64_t &ledgerId,
                  const BlockConsensusInfo &consensusInfo,
                  const ByteVector &containedData);
-  explicit Block(BlockHashInfo &&hashInfo, const UnixTime &timestamp,
+  explicit Block(BlockHashInfo &&hashInfo, const std::uint64_t &timestamp,
                  std::pair<std::string, std::string> &&minedBy,
                  const std::uint64_t &ledgerId,
                  const BlockConsensusInfo &consensusInfo,
@@ -92,8 +90,8 @@ public:
   void SetPrevHash(const ByteVector &prevHash);
   void SetPrevHash(ByteVector &&prevHash);
   void SetTransactionId(const std::uint64_t &ledgerId);
-  [[nodiscard]] const UnixTime &GetTimestamp() const noexcept;
-  void SetTimestamp(const UnixTime &timestamp);
+  [[nodiscard]] const std::uint64_t &GetTimestamp() const noexcept;
+  void SetTimestamp(const std::uint64_t &timestamp);
   [[nodiscard]] const std::pair<std::string, std::string> &
   GetMinedBy() const noexcept;
   void SetMinedBy(const std::pair<std::string, std::string> &minedBy);

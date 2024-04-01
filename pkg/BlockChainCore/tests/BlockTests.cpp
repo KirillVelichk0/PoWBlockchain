@@ -1,21 +1,18 @@
 #include "../src/Block/Block.h"
 #include <../src/Crypto/Crypto.h>
-#include <boost/date_time.hpp>
-#include <boost/date_time/posix_time/conversion.hpp>
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 #include <chrono>
+#include <cstdint>
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/printf.h>
 #include <gtest/gtest.h>
-#include <iostream>
 TEST(BlockChainCoreTest_Block, HashingTestGood) {
   for (int i = 0; i < 100; i++) {
     BlockChainCore::BlockHashInfo hashInfo;
     auto now = std::chrono::high_resolution_clock::now();
-    BlockChainCore::UnixTime timestamp = boost::posix_time::from_time_t(
-        std::chrono::high_resolution_clock::to_time_t(now));
+    std::uint64_t timestamp = now.time_since_epoch().count();
     hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
     auto keys = BlockChainCore::Crypto::GenerateKeys();
     auto consInfo = BlockChainCore::BlockConsensusInfo();
@@ -30,6 +27,8 @@ TEST(BlockChainCoreTest_Block, HashingTestGood) {
     ASSERT_NO_THROW(block.SerializeForHashing());
     auto serialized = block.SerializeForHashing();
     ASSERT_EQ(serialized.size(), block.GetHashingBlockSize());
+    ASSERT_EQ(serialized[serialized.size() - 1],
+              block.GetContainedData()[block.GetContainedData().size() - 1]);
     auto signedData =
         BlockChainCore::Crypto::TryToSign(serialized, keys.first, false);
     ASSERT_TRUE(signedData.has_value());
@@ -39,11 +38,6 @@ TEST(BlockChainCoreTest_Block, HashingTestGood) {
   }
 }
 void PrintBlock(const BlockChainCore::Block &block, const std::string &name) {
-  BlockChainCore::UnixTime epoch(boost::gregorian::date(1970, 1, 1));
-  // если вдруг кто-то умудрится выставить время до 1970 года, то ловим UB.
-  // Хы.
-  std::uint64_t nanoSecondsSinseEpoch =
-      (block.GetTimestamp() - epoch).total_nanoseconds();
   fmt::print("Current block is {}\n CurHashInfo: {}\n PrevHashInfo: {}\n "
              "CurLedgerId: {}\n Current luck: {}\n Current miningPoint "
              "{}\n Mined by: {}:{}\n Time: {}\n BlockData: {}\n\n",
@@ -54,7 +48,7 @@ void PrintBlock(const BlockChainCore::Block &block, const std::string &name) {
                          block.GetHashInfo().prevSignedHash.end()),
              block.GetTransactionId(), block.GetConsensusInfo().luck,
              block.GetConsensusInfo().miningPoint, block.GetMinedBy().first,
-             block.GetMinedBy().second, nanoSecondsSinseEpoch,
+             block.GetMinedBy().second, block.GetTimestamp(),
              std::string(block.GetContainedData().begin(),
                          block.GetContainedData().end()));
 }
@@ -62,8 +56,7 @@ TEST(BlockChainCoreTest_Block, ProtoSerializationStringTest) {
   for (int i = 0; i < 100; i++) {
     BlockChainCore::BlockHashInfo hashInfo;
     auto now = std::chrono::high_resolution_clock::now();
-    BlockChainCore::UnixTime timestamp = boost::posix_time::from_time_t(
-        std::chrono::high_resolution_clock::to_time_t(now));
+    auto timestamp = now.time_since_epoch().count();
     hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
     auto keys = BlockChainCore::Crypto::GenerateKeys();
     auto consInfo = BlockChainCore::BlockConsensusInfo();

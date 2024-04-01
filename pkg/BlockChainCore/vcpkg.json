@@ -4,7 +4,6 @@
   "builtin-baseline": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31",
   "dependencies": [
     "boost-random",
-    "boost-date-time",
     "cryptopp",
     "fmt",
     "tl-expected",
@@ -35,10 +34,6 @@
     },
     {
       "name": "boost-random",
-      "version": "1.82.0#2"
-    },
-    {
-      "name": "boost-date-time",
       "version": "1.82.0#2"
     },
     {

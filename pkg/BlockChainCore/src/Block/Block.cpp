@@ -6,10 +6,8 @@
 #include "../proto/gen/BlockExternal.pb.h"
 #include <algorithm>
 #include <bit>
-#include <boost/date_time/posix_time/conversion.hpp>
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
-#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <exception>
@@ -19,7 +17,6 @@
 #include <limits>
 #include <source_location>
 #include <sstream>
-#include <strstream>
 #include <type_traits>
 namespace BlockChainCore {
 static_assert(std::numeric_limits<double>::is_iec559);
@@ -55,7 +52,7 @@ std::uint64_t GetHashAbleReprOfDouble(double val) {
   ChangeToLittleEndian(result);
   return result;
 }
-Block::Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
+Block::Block(const BlockHashInfo &hashInfo, const std::uint64_t &timestamp,
              const std::pair<std::string, std::string> &minedBy,
              const std::uint64_t &ledgerId,
              const BlockConsensusInfo &consensusInfo,
@@ -63,7 +60,7 @@ Block::Block(const BlockHashInfo &hashInfo, const UnixTime &timestamp,
     : hashInfo(hashInfo), timestamp(timestamp), minedBy(minedBy),
       ledgerId(ledgerId), consensusInfo(consensusInfo),
       containedData(contData) {}
-Block::Block(BlockHashInfo &&hashInfo, const UnixTime &timestamp,
+Block::Block(BlockHashInfo &&hashInfo, const std::uint64_t &timestamp,
              std::pair<std::string, std::string> &&minedBy,
              const std::uint64_t &ledgerId,
              const BlockConsensusInfo &consensusInfo, ByteVector &&contData)
@@ -115,8 +112,10 @@ void Block::SetHashInfo(const BlockHashInfo &hashInfo) {
 void Block::SetHashInfo(BlockHashInfo &&hashInfo) noexcept {
   this->hashInfo = std::move(hashInfo);
 }
-const UnixTime &Block::GetTimestamp() const noexcept { return this->timestamp; }
-void Block::SetTimestamp(const UnixTime &timestamp) {
+const std::uint64_t &Block::GetTimestamp() const noexcept {
+  return this->timestamp;
+}
+void Block::SetTimestamp(const std::uint64_t &timestamp) {
   this->timestamp = timestamp;
 }
 const std::pair<std::string, std::string> &Block::GetMinedBy() const noexcept {
@@ -148,42 +147,42 @@ std::uint64_t Block::GetHashingBlockSize() const noexcept {
   std::uint64_t result = 0;
   result += this->hashInfo.prevSignedHash.size();
   result += this->minedBy.first.size() + this->minedBy.second.size(); // minedBy
-  result += 16; // BlockConsensusInfo
-  static_assert(sizeof(boost::posix_time::time_duration::sec_type) == 8);
-  result += 8; // timestamp
+  result += 16;                    // BlockConsensusInfo
+  result += sizeof(std::uint64_t); // timestamp
   result += sizeof(this->ledgerId);
   result += this->containedData.size();
   return result;
 }
 ByteVector Block::SerializeForHashing() const {
-  ByteVector result;
-  result.reserve(this->GetHashingBlockSize());
-  std::copy(this->hashInfo.prevSignedHash.begin(),
-            this->hashInfo.prevSignedHash.end(), std::back_inserter(result));
-  UnixTime epoch(boost::gregorian::date(1970, 1, 1));
-  // если вдруг кто-то умудрится выставить время до 1970 года, то ловим UB.
-  // Хы.
-  std::uint64_t secondsSinseEpoch =
-      (this->timestamp - epoch).total_nanoseconds();
-  ChangeToLittleEndian(secondsSinseEpoch);
-  std::copy(&secondsSinseEpoch, &secondsSinseEpoch + sizeof(secondsSinseEpoch),
-            std::back_inserter(result));
+  ByteVector result(this->GetHashingBlockSize());
+  auto curPos = 0;
+  std::memcpy(result.data(), this->hashInfo.prevSignedHash.data(),
+              this->hashInfo.prevSignedHash.size());
+  curPos += this->hashInfo.prevSignedHash.size();
+  std::uint64_t nanoSecondsSinseEpoch = this->timestamp;
+  ChangeToLittleEndian(nanoSecondsSinseEpoch);
+  std::memcpy(result.data() + curPos, &nanoSecondsSinseEpoch,
+              sizeof(nanoSecondsSinseEpoch));
+  curPos += sizeof(nanoSecondsSinseEpoch);
   const auto &x = this->minedBy.first;
   const auto &y = this->minedBy.second;
-  std::copy(x.begin(), x.end(), std::back_inserter(result));
-  std::copy(y.begin(), y.end(), std::back_inserter(result));
+  std::memcpy(result.data() + curPos, x.data(), x.size());
+  curPos += x.size();
+  std::memcpy(result.data() + curPos, y.data(), y.size());
+  curPos += y.size();
   auto ledgerId = this->ledgerId;
   ChangeToLittleEndian(ledgerId);
-  std::copy(&ledgerId, &ledgerId + sizeof(ledgerId),
-            std::back_inserter(result));
+  std::memcpy(result.data() + curPos, &ledgerId, sizeof(ledgerId));
+  curPos += sizeof(ledgerId);
   auto miningPoint = this->consensusInfo.miningPoint;
   ChangeToLittleEndian(miningPoint);
-  std::copy(&miningPoint, &miningPoint + sizeof(miningPoint),
-            std::back_inserter(result));
+  std::memcpy(result.data() + curPos, &miningPoint, sizeof(miningPoint));
+  curPos += sizeof(miningPoint);
   auto luck = GetHashAbleReprOfDouble(this->consensusInfo.luck);
-  std::copy(&luck, &luck + sizeof(luck), std::back_inserter(result));
-  std::copy(this->containedData.begin(), this->containedData.end(),
-            std::back_inserter(result));
+  std::memcpy(result.data() + curPos, &luck, sizeof(luck));
+  curPos += sizeof(luck);
+  std::memcpy(result.data() + curPos, this->containedData.data(),
+              this->containedData.size());
   return result;
 }
 
@@ -253,14 +252,7 @@ ConstructProtoFromBlockImpl(Block &block) noexcept(false) {
                 prevHashTrans.size());
     converted.set_prev_hash(std::move(prevHashTrans));
   }
-  {
-    UnixTime epoch(boost::gregorian::date(1970, 1, 1));
-    // если вдруг кто-то умудрится выставить время до 1970 года, то ловим UB.
-    // Хы.
-    std::uint64_t nanoSecondsSinseEpoch =
-        (block.GetTimestamp() - epoch).total_nanoseconds();
-    converted.set_unix_timestamp(nanoSecondsSinseEpoch);
-  }
+  { converted.set_unix_timestamp(block.GetTimestamp()); }
   {
     std::unique_ptr<block_external::v1::Block::Key> minedBy =
         std::make_unique<block_external::v1::Block::Key>();
@@ -295,20 +287,7 @@ Block ConstructBlockFromProtoImpl(
                 prevHash.size());
   }
   result.SetHashInfo(std::move(hashInfo));
-  {
-    auto nanos = protoBlock.unix_timestamp();
-    // boost::posix_time::time_duration использует в качестве формата
-    // наносекунд тип данных long, размер которого зависит от платформы
-    static_assert(sizeof(long) == sizeof(std::uint64_t),
-                  "boost::posix_time::time_duration использует не 64 бита");
-    using time_point = std::chrono::system_clock::time_point;
-    time_point uptime_timepoint{
-        std::chrono::duration_cast<time_point::duration>(
-            std::chrono::nanoseconds(nanos))};
-    std::time_t timepoint =
-        std::chrono::system_clock::to_time_t(uptime_timepoint);
-    result.SetTimestamp(boost::posix_time::from_time_t(timepoint));
-  }
+  result.SetTimestamp(protoBlock.unix_timestamp());
   {
     result.SetMinedBy(
         std::make_pair(protoBlock.mined_by().x(), protoBlock.mined_by().y()));
