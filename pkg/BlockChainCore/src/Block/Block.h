@@ -109,12 +109,17 @@ public:
   //! Преобразует блок в его представление в protobuf
   static tl::expected<std::string, NestedError>
   ConvertToProto(Block &block) noexcept;
-  //! Преобразвует блок в его представление в protobuf
+  //! Преобразвует блок в его представление в protobuf. При этом, создание
+  //! потока может быть недешевым, поэтому для эффективного использования
+  //! данного метода следует эффективно работать с потоками ввода-вывода
   [[nodiscard]] static tl::expected<std::true_type, NestedError>
   ConvertToProto(Block &block, std::ostream &outputStream) noexcept;
   //! Создает блок из его представления в protobuf
   static tl::expected<Block, NestedError>
   CreateFromProto(const std::string &data) noexcept;
+  //! Создает блок из его представления в protobuf. При этом, создание потока
+  //! может быть недешевым, поэтому для эффективного использования данного
+  //! метода следует эффективно работать с потоками ввода-вывода
   static tl::expected<Block, NestedError>
   CreateFromProto(std::istream &inputStream) noexcept;
 };

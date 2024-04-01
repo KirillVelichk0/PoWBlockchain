@@ -8,6 +8,7 @@
 #include <fmt/format.h>
 #include <fmt/printf.h>
 #include <gtest/gtest.h>
+#include <strstream>
 TEST(BlockChainCoreTest_Block, HashingTestGood) {
   for (int i = 0; i < 100; i++) {
     BlockChainCore::BlockHashInfo hashInfo;
@@ -73,6 +74,32 @@ TEST(BlockChainCoreTest_Block, ProtoSerializationStringTest) {
     ASSERT_TRUE(proto.has_value());
     auto deserializedProto =
         BlockChainCore::Block::CreateFromProto(proto.value());
+    ASSERT_TRUE(deserializedProto.has_value());
+    ASSERT_EQ(deserializedProto.value(), block);
+  }
+}
+TEST(BlockChainCoreTest_Block, ProtoSerializationStreamTest) {
+  for (int i = 0; i < 100; i++) {
+    BlockChainCore::BlockHashInfo hashInfo;
+    auto now = std::chrono::high_resolution_clock::now();
+    auto timestamp = now.time_since_epoch().count();
+    hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
+    auto keys = BlockChainCore::Crypto::GenerateKeys();
+    auto consInfo = BlockChainCore::BlockConsensusInfo();
+    boost::random::random_device rnd;
+    boost::uniform_int<unsigned char> distr(0, 255);
+    BlockChainCore::ByteVector data(1000);
+    for (auto &elem : data) {
+      elem = distr(rnd);
+    }
+    BlockChainCore::Block block(hashInfo, timestamp, keys.second,
+                                std::uint64_t(3), consInfo, data);
+    std::ostrstream oss;
+    auto converingResult = BlockChainCore::Block::ConvertToProto(block, oss);
+    ASSERT_TRUE(converingResult.has_value());
+    auto count = oss.pcount();
+    std::istrstream iss(oss.str(), count);
+    auto deserializedProto = BlockChainCore::Block::CreateFromProto(iss);
     ASSERT_TRUE(deserializedProto.has_value());
     ASSERT_EQ(deserializedProto.value(), block);
   }
