@@ -1,5 +1,5 @@
-#include "../src/Block/Block.h"
-#include <../src/Crypto/Crypto.h>
+#include "Block/Block.h"
+#include <Crypto/Crypto.h>
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
 #include <chrono>

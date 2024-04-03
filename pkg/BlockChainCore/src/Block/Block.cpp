@@ -2,8 +2,8 @@
 // Created by houdini on 08.09.2023.
 //
 #include "Block.h"
-#include "../Crypto/Crypto.h"
-#include "../proto/gen/BlockExternal.pb.h"
+#include "Crypto.h"
+#include "gen/BlockExternal.pb.h"
 #include <algorithm>
 #include <bit>
 #include <boost/random.hpp>
@@ -13,7 +13,6 @@
 #include <exception>
 #include <fmt/core.h>
 #include <fmt/format.h>
-#include <iterator>
 #include <limits>
 #include <source_location>
 #include <sstream>

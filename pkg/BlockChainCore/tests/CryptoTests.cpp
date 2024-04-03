@@ -1,4 +1,4 @@
-#include "../src/Crypto/Crypto.h"
+#include "Crypto/Crypto.h"
 #include <algorithm>
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>

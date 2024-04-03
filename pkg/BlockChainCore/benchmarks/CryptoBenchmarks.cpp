@@ -1,4 +1,4 @@
-#include "../src/Crypto/Crypto.h"
+#include "Crypto/Crypto.h"
 #include <algorithm>
 #include <benchmark/benchmark.h>
 #include <boost/random.hpp>

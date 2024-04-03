@@ -4,8 +4,7 @@
 
 #ifndef BLOCKCHAINCORE_CRYPTO_H
 #define BLOCKCHAINCORE_CRYPTO_H
-#include "../nested_error/nested_error.h"
-#include <cstdint>
+#include "nested_error.h"
 #include <memory>
 #include <tl/expected.hpp>
 #include <type_traits>

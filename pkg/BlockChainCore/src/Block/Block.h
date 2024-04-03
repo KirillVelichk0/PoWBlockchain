@@ -3,7 +3,7 @@
 //
 #ifndef BLOCKCHAINCORE_BLOCK_H
 #define BLOCKCHAINCORE_BLOCK_H
-#include "../nested_error/nested_error.h"
+#include "nested_error.h"
 #include <cstdint>
 #include <string>
 #include <tl/expected.hpp>
