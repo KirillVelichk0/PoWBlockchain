@@ -4,6 +4,7 @@
 #ifndef BLOCKCHAINCORE_BLOCK_H
 #define BLOCKCHAINCORE_BLOCK_H
 #include "nested_error.h"
+#include <chrono>
 #include <cstdint>
 #include <string>
 #include <tl/expected.hpp>
@@ -19,15 +20,9 @@ constexpr std::uint32_t BlockSize = 2000000;
 class Block;
 using ByteVector = std::vector<unsigned char>;
 
-using CryptValidator = tl::expected<std::true_type, NestedError> (*)(
-    const ByteVector &, const ByteVector &,
-    const std::pair<std::string, std::string> &);
-using CryptSigner = tl::expected<ByteVector, NestedError> (*)(
-    const ByteVector &, const std::string &);
-
 //! \brief Информация о хэше блока
 //! \details Информация о хэше блока. Хранит подписанный хэш предыдущей и
-//! текущей записи. boost.serialize используется только для валидации блока
+//! текущей записи.
 struct BlockHashInfo {
   ByteVector prevSignedHash;
   ByteVector curSignedHash;
@@ -65,20 +60,20 @@ public:
                  ByteVector &&containedData);
   //! Инициализирует начальный блок.
   static Block init();
-  //! Данный метод не создает блок полностью, т.к. не получает miningPoint и
-  //! текущий хэш
+  //! Данный метод не создает блок полностью, т.к. не получает miningPoint, ключ
+  //! и текущий хэш
   [[nodiscard]] static tl::expected<Block, NestedError>
-  PrepareBlock(const Block &lastBlock);
+  PrepareBlock(const Block &lastBlock) noexcept;
+  //! Данный метод не создает блок полностью, т.к. не получает miningPoint, ключ
+  //! и текущий хэш
+  [[nodiscard]] static tl::expected<Block, NestedError>
+  PrepareBlock(Block &&lastBlock) noexcept;
   [[nodiscard]] const BlockHashInfo &GetHashInfo() const noexcept;
   //! Проверяет валидность блока (с точки зрения криптографии). Важно!
   //! Валидность хранимого в блоке публичного ключа не проверяется,
   //! предполагается, что мы доверяем хранимым в БД ключам
   [[nodiscard]] tl::expected<std::true_type, NestedError>
-  CheckBlockIsCryptValid() noexcept;
-  //! Проверяет валидность блока (с точки зрения криптографии) с помощью
-  //! стороннего валидатора
-  [[nodiscard]] tl::expected<std::true_type, NestedError>
-  CheckBlockIsCryptValid(CryptValidator validator) noexcept;
+  CheckBlockIsCryptValid(bool needToValidate) const noexcept;
 
   //! Осуществляет сериализацию блока для подсчета его хеша.
   [[nodiscard]] ByteVector SerializeForHashing() const;

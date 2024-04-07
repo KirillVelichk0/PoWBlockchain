@@ -5,6 +5,7 @@
 #ifndef BLOCKCHAINCORE_CRYPTO_H
 #define BLOCKCHAINCORE_CRYPTO_H
 #include "nested_error.h"
+#include <array>
 #include <memory>
 #include <tl/expected.hpp>
 #include <type_traits>
@@ -61,6 +62,7 @@ private:
   Crypto() = default;
 
 public:
+  using SHA256Hash = std::array<unsigned char, 32>;
   using ByteVector = std::vector<unsigned char>;
   //! Проверяет подпись переданных данных, используя внутреннее представление
   //! ключа
@@ -95,6 +97,8 @@ public:
   //! Создает публичный ключ из приватного
   [[nodiscard]] static std::pair<std::string, std::string>
   ConstructPublicKey(const std::string &privateKey);
+
+  [[nodiscard]] static SHA256Hash GenerateSHA256(const ByteVector &data);
 };
 
 } // namespace BlockChainCore

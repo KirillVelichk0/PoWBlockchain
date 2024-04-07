@@ -4,10 +4,12 @@
 #include "Block.h"
 #include "Crypto.h"
 #include "gen/BlockExternal.pb.h"
+#include "nested_error.h"
 #include <algorithm>
 #include <bit>
 #include <boost/random.hpp>
 #include <boost/random/random_device.hpp>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <exception>
@@ -69,12 +71,35 @@ Block::Block(BlockHashInfo &&hashInfo, const std::uint64_t &timestamp,
 const BlockHashInfo &Block::GetHashInfo() const noexcept {
   return this->hashInfo;
 }
-tl::expected<Block, NestedError> Block::PrepareBlock(const Block &lastBlock) {
+tl::expected<Block, NestedError>
+Block::PrepareBlock(const Block &lastBlock) noexcept {
   auto loc = std::source_location::current();
   try {
     Block result;
     result.hashInfo.prevSignedHash = lastBlock.GetHashInfo().curSignedHash;
     result.ledgerId = lastBlock.ledgerId + 1;
+    result.timestamp =
+        std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    boost::random::random_device gen;
+    boost::uniform_real<double> distr(0, 1000000);
+    result.consensusInfo.luck = distr(gen);
+    return result;
+  } catch (std::exception &ex) {
+    return tl::unexpected(NestedError(ex.what(), loc));
+  } catch (...) {
+    return tl::unexpected(NestedError("Uknown exception catched", loc));
+  }
+}
+tl::expected<Block, NestedError>
+Block::PrepareBlock(Block &&lastBlock) noexcept {
+  auto loc = std::source_location::current();
+  try {
+    Block result;
+    result.hashInfo.prevSignedHash =
+        std::move(lastBlock.hashInfo.prevSignedHash);
+    result.ledgerId = lastBlock.ledgerId + 1;
+    result.timestamp =
+        std::chrono::high_resolution_clock::now().time_since_epoch().count();
     boost::random::random_device gen;
     boost::uniform_real<double> distr(0, 1000000);
     result.consensusInfo.luck = distr(gen);
@@ -186,11 +211,11 @@ ByteVector Block::SerializeForHashing() const {
 }
 
 tl::expected<std::true_type, NestedError>
-Block::CheckBlockIsCryptValid() noexcept {
+Block::CheckBlockIsCryptValid(bool needToValidate) const noexcept {
   auto loc = std::source_location::current();
   return Crypto::TryToVerifyECDSA_CryptoPP(this->hashInfo.curSignedHash,
                                            this->SerializeForHashing(),
-                                           this->minedBy, false)
+                                           this->minedBy, needToValidate)
       .map_error([&loc, this](NestedError &&nested) {
         std::ostringstream oss;
         oss << this->ledgerId;
@@ -200,41 +225,7 @@ Block::CheckBlockIsCryptValid() noexcept {
             std::move(nested), loc);
       });
 }
-tl::expected<std::true_type, NestedError>
-Block::CheckBlockIsCryptValid(CryptValidator validator) noexcept {
-  auto loc = std::source_location::current();
 
-  try {
-    return validator(this->hashInfo.curSignedHash, this->SerializeForHashing(),
-                     this->minedBy)
-        .map_error([&loc, this](NestedError &&nested) -> NestedError {
-          std::ostringstream oss;
-          oss << this->ledgerId;
-          return {fmt::format("Error with external validator. ledgerId - {0}",
-                              oss.str()),
-                  std::move(nested), loc};
-        });
-
-  } catch (std::exception &ex) {
-    std::ostringstream oss;
-    oss << this->ledgerId;
-    return tl::unexpected(
-        NestedError(fmt::format("Catched exception in external validator. "
-                                "ledgerId - {0}\nException: {1}",
-                                oss.str(), ex.what()),
-                    loc));
-    return tl::unexpected(
-        NestedError(ex.what(), std::source_location::current()));
-  } catch (...) {
-    std::ostringstream oss;
-    oss << this->ledgerId;
-    return tl::unexpected(NestedError(
-        fmt::format("Catched unknown exception in external validator. "
-                    "ledgerId - {0}\n",
-                    oss.str()),
-        loc));
-  }
-}
 block_external::v1::Block
 ConstructProtoFromBlockImpl(Block &block) noexcept(false) {
   block_external::v1::Block converted;
@@ -384,5 +375,4 @@ bool operator==(const Block &lhs, const Block &rhs) {
          lhs.GetTransactionId() == rhs.GetTransactionId() &&
          lhs.GetContainedData() == rhs.GetContainedData();
 }
-
 } // namespace BlockChainCore

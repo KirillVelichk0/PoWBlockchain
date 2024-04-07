@@ -335,4 +335,15 @@ Crypto::TryToSignOptimized(const ByteVector &data,
     return tl::unexpected(NestedError("Some uknown exception", loc));
   }
 }
+Crypto::SHA256Hash Crypto::GenerateSHA256(const ByteVector &data) {
+  SHA256Hash result;
+  const CryptoPP::byte *rawData =
+      reinterpret_cast<const CryptoPP::byte *>(data.data());
+  const auto dataLen = data.size();
+  CryptoPP::SHA256 hash;
+  hash.Update(rawData, dataLen);
+  static_assert(CryptoPP::SHA256::DIGESTSIZE == 32);
+  hash.Final(result.data());
+  return result;
+}
 } // namespace BlockChainCore
