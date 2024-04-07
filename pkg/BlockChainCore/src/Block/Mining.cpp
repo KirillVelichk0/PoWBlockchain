@@ -23,7 +23,7 @@ MineBlockWithStandartMiner(ByteVector &&data, std::string &&privateKey,
                        needToValidateKey, &MineWithCrypto);
 }
 bool IsBlockMinedCorrectly(Block &block, std::uint32_t complexity) {
-  auto blockHash = block.SerializeForHashing();
+  auto blockHash = Crypto::GenerateSHA256(block.SerializeForHashing());
   const auto endIt = std::next(blockHash.begin(), complexity);
   return std::find_if_not(blockHash.begin(), endIt, [](unsigned char byte) {
            return byte == 0;
