@@ -1,5 +1,5 @@
 #include "Block/Mining.h"
-#include "api.h"
+#include "BlockChain_CXX_API/BlockChain_api.h"
 #include <gtest/gtest.h>
 TEST(BlockChainCoreTests_CXXAPI, MineBlockWithoutComplexity) {
   auto keys = BlockChainCore::GenerateKeys();

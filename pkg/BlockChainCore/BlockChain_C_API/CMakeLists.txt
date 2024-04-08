@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.20)
+project(BlockchainCoreC_APIProject)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 20)
+add_library(C_APILib SHARED ./BlockChain_api.h ./BlockChain_api.cpp)
+target_include_directories(C_APILib PUBLIC ..)
+target_link_libraries(C_APILib PRIVATE CXXAPILib)

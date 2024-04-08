@@ -1,4 +1,4 @@
-#include "api.h"
+#include "BlockChain_api.h"
 #include "Crypto/Crypto.h"
 namespace BlockChainCore {
 //! Проверяет корректность блока
@@ -41,4 +41,5 @@ CreateFromProto(const std::string &data) noexcept {
 CreateFromProto(std::istream &inputStream) noexcept {
   return Block::CreateFromProto(inputStream);
 }
+[[nodiscard]] Block InitStartBlock() { return BlockChainCore::Block::init(); }
 } // namespace BlockChainCore

@@ -36,4 +36,7 @@ CreateFromProto(const std::string &data) noexcept;
 //! метода следует эффективно работать с потоками ввода-вывода
 [[nodiscard]] tl::expected<Block, NestedError>
 CreateFromProto(std::istream &inputStream) noexcept;
+//! Создает первый блок в цепочке. Блок не несет никакой информации, его не
+//! нужно никак валидировать. Он просто есть
+[[nodiscard]] Block InitStartBlock();
 } // namespace BlockChainCore
