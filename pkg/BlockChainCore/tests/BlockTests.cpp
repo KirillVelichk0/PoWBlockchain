@@ -1,14 +1,14 @@
 #include "Block/Block.h"
 #include <Crypto/Crypto.h>
-#include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
 #include <chrono>
 #include <cstdint>
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/printf.h>
 #include <gtest/gtest.h>
+#include <random>
 #include <strstream>
+
 TEST(BlockChainCoreTest_Block, HashingTestGood) {
   for (int i = 0; i < 100; i++) {
     BlockChainCore::BlockHashInfo hashInfo;
@@ -17,11 +17,12 @@ TEST(BlockChainCoreTest_Block, HashingTestGood) {
     hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
     auto keys = BlockChainCore::Crypto::GenerateKeys();
     auto consInfo = BlockChainCore::BlockConsensusInfo();
-    boost::random::random_device rnd;
-    boost::uniform_int<unsigned char> distr(0, 255);
+    std::mt19937_64 gen(
+        std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    std::uniform_int_distribution<unsigned int> distr(0, 255);
     BlockChainCore::ByteVector data(1000);
     for (auto &elem : data) {
-      elem = distr(rnd);
+      elem = distr(gen);
     }
     BlockChainCore::Block block(hashInfo, timestamp, keys.second,
                                 std::uint64_t(3), consInfo, data);
@@ -61,11 +62,12 @@ TEST(BlockChainCoreTest_Block, ProtoSerializationStringTest) {
     hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
     auto keys = BlockChainCore::Crypto::GenerateKeys();
     auto consInfo = BlockChainCore::BlockConsensusInfo();
-    boost::random::random_device rnd;
-    boost::uniform_int<unsigned char> distr(0, 255);
+    std::mt19937_64 gen(
+        std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    std::uniform_int_distribution<unsigned int> distr(0, 255);
     BlockChainCore::ByteVector data(1000);
     for (auto &elem : data) {
-      elem = distr(rnd);
+      elem = distr(gen);
     }
     BlockChainCore::Block block(hashInfo, timestamp, keys.second,
                                 std::uint64_t(3), consInfo, data);
@@ -86,11 +88,12 @@ TEST(BlockChainCoreTest_Block, ProtoSerializationStreamTest) {
     hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
     auto keys = BlockChainCore::Crypto::GenerateKeys();
     auto consInfo = BlockChainCore::BlockConsensusInfo();
-    boost::random::random_device rnd;
-    boost::uniform_int<unsigned char> distr(0, 255);
+    std::mt19937_64 gen(
+        std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    std::uniform_int_distribution<unsigned int> distr(0, 255);
     BlockChainCore::ByteVector data(1000);
     for (auto &elem : data) {
-      elem = distr(rnd);
+      elem = distr(gen);
     }
     BlockChainCore::Block block(hashInfo, timestamp, keys.second,
                                 std::uint64_t(3), consInfo, data);

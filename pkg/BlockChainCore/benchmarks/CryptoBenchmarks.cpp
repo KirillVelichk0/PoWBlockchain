@@ -1,9 +1,9 @@
 #include "Crypto/Crypto.h"
 #include <algorithm>
 #include <benchmark/benchmark.h>
-#include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
+#include <chrono>
 #include <memory>
+#include <random>
 #include <tuple>
 #include <vector>
 using ByteVector = BlockChainCore::Crypto::ByteVector;
@@ -30,8 +30,9 @@ static void BM_PublicKeysConstructing(benchmark::State &state) {
 BENCHMARK(BM_PublicKeysConstructing);
 static void BM_SignDataWithoutValidating(benchmark::State &state) {
   std::vector<BlockChainCore::Crypto::ByteVector> randomData(100);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (auto &byteVector : randomData) {
     byteVector = ByteVector(1000);
     std::for_each(byteVector.begin(), byteVector.end(),
@@ -47,8 +48,9 @@ static void BM_SignDataWithoutValidating(benchmark::State &state) {
 BENCHMARK(BM_SignDataWithoutValidating);
 static void BM_SignDataWithValidating(benchmark::State &state) {
   std::vector<BlockChainCore::Crypto::ByteVector> randomData(100);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (auto &byteVector : randomData) {
     byteVector = ByteVector(1000);
     std::for_each(byteVector.begin(), byteVector.end(),
@@ -66,8 +68,9 @@ static void BM_VerifyWithValidating(benchmark::State &state) {
   std::vector<std::tuple<ByteVector, ByteVector,
                          decltype(BlockChainCore::Crypto::GenerateKeys())>>
       randomDataAndSigns(100); // данные, подпись, ключ
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (auto &elem : randomDataAndSigns) {
     auto &[data, sign, keys] = elem;
     data = ByteVector(1000);
@@ -94,8 +97,9 @@ static void BM_VerifyWithoutValidating(benchmark::State &state) {
   std::vector<std::tuple<ByteVector, ByteVector,
                          decltype(BlockChainCore::Crypto::GenerateKeys())>>
       randomDataAndSigns(100); // данные, подпись, ключ
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (auto &elem : randomDataAndSigns) {
     auto &[data, sign, keys] = elem;
     data = ByteVector(1000);
@@ -148,8 +152,9 @@ static void BM_PublicOptimizedKeysConstructing(benchmark::State &state) {
 BENCHMARK(BM_PublicOptimizedKeysConstructing);
 static void BM_SignDataOptimized(benchmark::State &state) {
   std::vector<BlockChainCore::Crypto::ByteVector> randomData(100);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (auto &byteVector : randomData) {
     byteVector = ByteVector(1000);
     std::for_each(byteVector.begin(), byteVector.end(),
@@ -172,8 +177,9 @@ static void BM_VerifyOptimized(benchmark::State &state) {
       std::pair<std::shared_ptr<BlockChainCore::PrivateKeyOptimizedImpl>,
                 std::shared_ptr<BlockChainCore::PublicKeyOptimizedImpl>>>>
       randomDataAndSigns(100); // данные, подпись, ключ
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (auto &elem : randomDataAndSigns) {
     auto &[data, sign, keys] = elem;
     data = ByteVector(1000);

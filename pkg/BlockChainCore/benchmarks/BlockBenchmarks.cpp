@@ -1,9 +1,8 @@
 #include "Block/Block.h"
 #include "Crypto/Crypto.h"
 #include <benchmark/benchmark.h>
-#include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
 #include <chrono>
+#include <random>
 #include <strstream>
 static void BM_BlockSerializingForHash(benchmark::State &state) {
   BlockChainCore::BlockHashInfo hashInfo;
@@ -12,8 +11,9 @@ static void BM_BlockSerializingForHash(benchmark::State &state) {
   hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   auto consInfo = BlockChainCore::BlockConsensusInfo();
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   BlockChainCore::ByteVector data(3000);
   for (auto &elem : data) {
     elem = distr(rnd);
@@ -32,8 +32,9 @@ static void BM_BlockProtoSerializeString(benchmark::State &state) {
   hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   auto consInfo = BlockChainCore::BlockConsensusInfo();
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   BlockChainCore::ByteVector data(3000);
   for (auto &elem : data) {
     elem = distr(rnd);
@@ -53,8 +54,9 @@ static void BM_BlockProtoDeserializeString(benchmark::State &state) {
   hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   auto consInfo = BlockChainCore::BlockConsensusInfo();
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   BlockChainCore::ByteVector data(3000);
   for (auto &elem : data) {
     elem = distr(rnd);
@@ -75,8 +77,9 @@ static void BM_BlockProtoSerializeStream(benchmark::State &state) {
   hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   auto consInfo = BlockChainCore::BlockConsensusInfo();
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   BlockChainCore::ByteVector data(3000);
   for (auto &elem : data) {
     elem = distr(rnd);
@@ -99,8 +102,9 @@ static void BM_BlockProtoDeserializeStream(benchmark::State &state) {
   hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   auto consInfo = BlockChainCore::BlockConsensusInfo();
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   BlockChainCore::ByteVector data(3000);
   for (auto &elem : data) {
     elem = distr(rnd);
@@ -127,8 +131,9 @@ static void BM_BlockProtoSerializeStreamUneffective(benchmark::State &state) {
   hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   auto consInfo = BlockChainCore::BlockConsensusInfo();
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   BlockChainCore::ByteVector data(3000);
   for (auto &elem : data) {
     elem = distr(rnd);
@@ -150,8 +155,9 @@ static void BM_BlockProtoDeserializeStreamUneffective(benchmark::State &state) {
   hashInfo.prevSignedHash = {3, 1, 2, 5, 1, 23, 115};
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   auto consInfo = BlockChainCore::BlockConsensusInfo();
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   BlockChainCore::ByteVector data(3000);
   for (auto &elem : data) {
     elem = distr(rnd);

@@ -1,11 +1,9 @@
 #include "Crypto/Crypto.h"
 #include <algorithm>
-#include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
-#include <boost/random/uniform_int.hpp>
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <gtest/gtest.h>
+#include <random>
 TEST(BlockChainCoreTests_Crypto, KeyGenNoThrow) {
   for (int i = 0; i < 100; i++) {
     ASSERT_NO_THROW(BlockChainCore::Crypto::GenerateKeys());
@@ -63,8 +61,9 @@ TEST(BlockChainCoreTests_Crypto, PublicKeyOptimizedImplBadImport) {
 TEST(BlockChainCoreTests_Crypto, GoodSignIsOk) {
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });
@@ -80,8 +79,9 @@ TEST(BlockChainCoreTests_Crypto, GoodSignIsOkOptimized) {
   auto privateKeyOptimized =
       BlockChainCore::PrivateKeyOptimizedImpl::FromClassicFormat(keys.first);
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });
@@ -93,8 +93,9 @@ TEST(BlockChainCoreTests_Crypto, GoodSignIsOkOptimized) {
 }
 TEST(BlockChainCoreTests_Crypto, BadKeysSignIsNotOk) {
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });
@@ -105,8 +106,9 @@ TEST(BlockChainCoreTests_Crypto, BadKeysSignIsNotOk) {
 TEST(BlockChainCoreTests_Crypto, GoodVerify) {
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });
@@ -125,8 +127,9 @@ TEST(BlockChainCoreTests_Crypto, GoodVerify) {
 TEST(BlockChainCoreTests_Crypto, BadSignVerify) {
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });
@@ -147,8 +150,9 @@ TEST(BlockChainCoreTests_Crypto, BadPublicKeyVerify) {
   auto keys = BlockChainCore::Crypto::GenerateKeys();
   keys.second.first[0] = (int(keys.second.first[0]) + 1) % 256;
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });
@@ -167,8 +171,9 @@ TEST(BlockChainCoreTests_Crypto, GoodVerifyOptimized) {
   auto publicKeyO =
       BlockChainCore::PublicKeyOptimizedImpl::FromClassicFormat(keys.second);
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });
@@ -192,8 +197,9 @@ TEST(BlockChainCoreTests_Crypto, BadSignVerifyOptimized) {
   auto publicKeyO =
       BlockChainCore::PublicKeyOptimizedImpl::FromClassicFormat(keys.second);
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });
@@ -218,8 +224,9 @@ TEST(BlockChainCoreTests_Crypto, SignsAndVerEq) {
   auto publicKeyO =
       BlockChainCore::PublicKeyOptimizedImpl::FromClassicFormat(keys.second);
   BlockChainCore::Crypto::ByteVector vec(1000);
-  boost::random::random_device rnd;
-  boost::uniform_int<unsigned char> distr(0, 255);
+  std::mt19937_64 rnd(
+      std::chrono::high_resolution_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<unsigned char> distr(0, 255);
   for (int i = 0; i < 100; i++) {
     std::for_each(vec.begin(), vec.end(),
                   [&rnd, &distr](unsigned char &elem) { elem = distr(rnd); });

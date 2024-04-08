@@ -7,8 +7,6 @@
 #include "nested_error.h"
 #include <algorithm>
 #include <bit>
-#include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
 #include <chrono>
 #include <cstdint>
 #include <cstring>
@@ -16,6 +14,7 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <limits>
+#include <random>
 #include <source_location>
 #include <sstream>
 #include <type_traits>
@@ -80,8 +79,9 @@ Block::PrepareBlock(const Block &lastBlock) noexcept {
     result.ledgerId = lastBlock.ledgerId + 1;
     result.timestamp =
         std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    boost::random::random_device gen;
-    boost::uniform_real<double> distr(0, 1000000);
+    std::mt19937_64 gen(
+        std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    std::uniform_real_distribution<double> distr(0, 1000000);
     result.consensusInfo.luck = distr(gen);
     return result;
   } catch (std::exception &ex) {
@@ -100,8 +100,9 @@ Block::PrepareBlock(Block &&lastBlock) noexcept {
     result.ledgerId = lastBlock.ledgerId + 1;
     result.timestamp =
         std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    boost::random::random_device gen;
-    boost::uniform_real<double> distr(0, 1000000);
+    std::mt19937_64 gen(
+        std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    std::uniform_real_distribution<double> distr(0, 1000000);
     result.consensusInfo.luck = distr(gen);
     return result;
   } catch (std::exception &ex) {

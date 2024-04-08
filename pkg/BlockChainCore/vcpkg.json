@@ -3,7 +3,6 @@
   "version-string": "1.0.0",
   "builtin-baseline": "66b4b34d99ab272fcf21f2bd12b616e371c6bb31",
   "dependencies": [
-    "boost-random",
     "cryptopp",
     "fmt",
     "tl-expected",
@@ -31,10 +30,6 @@
     {
       "name": "cryptopp",
       "version": "8.8.0"
-    },
-    {
-      "name": "boost-random",
-      "version": "1.82.0#2"
     },
     {
       "name": "gtest",
