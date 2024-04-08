@@ -171,7 +171,14 @@ Result InitStartBlock() {
 Result MineBlockWithDel(char *data, uint32_t dataSize,
                         char *prevBlockInProtoFormat, uint32_t prevBlockSize,
                         char *privateKey, uint32_t keySize, uint32_t complexity,
-                        uint32_t miningTime, bool needToValidateKey) {}
+                        uint32_t miningTime, bool needToValidateKey) {
+  std::unique_ptr<char[]> deferData(data);
+  std::unique_ptr<char[]> deferPrevBlock(prevBlockInProtoFormat);
+  std::unique_ptr<char[]> deferPrivateKey(privateKey);
+  return MineBlockNonDel(data, dataSize, prevBlockInProtoFormat, prevBlockSize,
+                         privateKey, keySize, complexity, miningTime,
+                         needToValidateKey);
+}
 //! Майнит блок, возвращает его в формате proto. Не очищает переданные указатели
 Result MineBlockNonDel(char *data, uint32_t dataSize,
                        char *prevBlockInProtoFormat, uint32_t prevBlockSize,

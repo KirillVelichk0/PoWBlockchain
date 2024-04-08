@@ -3,6 +3,7 @@ project(BlockChainCoreProject)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 enable_testing()
 find_program(CLANG_TIDY_EXE NAMS clang-tidy)
 if(CLANG_TIDY_EXE)
