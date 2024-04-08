@@ -2,6 +2,7 @@
 #include <memory>
 #include <optional>
 #include <source_location>
+#include <string>
 #include <string_view>
 namespace BlockChainCore {
 class NestedError {

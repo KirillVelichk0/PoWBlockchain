@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 project(ProtoProject)
 add_library(Proto ./gen/BlockExternal.pb.h ./gen/BlockExternal.pb.cc)
-target_link_libraries(Proto protobuf::libprotobuf)
+target_include_directories(Proto PUBLIC ../protobuf-3.21.12/src)
+target_link_libraries(Proto PUBLIC protobuf::libprotobuf)

@@ -4,6 +4,7 @@
 #include <fmt/format.h>
 #include <gtest/gtest.h>
 #include <random>
+#ifndef WASMBUILD
 TEST(BlockChainCoreTests_Crypto, KeyGenNoThrow) {
   for (int i = 0; i < 100; i++) {
     ASSERT_NO_THROW(BlockChainCore::Crypto::GenerateKeys());
@@ -248,3 +249,4 @@ TEST(BlockChainCoreTests_Crypto, SignsAndVerEq) {
     ASSERT_EQ(verified3.value(), verified4.value());
   }
 }
+#endif
