@@ -1,0 +1,10 @@
+# Here you can add -s flag during compiling object files
+add_definitions("-s EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]'")
+add_definitions("-s EXTRA_EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\"]'")
+add_definitions("-s EXPORTED_FUNCTIONS='[\"_testInt\"]'")
+# Here you can add -s flag during linking
+set_target_properties(web_mealy_compiler PROPERTIES LINK_FLAGS "-s EXTRA_EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
+# Set this if you want to to generate sample html file
+set(CMAKE_EXECUTABLE_SUFFIX ".html")
+
+Это дерьмо работает вот так
