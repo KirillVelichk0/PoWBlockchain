@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(BlockProject)
 add_library(Block ./Block.h ./Block.cpp ./mining_impl.h ./Mining.h ./Mining.cpp)
+target_compile_options(Block PRIVATE -O3)
 target_include_directories(Block PUBLIC ../proto)
 target_include_directories(Block PUBLIC ../Crypto)
 target_include_directories(Block PUBLIC ../nested_error)

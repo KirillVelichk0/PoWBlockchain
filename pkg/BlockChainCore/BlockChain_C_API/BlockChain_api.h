@@ -12,6 +12,20 @@ Result *ValidateBlockSignWithDel(char *blockInProtoFormat, uint32_t blockSize,
 //! случае ошибки возвращает ошибку. Не очищает переданные указатели
 Result *ValidateBlockSignNonDel(char *blockInProtoFormat, uint32_t blockSize,
                                 bool needToValidateKey);
+//! Подпись произвольных данных с очисткой переданных ресурсов
+Result *SignDataWithDel(char *data, uint32_t dataSize, char *privateKey,
+                        uint32_t keySize, bool needToValidateKey);
+//! Подпись произвольных данных без очисткой переданных ресурсов
+Result *SignDataNonDel(char *data, uint32_t dataSize, char *privateKey,
+                       uint32_t keySize, bool needToValidateKey);
+// //! Проверка подписи произвольных данных без очистки переданных ресурсов
+// bool ValidateDataNonDel(char *data, uint32_t dataSize, char *pubKeyFirst,
+//                         uint32_t pubKeyFirstSize, char *pubKeySecond,
+//                         uint32_t pubKeySecondSize, bool needToValidateKey);
+// //! Проверка подписи произвольных данных с очисткой переданных ресурсов
+// bool ValidateDataWithDel(char *data, uint32_t dataSize, char *pubKeyFirst,
+//                          uint32_t pubKeyFirstSize, char *pubKeySecond,
+//                          uint32_t pubKeySecondSize, bool needToValidateKey);
 //! Проверяем соответствие сложности блока переданному числу 0. Очищает
 //! переданные указатели
 bool ValidateBlockComplexityWithDel(char *blockInProtoFormat,

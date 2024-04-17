@@ -1,20 +1,27 @@
 cmake_minimum_required(VERSION 3.20)
 project(BlockChainCoreProject)
-
+#нужно для нормальной работы анализаторов
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+#стандартный режим билда
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+#больше проверок
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 enable_testing()
+#поддержка clang_tidy
 find_program(CLANG_TIDY_EXE NAMS clang-tidy)
 if(CLANG_TIDY_EXE)
     set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})
 endif()
 find_package(GTest CONFIG REQUIRED)
+#нужно для изменения поведения части библиотек в случае WASM
 if(WASMBUILD)
     add_compile_definitions(WASMBUILD)
 endif(WASMBUILD)
-#protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ./src/proto/BlockExternal.proto)
-#add_library(BlockExternProto ${PROTO_SRCS} ${PROTO_HDRS})
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 find_package(benchmark CONFIG REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
 find_package(tl-expected CONFIG REQUIRED)

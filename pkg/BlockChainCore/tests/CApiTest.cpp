@@ -63,3 +63,54 @@ TEST(BlockChainCoreTests_CAPI, ValidateBlock) {
   std::unique_ptr<char[]> data(GetResultData(validateRes.get()));
   ASSERT_TRUE(data.get() == nullptr);
 }
+TEST(BlockChainCoreTests_CAPI, MineBlockAndValidate) {
+  std::vector<char> data = {1, 2, 3, 1, 32, 123, 52, 13};
+  auto resDeleter = [](Result *res) { FreeResult(res); };
+  auto pkDeleter = [](PublicKeyResult *pk) { FreePK(pk); };
+  using ResDeleter = decltype(resDeleter);
+  using PKDeleter = decltype(pkDeleter);
+  std::unique_ptr<Result, ResDeleter> privateKey(GeneratePrivateKey());
+  ASSERT_TRUE(privateKey != nullptr);
+  auto pkSize = GetResultDataSize(privateKey.get());
+  ASSERT_TRUE(pkSize > 0);
+  std::unique_ptr<char[]> privateKeyData(GetResultData(privateKey.get()));
+  ASSERT_TRUE(privateKeyData.get() != nullptr);
+  std::unique_ptr<Result, ResDeleter> startBlock(InitStartBlock());
+  ASSERT_TRUE(startBlock != nullptr);
+  auto startBlockSz = GetResultDataSize(startBlock.get());
+  ASSERT_TRUE(startBlockSz > 0);
+  std::unique_ptr<char[]> startBlockData(GetResultData(startBlock.get()));
+  ASSERT_TRUE(startBlockData != nullptr);
+  std::unique_ptr<Result, ResDeleter> minedBlock(MineBlockNonDel(
+      data.data(), data.size(), startBlockData.get(), startBlockSz,
+      privateKeyData.get(), pkSize, 0, 100, true));
+  ASSERT_TRUE(minedBlock != nullptr);
+  auto minedBlockSz = GetResultDataSize(minedBlock.get());
+  ASSERT_TRUE(minedBlockSz > 0);
+  std::unique_ptr<char[]> minedBlockData(GetResultData(minedBlock.get()));
+  ASSERT_TRUE(minedBlockData != nullptr);
+  std::unique_ptr<PublicKeyResult, PKDeleter> publicKey(
+      GetPublicKeyFromPrivateNonDel(privateKeyData.get(), pkSize));
+  ASSERT_TRUE(publicKey != nullptr);
+  auto publicKey1Size = GetFirstKeySize(publicKey.get());
+  auto publicKey2Size = GetSecondKeySize(publicKey.get());
+  ASSERT_TRUE(publicKey1Size > 0);
+  ASSERT_TRUE(publicKey2Size > 0);
+  std::unique_ptr<char[]> publicKey1(GetFirstKey(publicKey.get()));
+  std::unique_ptr<char[]> publicKey2(GetSecondKey(publicKey.get()));
+  ASSERT_TRUE(publicKey1 != nullptr);
+  ASSERT_TRUE(publicKey2 != nullptr);
+  std::unique_ptr<Result, ResDeleter> validated(
+      ValidateBlockSignNonDel(minedBlockData.get(), minedBlockSz, true));
+  ASSERT_TRUE(validated != nullptr);
+  auto validatedErrorSz = GetResultErrorSize(validated.get());
+  ASSERT_TRUE(validatedErrorSz == 0);
+  std::unique_ptr<Result, ResDeleter> validatedInit(
+      ValidateBlockSignNonDel(startBlockData.get(), startBlockSz, true));
+  ASSERT_TRUE(validatedInit != nullptr);
+  auto initValidatedErrorSz = GetResultErrorSize(validatedInit.get());
+  ASSERT_TRUE(initValidatedErrorSz > 0);
+  std::unique_ptr<char[]> validatedInitError(
+      GetResultError(validatedInit.get()));
+  ASSERT_TRUE(validatedInitError.get() != nullptr);
+}

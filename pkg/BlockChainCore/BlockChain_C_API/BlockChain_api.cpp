@@ -5,6 +5,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <strstream>
 struct Result {
   std::shared_ptr<std::string> data;
   std::shared_ptr<std::string> error;
@@ -14,6 +15,37 @@ struct PublicKeyResult {
   std::shared_ptr<PKType> key;
   std::shared_ptr<std::string> error;
 };
+#ifdef WASMBUILD
+
+auto GetFromProto_C(char *data, uint32_t dataSize) {
+  std::istrstream iss(data, dataSize);
+  return BlockChainCore::CreateFromProto(iss);
+}
+
+tl::expected<std::string, BlockChainCore::NestedError>
+ToProto_C(BlockChainCore::Block &block) {
+  std::ostrstream oss;
+  return BlockChainCore::ConvertToProto(block, oss)
+      .and_then([&oss](std::true_type &&_)
+                    -> tl::expected<std::string, BlockChainCore::NestedError> {
+        auto sz = oss.pcount();
+        auto *data = oss.str();
+        return std::string(data, data + sz);
+      })
+      .or_else([](BlockChainCore::NestedError &&err)
+                   -> tl::expected<std::string, BlockChainCore::NestedError> {
+        return tl::unexpected(std::move(err));
+      });
+}
+#else
+auto GetFromProto_C(char *data, uint32_t dataSize) {
+  return BlockChainCore::CreateFromProto(std::string(data, data + dataSize));
+}
+tl::expected<std::string, BlockChainCore::NestedError>
+ToProro_C(BlockChainCore::Block &block) {
+  return BlockChainCore::ConvertToProto(block);
+}
+#endif
 Result NestedToResult(const BlockChainCore::NestedError &nested) {
   try {
     Result result;
@@ -62,6 +94,30 @@ Result DataToResult(std::string &&data) {
   try {
     Result result;
     result.data = std::make_shared<std::string>(std::move(data));
+    return result;
+  } catch (...) {
+    Result result;
+    result.error = std::make_shared<std::string>("String convertion error");
+    return result;
+  }
+}
+Result DataToResult(const BlockChainCore::ByteVector &data) {
+  try {
+    Result result;
+    result.data =
+        std::make_shared<std::string>(std::string(data.begin(), data.end()));
+    return result;
+  } catch (...) {
+    Result result;
+    result.error = std::make_shared<std::string>("String convertion error");
+    return result;
+  }
+}
+Result DataToResult(BlockChainCore::ByteVector &&data) {
+  try {
+    Result result;
+    result.data =
+        std::make_shared<std::string>(std::string(data.begin(), data.end()));
     return result;
   } catch (...) {
     Result result;
@@ -141,8 +197,7 @@ Result *ValidateBlockSignNonDel(char *blockInProtoFormat, uint32_t blockSize,
     if (blockInProtoFormat == nullptr || blockSize < 2) {
       throw std::invalid_argument("Uncorrect args passed");
     }
-    auto block = BlockChainCore::CreateFromProto(
-        std::string(blockInProtoFormat, blockInProtoFormat + blockSize));
+    auto block = GetFromProto_C(blockInProtoFormat, blockSize);
     if (!block.has_value()) {
       return new Result(NestedToResult(block.error()));
     }
@@ -161,8 +216,7 @@ Result *ValidateBlockSignNonDel(char *blockInProtoFormat, uint32_t blockSize,
 //! Проверяем соответствие сложности блока переданному числу 0. Очищает
 //! переданные указатели
 bool ValidateBlockComplexityWithDel(char *blockInProtoFormat,
-                                    uint32_t blockSize, bool needToValidateKey,
-                                    uint32_t complexity) {
+                                    uint32_t blockSize, uint32_t complexity) {
   std::unique_ptr<char[]> deferBlock(blockInProtoFormat);
   return ValidateBlockComplexityNonDel(blockInProtoFormat, blockSize,
                                        complexity);
@@ -175,8 +229,7 @@ bool ValidateBlockComplexityNonDel(char *blockInProtoFormat, uint32_t blockSize,
     if (blockInProtoFormat == nullptr || blockSize < 2) {
       throw std::invalid_argument("Uncorrect args passed");
     }
-    auto block = BlockChainCore::CreateFromProto(
-        std::string(blockInProtoFormat, blockInProtoFormat + blockSize));
+    auto block = GetFromProto_C(blockInProtoFormat, blockSize);
     if (!block.has_value()) {
       return false;
     }
@@ -226,7 +279,7 @@ PublicKeyResult *GetPublicKeyFromPrivateNonDel(char *privateKey,
 Result *InitStartBlock() {
   try {
     auto block = BlockChainCore::InitStartBlock();
-    auto proto = BlockChainCore::ConvertToProto(block);
+    auto proto = ToProto_C(block);
     if (!proto.has_value()) {
       return new Result(NestedToResult(proto.error()));
     }
@@ -260,8 +313,7 @@ Result *MineBlockNonDel(char *data, uint32_t dataSize,
         prevBlockSize < 2 || privateKey == nullptr || keySize < 2) {
       throw std::invalid_argument("Uncorrect args passed");
     }
-    auto block = BlockChainCore::CreateFromProto(std::string(
-        prevBlockInProtoFormat, prevBlockInProtoFormat + prevBlockSize));
+    auto block = GetFromProto_C(prevBlockInProtoFormat, prevBlockSize);
     if (!block.has_value()) {
       return new Result(NestedToResult(block.error()));
     }
@@ -272,7 +324,7 @@ Result *MineBlockNonDel(char *data, uint32_t dataSize,
     if (!minedBlock.has_value()) {
       return new Result(NestedToResult(minedBlock.error()));
     }
-    auto serializedResult = BlockChainCore::ConvertToProto(minedBlock.value());
+    auto serializedResult = ToProto_C(minedBlock.value());
     if (!serializedResult.has_value()) {
       return new Result(NestedToResult(minedBlock.error()));
     }
@@ -416,3 +468,53 @@ char *GetSecondKey(PublicKeyResult *publicKey) {
   }
 }
 void ClearBuf(char *buf) { delete[] buf; }
+//! Подпись произвольных данных с очисткой переданных ресурсов
+Result *SignDataWithDel(char *data, uint32_t dataSize, char *privateKey,
+                        uint32_t keySize, bool needToValidateKey) {
+  std::unique_ptr<char[]> dataDefer(data);
+  std::unique_ptr<char[]> privateKeyDefer(privateKey);
+  return SignDataNonDel(data, dataSize, privateKey, keySize, needToValidateKey);
+}
+//! Подпись произвольных данных без очисткой переданных ресурсов
+Result *SignDataNonDel(char *data, uint32_t dataSize, char *privateKey,
+                       uint32_t keySize, bool needToValidateKey) {
+  try {
+    auto sign = BlockChainCore::Crypto::TryToSign(
+        BlockChainCore::ByteVector(data, data + dataSize),
+        std::string(privateKey, privateKey + keySize), needToValidateKey);
+    if (!sign.has_value()) {
+      return new Result(NestedToResult(sign.error()));
+    }
+    return new Result(DataToResult(std::move(sign.value())));
+  } catch (std::exception &ex) {
+    return new Result(ErrorStringToResult(ex.what()));
+  } catch (...) {
+    return new Result(ErrorStringToResult("Uknown error"));
+  }
+}
+// //! Проверка подписи произвольных данных без очистки переданных ресурсов
+// bool ValidateDataNonDel(char *data, uint32_t dataSize, char *pubKeyFirst,
+//                         uint32_t pubKeyFirstSize, char *pubKeySecond,
+//                         uint32_t pubKeySecondSize, bool needToValidateKey) {
+//   try {
+//     auto validateRes =
+//     BlockChainCore::Crypto::TryToVerifyECDSA_CryptoPP(const ByteVector
+//     &signature, const ByteVector &blockData, const std::pair<std::string,
+//     std::string> &publicKey, bool needToValidateKey)
+//   } catch (std::exception &ex) {
+//     return new Result(ErrorStringToResult(ex.what()));
+//   } catch (...) {
+//     return new Result(ErrorStringToResult("Uknown error"));
+//   }
+// }
+// //! Проверка подписи произвольных данных с очисткой переданных ресурсов
+// bool ValidateDataWithDel(char *data, uint32_t dataSize, char *pubKeyFirst,
+//                          uint32_t pubKeyFirstSize, char *pubKeySecond,
+//                          uint32_t pubKeySecondSize, bool needToValidateKey) {
+//   std::unique_ptr<char[]> deferData(data);
+//   std::unique_ptr<char[]> deferPubKey1(pubKeyFirst);
+//   std::unique_ptr<char[]> deferPubKey2(pubKeySecond);
+//   return ValidateDataNonDel(data, dataSize, pubKeyFirst, pubKeyFirstSize,
+//                             pubKeySecond, pubKeySecondSize,
+//                             needToValidateKey)
+// }

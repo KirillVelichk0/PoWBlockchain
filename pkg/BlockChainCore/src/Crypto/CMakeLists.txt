@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(CryptoProject)
 add_library(Crypto ./Crypto.h ./Crypto.cpp ./KeysOptimized.cpp)
+target_compile_options(Crypto PRIVATE -O3)
 target_include_directories(Crypto PUBLIC ../nested_error)
 target_link_libraries(Crypto NestedError cryptopp::cryptopp fmt::fmt tl::expected)
