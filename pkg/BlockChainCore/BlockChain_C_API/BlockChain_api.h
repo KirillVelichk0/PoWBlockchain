@@ -2,8 +2,8 @@
 #include <stdint.h>
 extern "C" {
 
-struct Result;
-struct PublicKeyResult;
+class Result;
+class PublicKeyResult;
 //! Проверяем корректность подписи блока. Всегда возвращает пустой data. В
 //! случае ошибки возвращает ошибку. Очищает переданные указатели
 Result *ValidateBlockSignWithDel(char *blockInProtoFormat, uint32_t blockSize,

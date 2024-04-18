@@ -3,17 +3,26 @@
 #include "BlockChain_CXX_API/BlockChain_api.h"
 #include <cstring>
 #include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <strstream>
-struct Result {
-  std::shared_ptr<std::string> data;
-  std::shared_ptr<std::string> error;
+class Result {
+public:
+  std::unique_ptr<std::string> data;
+  std::unique_ptr<std::string> error;
+  ~Result() = default;
+  Result() = default;
+  Result(Result &&another) = default;
 };
 using PKType = std::pair<std::string, std::string>;
-struct PublicKeyResult {
-  std::shared_ptr<PKType> key;
-  std::shared_ptr<std::string> error;
+class PublicKeyResult {
+public:
+  std::unique_ptr<PKType> key;
+  std::unique_ptr<std::string> error;
+  ~PublicKeyResult() = default;
+  PublicKeyResult() = default;
+  PublicKeyResult(PublicKeyResult &&other) = default;
 };
 #ifdef WASMBUILD
 
@@ -24,13 +33,11 @@ auto GetFromProto_C(char *data, uint32_t dataSize) {
 
 tl::expected<std::string, BlockChainCore::NestedError>
 ToProto_C(BlockChainCore::Block &block) {
-  std::ostrstream oss;
+  std::ostringstream oss;
   return BlockChainCore::ConvertToProto(block, oss)
       .and_then([&oss](std::true_type &&_)
                     -> tl::expected<std::string, BlockChainCore::NestedError> {
-        auto sz = oss.pcount();
-        auto *data = oss.str();
-        return std::string(data, data + sz);
+        return oss.str();
       })
       .or_else([](BlockChainCore::NestedError &&err)
                    -> tl::expected<std::string, BlockChainCore::NestedError> {
@@ -42,62 +49,62 @@ auto GetFromProto_C(char *data, uint32_t dataSize) {
   return BlockChainCore::CreateFromProto(std::string(data, data + dataSize));
 }
 tl::expected<std::string, BlockChainCore::NestedError>
-ToProro_C(BlockChainCore::Block &block) {
+ToProto_C(BlockChainCore::Block &block) {
   return BlockChainCore::ConvertToProto(block);
 }
 #endif
 Result NestedToResult(const BlockChainCore::NestedError &nested) {
   try {
     Result result;
-    result.error = std::make_shared<std::string>(nested.GetFullErrorMsg());
+    result.error = std::make_unique<std::string>(nested.GetFullErrorMsg());
     return result;
   } catch (...) {
     Result result;
-    result.error = std::make_shared<std::string>("Nested convertion error");
+    result.error = std::make_unique<std::string>("Nested convertion error");
     return result;
   }
 }
 Result ErrorStringToResult(const std::string &error) {
   try {
     Result result;
-    result.error = std::make_shared<std::string>(error);
+    result.error = std::make_unique<std::string>(error);
     return result;
   } catch (...) {
     Result result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
 Result ErrorStringToResult(std::string &&error) {
   try {
     Result result;
-    result.error = std::make_shared<std::string>(std::move(error));
+    result.error = std::make_unique<std::string>(std::move(error));
     return result;
   } catch (...) {
     Result result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
 Result DataToResult(const std::string &data) {
   try {
     Result result;
-    result.data = std::make_shared<std::string>(data);
+    result.data = std::make_unique<std::string>(data);
     return result;
   } catch (...) {
     Result result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
 Result DataToResult(std::string &&data) {
   try {
     Result result;
-    result.data = std::make_shared<std::string>(std::move(data));
+    result.data = std::make_unique<std::string>(std::move(data));
     return result;
   } catch (...) {
     Result result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
@@ -105,11 +112,11 @@ Result DataToResult(const BlockChainCore::ByteVector &data) {
   try {
     Result result;
     result.data =
-        std::make_shared<std::string>(std::string(data.begin(), data.end()));
+        std::make_unique<std::string>(std::string(data.begin(), data.end()));
     return result;
   } catch (...) {
     Result result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
@@ -117,44 +124,44 @@ Result DataToResult(BlockChainCore::ByteVector &&data) {
   try {
     Result result;
     result.data =
-        std::make_shared<std::string>(std::string(data.begin(), data.end()));
+        std::make_unique<std::string>(std::string(data.begin(), data.end()));
     return result;
   } catch (...) {
     Result result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
 PublicKeyResult NestedToPKResult(const BlockChainCore::NestedError &nested) {
   try {
     PublicKeyResult result;
-    result.error = std::make_shared<std::string>(nested.GetFullErrorMsg());
+    result.error = std::make_unique<std::string>(nested.GetFullErrorMsg());
     return result;
   } catch (...) {
     PublicKeyResult result;
-    result.error = std::make_shared<std::string>("Nested convertion error");
+    result.error = std::make_unique<std::string>("Nested convertion error");
     return result;
   }
 }
 PublicKeyResult ErrorStringToPKResult(const std::string &error) {
   try {
     PublicKeyResult result;
-    result.error = std::make_shared<std::string>(error);
+    result.error = std::make_unique<std::string>(error);
     return result;
   } catch (...) {
     PublicKeyResult result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
 PublicKeyResult ErrorStringToPKResult(std::string &&error) {
   try {
     PublicKeyResult result;
-    result.error = std::make_shared<std::string>(std::move(error));
+    result.error = std::make_unique<std::string>(std::move(error));
     return result;
   } catch (...) {
     PublicKeyResult result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
@@ -162,22 +169,22 @@ PublicKeyResult
 DataToPKResult(const std::pair<std::string, std::string> &data) {
   try {
     PublicKeyResult result;
-    result.key = std::make_shared<PKType>(data);
+    result.key = std::make_unique<PKType>(data);
     return result;
   } catch (...) {
     PublicKeyResult result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }
 PublicKeyResult DataToPKResult(std::pair<std::string, std::string> &&data) {
   try {
     PublicKeyResult result;
-    result.key = std::make_shared<PKType>(std::move(data));
+    result.key = std::make_unique<PKType>(std::move(data));
     return result;
   } catch (...) {
     PublicKeyResult result;
-    result.error = std::make_shared<std::string>("String convertion error");
+    result.error = std::make_unique<std::string>("String convertion error");
     return result;
   }
 }

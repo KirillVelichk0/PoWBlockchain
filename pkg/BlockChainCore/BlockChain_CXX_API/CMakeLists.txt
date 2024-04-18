@@ -3,7 +3,7 @@ project(BlockchainCoreCxxAPIProject)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 add_library(CXXAPILib ./BlockChain_api.h ./BlockChain_api.cpp)
-target_compile_options(CXXAPILib PRIVATE -O3)
+target_compile_options(CXXAPILib PRIVATE -O2)
 target_include_directories(CXXAPILib PUBLIC ../src)
 target_link_libraries(CXXAPILib PUBLIC Block)
 

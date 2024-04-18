@@ -69,7 +69,8 @@ TEST(BlockChainCoreTests_CAPI, MineBlockAndValidate) {
   auto pkDeleter = [](PublicKeyResult *pk) { FreePK(pk); };
   using ResDeleter = decltype(resDeleter);
   using PKDeleter = decltype(pkDeleter);
-  std::unique_ptr<Result, ResDeleter> privateKey(GeneratePrivateKey());
+  std::unique_ptr<Result, ResDeleter> privateKey(GeneratePrivateKey(),
+                                                 resDeleter);
   ASSERT_TRUE(privateKey != nullptr);
   auto pkSize = GetResultDataSize(privateKey.get());
   ASSERT_TRUE(pkSize > 0);
@@ -113,4 +114,17 @@ TEST(BlockChainCoreTests_CAPI, MineBlockAndValidate) {
   std::unique_ptr<char[]> validatedInitError(
       GetResultError(validatedInit.get()));
   ASSERT_TRUE(validatedInitError.get() != nullptr);
+}
+static const auto resDeleter = [](Result *res) { FreeResult(res); };
+using ResDeleter = decltype(resDeleter);
+TEST(BlockChainCoreTests_CAPI, InitBlockTest) {
+  for (auto i = 0; i < 1000; i++) {
+    std::unique_ptr<Result, ResDeleter> startBlock(InitStartBlock(),
+                                                   resDeleter);
+    ASSERT_TRUE(startBlock != nullptr);
+    auto startBlockSz = GetResultDataSize(startBlock.get());
+    ASSERT_TRUE(startBlockSz > 0);
+    std::unique_ptr<char[]> startBlockData(GetResultData(startBlock.get()));
+    ASSERT_TRUE(startBlockData != nullptr);
+  }
 }

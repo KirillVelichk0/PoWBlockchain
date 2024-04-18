@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 project(NestedErrorProject)
 add_library(NestedError ./nested_error.h ./nested_error.cpp)
-target_compile_options(NestedError PRIVATE -O3)
+target_compile_options(NestedError PRIVATE -O2)
 target_link_libraries(NestedError fmt::fmt)
