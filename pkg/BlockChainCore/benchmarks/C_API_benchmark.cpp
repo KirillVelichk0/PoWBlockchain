@@ -58,7 +58,7 @@ static void BM_CAPIGenerateBlockWithoutKeyCheck(benchmark::State &state) {
   for (auto _ : state) {
     UniqueRes mined(MineBlockNonDel((char *)data.data(), data.size(),
                                     startBlockData.get(), startBlockSz,
-                                    prData.get(), prKeySz, 0, 1000, false),
+                                    prData.get(), prKeySz, false),
                     resDeleter);
   }
 }
@@ -75,7 +75,7 @@ static void BM_CAPIGenerateBlockWithKeyCheck(benchmark::State &state) {
   for (auto _ : state) {
     UniqueRes mined(MineBlockNonDel((char *)data.data(), data.size(),
                                     startBlockData.get(), startBlockSz,
-                                    prData.get(), prKeySz, 0, 1000, true),
+                                    prData.get(), prKeySz, true),
                     resDeleter);
   }
 }

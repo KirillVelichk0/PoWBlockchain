@@ -60,21 +60,17 @@ void *WASMInitStartBlock() { return InitStartBlock(); }
 void *WASMMineBlockWithDel(char *data, uint32_t dataSize,
                            char *prevBlockInProtoFormat, uint32_t prevBlockSize,
                            char *privateKey, uint32_t keySize,
-                           uint32_t complexity, uint32_t miningTime,
                            bool needToValidateKey) {
   return MineBlockWithDel(data, dataSize, prevBlockInProtoFormat, prevBlockSize,
-                          privateKey, keySize, complexity, miningTime,
-                          needToValidateKey);
+                          privateKey, keySize, needToValidateKey);
 }
 //! Майнит блок, возвращает его в формате proto. Не очищает переданные указатели
 void *WASMMineBlockNonDel(char *data, uint32_t dataSize,
                           char *prevBlockInProtoFormat, uint32_t prevBlockSize,
                           char *privateKey, uint32_t keySize,
-                          uint32_t complexity, uint32_t miningTime,
                           bool needToValidateKey) {
   return MineBlockNonDel(data, dataSize, prevBlockInProtoFormat, prevBlockSize,
-                         privateKey, keySize, complexity, miningTime,
-                         needToValidateKey);
+                         privateKey, keySize, needToValidateKey);
 }
 void WASMFreeResult(void *result) { FreeResult((Result *)result); }
 void WASMFreePK(void *publicKey) { FreePK((PublicKeyResult *)publicKey); }

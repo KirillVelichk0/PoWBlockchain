@@ -5,25 +5,32 @@ TEST(BlockChainCoreTests_CXXAPI, MineBlockWithoutComplexity) {
   auto keys = BlockChainCore::GenerateKeys();
   auto startBlock = BlockChainCore::Block::init();
   auto mined = BlockChainCore::MineBlockWithStandartMiner(
-      {0, 1, 2, 3, 4}, keys.first, startBlock, 0, std::chrono::nanoseconds(100),
-      true);
+      {0, 1, 2, 3, 4}, keys.first, startBlock, true);
   ASSERT_TRUE(mined.has_value());
   mined = BlockChainCore::MineBlockWithStandartMiner(
-      {0, 1, 2, 3}, std::move(keys.first), std::move(startBlock), 0,
-      std::chrono::nanoseconds(100), false);
+      {0, 1, 2, 3}, std::move(keys.first), std::move(startBlock), false);
   ASSERT_TRUE(mined.has_value());
 }
+const auto EmptyCallback = [](const BlockChainCore::Block &,
+                              std::array<unsigned char, 32> &&) {
+  // nothing to do
+};
+const auto CounterCallbackFactory = [](std::uint32_t &counter) {
+  return [&counter](const BlockChainCore::Block &,
+                    BlockChainCore::Crypto::SHA256Hash &&) { counter++; };
+};
 TEST(BlockChainCoreTests_CXXAPI, MineBlockWithComplexity) {
   auto keys = BlockChainCore::GenerateKeys();
   auto startBlock = BlockChainCore::Block::init();
-  auto mined = BlockChainCore::MineBlockWithStandartMiner(
-      {0, 1, 2, 3, 4}, keys.first, startBlock, 1, std::chrono::seconds(1),
-      true);
+  auto mined = BlockChainCore::MineBlockWithExternalMiner(
+      {0, 1, 2, 3, 4}, keys.first, startBlock, 1, std::chrono::seconds(1), true,
+      &BlockChainCore::Crypto::GenerateSHA256, EmptyCallback);
   ASSERT_TRUE(mined.has_value());
 
-  mined = BlockChainCore::MineBlockWithStandartMiner(
+  mined = BlockChainCore::MineBlockWithExternalMiner(
       {0, 1, 2, 3}, std::move(keys.first), std::move(startBlock), 1,
-      std::chrono::seconds(1), false);
+      std::chrono::seconds(1), false, &BlockChainCore::Crypto::GenerateSHA256,
+      EmptyCallback);
   ASSERT_TRUE(mined.has_value());
 }
 //! Этот тест может не пройти, т.к. блок, теоретически может не успеть
@@ -32,10 +39,13 @@ TEST(BlockChainCoreTests_CXXAPI, MineBlockWithComplexity) {
 TEST(BlockChainCoreTests_CXXAPI, CheckBlockComplexity) {
   auto keys = BlockChainCore::GenerateKeys();
   auto startBlock = BlockChainCore::Block::init();
-  auto mined = BlockChainCore::MineBlockWithStandartMiner(
+  std::uint32_t counter = 0;
+  auto mined = BlockChainCore::MineBlockWithExternalMiner(
       {0, 1, 2, 3, 4}, keys.first, startBlock, 3, std::chrono::seconds(180),
-      true);
+      true, &BlockChainCore::Crypto::GenerateSHA256,
+      CounterCallbackFactory(counter));
   ASSERT_TRUE(mined.has_value());
   ASSERT_TRUE(BlockChainCore::IsBlockMinedCorrectly(mined.value(), 3));
   ASSERT_FALSE(BlockChainCore::IsBlockMinedCorrectly(mined.value(), 25));
+  ASSERT_TRUE(counter > 0);
 }

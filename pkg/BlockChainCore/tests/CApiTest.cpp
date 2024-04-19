@@ -50,8 +50,7 @@ TEST(BlockChainCoreTests_CAPI, ValidateBlock) {
   auto initBlock = BlockChainCore::InitStartBlock();
   auto keys = BlockChainCore::GenerateKeys();
   auto mined = BlockChainCore::MineBlockWithStandartMiner(
-      {0, 1, 3, 2}, keys.first, initBlock, 0, std::chrono::nanoseconds(0),
-      false);
+      {0, 1, 3, 2}, keys.first, initBlock, false);
   auto proto = BlockChainCore::ConvertToProto(mined.value());
   std::unique_ptr<Result, void (*)(Result *)> validateRes(
       ValidateBlockSignNonDel(proto.value().data(), proto.value().size(),
@@ -82,9 +81,9 @@ TEST(BlockChainCoreTests_CAPI, MineBlockAndValidate) {
   ASSERT_TRUE(startBlockSz > 0);
   std::unique_ptr<char[]> startBlockData(GetResultData(startBlock.get()));
   ASSERT_TRUE(startBlockData != nullptr);
-  std::unique_ptr<Result, ResDeleter> minedBlock(MineBlockNonDel(
-      data.data(), data.size(), startBlockData.get(), startBlockSz,
-      privateKeyData.get(), pkSize, 0, 100, true));
+  std::unique_ptr<Result, ResDeleter> minedBlock(
+      MineBlockNonDel(data.data(), data.size(), startBlockData.get(),
+                      startBlockSz, privateKeyData.get(), pkSize, true));
   ASSERT_TRUE(minedBlock != nullptr);
   auto minedBlockSz = GetResultDataSize(minedBlock.get());
   ASSERT_TRUE(minedBlockSz > 0);

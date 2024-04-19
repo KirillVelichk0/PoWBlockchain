@@ -301,20 +301,18 @@ Result *InitStartBlock() {
 Result *MineBlockWithDel(char *data, uint32_t dataSize,
                          char *prevBlockInProtoFormat, uint32_t prevBlockSize,
                          char *privateKey, uint32_t keySize,
-                         uint32_t complexity, uint32_t miningTime,
                          bool needToValidateKey) {
   std::unique_ptr<char[]> deferData(data);
   std::unique_ptr<char[]> deferPrevBlock(prevBlockInProtoFormat);
   std::unique_ptr<char[]> deferPrivateKey(privateKey);
   return MineBlockNonDel(data, dataSize, prevBlockInProtoFormat, prevBlockSize,
-                         privateKey, keySize, complexity, miningTime,
-                         needToValidateKey);
+                         privateKey, keySize, needToValidateKey);
 }
 //! Майнит блок, возвращает его в формате proto. Не очищает переданные указатели
 Result *MineBlockNonDel(char *data, uint32_t dataSize,
                         char *prevBlockInProtoFormat, uint32_t prevBlockSize,
-                        char *privateKey, uint32_t keySize, uint32_t complexity,
-                        uint32_t miningTime, bool needToValidateKey) {
+                        char *privateKey, uint32_t keySize,
+                        bool needToValidateKey) {
   try {
     if (data == nullptr || dataSize < 2 || prevBlockInProtoFormat == nullptr ||
         prevBlockSize < 2 || privateKey == nullptr || keySize < 2) {
@@ -327,7 +325,7 @@ Result *MineBlockNonDel(char *data, uint32_t dataSize,
     auto minedBlock = BlockChainCore::MineBlockWithStandartMiner(
         BlockChainCore::Crypto::ByteVector(data, data + dataSize),
         std::string(privateKey, privateKey + keySize), block.value(),
-        complexity, std::chrono::nanoseconds(miningTime), needToValidateKey);
+        needToValidateKey);
     if (!minedBlock.has_value()) {
       return new Result(NestedToResult(minedBlock.error()));
     }
