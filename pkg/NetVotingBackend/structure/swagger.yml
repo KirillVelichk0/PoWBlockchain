@@ -1,0 +1,189 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: Электронное Голосование API
+  description: API для системы электронного голосования
+basePath: /v1
+schemes:
+  - https
+produces:
+  - application/json
+consumes:
+  - application/json
+
+paths:
+  /voting:
+    get:
+      summary: Получение списка возможных голосований
+      responses:
+        200:
+          description: Успешный запрос
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VotingList"
+        400:
+          description: Некорректный запрос
+        500:
+          description: Ошибка сервера
+
+  /voting/{voting_id}/total_votes:
+    get:
+      summary: Просмотр общего числа голосов в конкретном голосовании
+      parameters:
+        - name: voting_id
+          in: path
+          description: ID голосования
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Успешный запрос
+          schema:
+            type: object
+            properties:
+              total_votes:
+                type: integer
+              specific_votes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: id варианта ответа
+                    name:
+                      type: string
+                      description: строковое представление варианта ответа
+                    voted:
+                      type: integer
+                      description: число голосов за данный вариант ответа
+        400:
+          description: Некорректный запрос
+        500:
+          description: Ошибка сервера
+
+  /voting/{voting_id}/vote:
+    post:
+      summary: Оставить свой голос в голосовании
+      parameters:
+        - name: voting_id
+          in: path
+          description: ID голосования
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: Данные для голосования
+          required: true
+          schema:
+            $ref: "#/definitions/VoteRequest"
+      responses:
+        200:
+          description: Успешный запрос
+        400:
+          description: Некорректный запрос
+        500:
+          description: Ошибка сервера
+
+  /voting/{voting_id}/voters:
+    get:
+      summary: Запросить список идентификаторов пользователей, проголосовавших в голосовании
+      parameters:
+        - name: voting_id
+          in: path
+          description: ID голосования
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Успешный запрос
+          schema:
+            type: array
+            items:
+              type: string
+              description: Публичный ключ пользователя
+        400:
+          description: Некорректный запрос
+        500:
+          description: Ошибка сервера
+
+  /voting/{voting_id}/user_vote/{user_id}:
+    get:
+      summary: Просмотр голоса конкретного пользователя
+      parameters:
+        - name: voting_id
+          in: path
+          description: ID голосования
+          required: true
+          type: integer
+        - name: user_id
+          in: path
+          description: Публичный ключ пользователя
+          required: true
+          type: string
+      responses:
+        200:
+          description: Успешный запрос
+          schema:
+            $ref: "#/definitions/UserVote"
+        400:
+          description: Некорректный запрос
+        500:
+          description: Ошибка сервера
+
+definitions:
+  VotingList:
+    type: array
+    items:
+      $ref: "#/definitions/Voting"
+  Voting:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Уникальный идентификатор голосования
+      title:
+        type: string
+        description: Название голосования
+      description:
+        type: string
+        description: Описание голосования
+      options:
+        type: array
+        items:
+          $ref: "#/definitions/VotingOption"
+          
+  VotingOption:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Уникальный цифровой идентификатор варианта ответа
+      title:
+        type: string
+        description: Строковое представление варианта ответа
+
+  VoteRequest:
+    type: object
+    properties:
+      vote:
+        type: integer
+        description: вариант, за который отдается голос
+      timestamp:
+        type: integer
+        description: Метка времени
+      user_id:
+        type: string
+        description: Публичный ключ пользователя
+      signature:
+        type: string
+        description: ЭЦП над данными
+
+  UserVote:
+    type: object
+    properties:
+      VoteBlock:
+        type: string
+        description: блок с голосом пользователя, сериализованный в protobuf
+
