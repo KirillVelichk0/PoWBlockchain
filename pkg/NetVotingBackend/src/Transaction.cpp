@@ -7,7 +7,7 @@ std::unique_ptr<TransactionQueue> TransactionQueue::Create() {
 }
 TransactionQueue::TransactionQueue() : queue(100) {}
 TransactionQueue::~TransactionQueue() {
-  std::cout << "Queue destructor\n";
+  LOG_DEBUG << "Lockfree queue destructor";
   while (this->pop() != nullptr) {
   }
 }
@@ -15,7 +15,7 @@ bool TransactionQueue::push(std::unique_ptr<VoteTransaction> &&vote) {
   if (vote == nullptr) {
     return false;
   }
-  std::cout << "Pushing\n";
+  LOG_DEBUG << "Lockfree queue push";
   bool result = true;
   VoteTransaction *ptr = vote.get();
   // Я не уверен, что queue.push не может выкидывать исключений
@@ -28,7 +28,6 @@ bool TransactionQueue::push(std::unique_ptr<VoteTransaction> &&vote) {
   };
   try {
     if (!safePush(vote.release(), this->queue)) {
-      std::cout << "Badpush\n";
       LOG_WARN << "Cant push data to lockfree queue";
       delete ptr;
       result = false;
@@ -42,11 +41,11 @@ std::unique_ptr<VoteTransaction> TransactionQueue::pop() {
   std::unique_ptr<VoteTransaction> result;
   VoteTransaction *ptr;
   bool isOk = this->queue.pop(ptr); // если исключение, то ничего не поделаешь
-  std::cout << "Pop!\n"; // (с учетом всех ограничений не должно)
+  LOG_DEBUG << "Lockfree queue pop"; // (с учетом всех ограничений не должно)
   if (isOk) {
     result.reset(ptr);
   } else {
-    std::cout << "BADPOP\n";
+    LOG_DEBUG << "Unsuccess lockfree queue pop";
   }
   return result;
 }

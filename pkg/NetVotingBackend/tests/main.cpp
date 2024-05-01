@@ -3,7 +3,6 @@
 #include "../src/BlockControllerLF.h"
 #include "../src/ContolChannelSimple.h"
 #include <drogon/drogon_test.h>
-#include <iostream>
 std::shared_ptr<Voting::ABlockController>
 PrepareController(std::string &result) {
   std::uint64_t id = 3;
@@ -26,6 +25,7 @@ PrepareChannel(std::shared_ptr<Voting::ABlockController> controller) {
 }
 DROGON_TEST(SimpleHandlingTest) {
   std::string handlingData;
+  CHECK(handlingData.size() == 0);
   auto controller = PrepareController(handlingData);
   auto channel = PrepareChannel(controller);
   auto createVote1 = []() {
@@ -44,11 +44,11 @@ DROGON_TEST(SimpleHandlingTest) {
   channel->GetBlockMandate()->AddTransaction(vote1);
   controller->ProcessBlockCreationEvent();
   CHECK(handlingData.size() != 0);
-  std::cout << handlingData << "\n";
+  LOG_INFO << handlingData;
   channel->GetBlockMandate()->AddTransaction(createVote1());
   controller->ProcessBlockCreationEvent();
 }
 int main(int argc, char **argv) {
-  drogon::app().setLogPath("./");
+  // drogon::app().setLogPath("./");
   return drogon::test::run(argc, argv);
 }

@@ -1,7 +1,7 @@
 #include "BlockControllerLF.h"
 #include "ATransactionsContainer.h"
 #include <atomic>
-#include <iostream>
+#include <drogon/drogon.h>
 #include <thread>
 namespace Voting {
 void BlockControllerLF::CheckAndProcessNewTransactionsImpl(
@@ -9,13 +9,13 @@ void BlockControllerLF::CheckAndProcessNewTransactionsImpl(
   bool goNext = true;
   auto queue = mandate->GetQueue();
   while (goNext) {
-    std::cout << "TryingPop\n";
+    LOG_DEBUG << "Trying Pop in transaction process";
     auto transaction = queue->pop();
     if (transaction == nullptr) {
-      std::cout << "UnsuccessTry\n";
+      LOG_DEBUG << "UnsuccessTry in transaction process";
       goNext = false;
     } else {
-      std::cout << "SuccessTry\n";
+      LOG_DEBUG << "SuccessTry in transaction process";
       this->transactions->AddTransaction(std::move(transaction));
     }
   }

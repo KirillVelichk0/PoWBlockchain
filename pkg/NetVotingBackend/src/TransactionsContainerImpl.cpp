@@ -22,17 +22,14 @@ bool TryToAppenTransactionToJson(Json::Value &jsonObj,
                                       transaction.signature.size(), true, true);
       actualValue["signature"] = std::move(signatureEncoded);
     }
-    std::cout << result << " asdf\n";
     return result;
   } catch (std::exception &error) {
-    std::cout << "BADASDF\n";
 
     LOG_ERROR << "Cant process appending transaction with voting id "
               << transaction.votingId << " and voter id " << transaction.voterId
               << " because catched exception " << error.what();
     throw error;
   } catch (...) {
-    std::cout << "BADASDF\n";
     LOG_ERROR << "Cant process appending transaction with voting id "
               << transaction.votingId << " and voter id " << transaction.voterId
               << " because catched unknown exception";
