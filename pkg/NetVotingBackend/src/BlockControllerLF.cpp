@@ -64,10 +64,10 @@ void BlockControllerLF::ProcessBlockCreationEvent() {
                              std::memory_order_acquire);
   while (true) {
     auto oldMandate = weakOldMandate.lock();
+    this->CheckAndProcessNewTransactionsImpl(oldMandate);
     if (oldMandate == nullptr) {
       break;
     } else {
-      this->CheckAndProcessNewTransactionsImpl(oldMandate);
       std::this_thread::yield();
     }
   }
