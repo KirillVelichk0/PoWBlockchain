@@ -2,23 +2,27 @@
 #include "ABlockController.h"
 #include "ATransactionsContainer.h"
 #include "BlockMandateLF.h"
+#include <functional>
 namespace Voting {
 class BlockControllerLF : public ABlockController {
 private:
   std::uint64_t curBlockId;
   std::shared_ptr<BlockMandateLF> curMandate;
   std::unique_ptr<ATransactionsContainer> transactions;
+  std::function<void(std::string &&)> callback;
   void
   CheckAndProcessNewTransactionsImpl(std::shared_ptr<BlockMandateLF> mandate);
   BlockControllerLF(std::uint64_t curBlockId,
                     const std::vector<std::shared_ptr<VoteTransaction>>
-                        &notProcessedTransactions);
+                        &notProcessedTransactions,
+                    std::function<void(std::string &&)> &callback);
 
 public:
   static std::unique_ptr<BlockControllerLF>
   Create(std::uint64_t curBlockId,
          const std::vector<std::shared_ptr<VoteTransaction>>
-             &notProcessedTransactions);
+             &notProcessedTransactions,
+         std::function<void(std::string &&)> &callback);
   ~BlockControllerLF() = default;
   BlockControllerLF(const BlockControllerLF &) = delete;
   BlockControllerLF(BlockControllerLF &&) = delete;

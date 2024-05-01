@@ -2,7 +2,6 @@
 #include "ATransactionsContainer.h"
 #include <atomic>
 #include <thread>
-// Просто на потестить. Потом уберу
 namespace Voting {
 void BlockControllerLF::CheckAndProcessNewTransactionsImpl(
     std::shared_ptr<BlockMandateLF> mandate) {
@@ -20,9 +19,10 @@ void BlockControllerLF::CheckAndProcessNewTransactionsImpl(
 BlockControllerLF::BlockControllerLF(
     std::uint64_t curBlockId,
     const std::vector<std::shared_ptr<VoteTransaction>>
-        &notProcessedTransactions)
+        &notProcessedTransactions,
+    std::function<void(std::string &&)> &callback)
     : curBlockId(curBlockId), curMandate(BlockMandateLF::Create(curBlockId)),
-      transactions(CreateStandartTransactionContainer()) {
+      transactions(CreateStandartTransactionContainer()), callback(callback) {
   for (auto &transaction : notProcessedTransactions) {
     this->transactions->AddTransaction(transaction);
   }
@@ -30,9 +30,10 @@ BlockControllerLF::BlockControllerLF(
 std::unique_ptr<BlockControllerLF>
 BlockControllerLF::Create(std::uint64_t curBlockId,
                           const std::vector<std::shared_ptr<VoteTransaction>>
-                              &notProcessedTransactions) {
+                              &notProcessedTransactions,
+                          std::function<void(std::string &&)> &callback) {
   return std::unique_ptr<BlockControllerLF>(
-      new BlockControllerLF(curBlockId, notProcessedTransactions));
+      new BlockControllerLF(curBlockId, notProcessedTransactions, callback));
 }
 std::shared_ptr<ABlockMandate> BlockControllerLF::GetCurBlockMandate() const {
   std::shared_ptr<BlockMandateLF> safeCopy;
@@ -63,6 +64,7 @@ void BlockControllerLF::ProcessBlockCreationEvent() {
       std::this_thread::yield();
     }
   }
+  callback(this->transactions->GetFinalTransactionBlock());
 }
 void BlockControllerLF::CheckAndProcessNewTransactions() {
   std::shared_ptr<BlockMandateLF> safeCopy;

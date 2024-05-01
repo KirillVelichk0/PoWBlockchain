@@ -1,8 +1,10 @@
+#include <drogon/HttpSimpleController.h>
 #include <drogon/drogon.h>
 #include <filesystem>
 #include <string>
 #include <trantor/utils/Logger.h>
 namespace fs = std::filesystem;
+template <class T> using Contr = drogon::HttpSimpleController<T>;
 int main() {
   auto pathToDrogonConf = (fs::current_path().parent_path())
                               .append("configs")

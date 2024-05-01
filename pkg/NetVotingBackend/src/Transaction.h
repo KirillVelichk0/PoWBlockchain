@@ -7,10 +7,12 @@
 namespace Voting {
 struct VoteTransaction {
   std::uint32_t vote;
+  std::uint64_t votingId;
   std::uint64_t timestamp;
   std::string voterId; // public.x + . + public.y
   std::vector<unsigned char> signature;
 };
+
 class TransactionQueue {
 private:
   boost::lockfree::queue<VoteTransaction *> queue;
