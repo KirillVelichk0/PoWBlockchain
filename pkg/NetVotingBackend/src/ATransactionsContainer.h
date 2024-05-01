@@ -4,7 +4,8 @@
 namespace Voting {
 class ATransactionsContainer {
 public:
-  virtual ~ATransactionsContainer() = 0;
+  ATransactionsContainer() = default;
+  virtual ~ATransactionsContainer() {}
   virtual bool AddTransaction(std::unique_ptr<VoteTransaction> &&vote) = 0;
   virtual bool AddTransaction(std::shared_ptr<VoteTransaction> vote) = 0;
   virtual std::string GetFinalTransactionBlock() = 0;

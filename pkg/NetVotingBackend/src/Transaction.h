@@ -16,7 +16,7 @@ struct VoteTransaction {
 class TransactionQueue {
 private:
   boost::lockfree::queue<VoteTransaction *> queue;
-  TransactionQueue() = default;
+  TransactionQueue();
 
 public:
   static std::unique_ptr<TransactionQueue> Create();

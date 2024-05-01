@@ -1,6 +1,7 @@
 #include "BlockControllerLF.h"
 #include "ATransactionsContainer.h"
 #include <atomic>
+#include <iostream>
 #include <thread>
 namespace Voting {
 void BlockControllerLF::CheckAndProcessNewTransactionsImpl(
@@ -8,10 +9,13 @@ void BlockControllerLF::CheckAndProcessNewTransactionsImpl(
   bool goNext = true;
   auto queue = mandate->GetQueue();
   while (goNext) {
+    std::cout << "TryingPop\n";
     auto transaction = queue->pop();
     if (transaction == nullptr) {
+      std::cout << "UnsuccessTry\n";
       goNext = false;
     } else {
+      std::cout << "SuccessTry\n";
       this->transactions->AddTransaction(std::move(transaction));
     }
   }
@@ -37,17 +41,20 @@ BlockControllerLF::Create(std::uint64_t curBlockId,
 }
 std::shared_ptr<ABlockMandate> BlockControllerLF::GetCurBlockMandate() const {
   std::shared_ptr<BlockMandateLF> safeCopy;
-  safeCopy = std::atomic_load_explicit(&safeCopy, std::memory_order_release);
+  safeCopy =
+      std::atomic_load_explicit(&this->curMandate, std::memory_order_release);
   return std::dynamic_pointer_cast<ABlockMandate>(safeCopy);
 }
 void BlockControllerLF::ProcessBlockCreationEvent() {
+  this->CheckAndProcessNewTransactions();
   this->curBlockId++;
   std::weak_ptr<BlockMandateLF> weakOldMandate;
   {
     std::shared_ptr<BlockMandateLF> safeCopy;
     // переменная меняется только в этом потоке. По идее, можно считывать
     // неатомарно, но не будем так делать
-    safeCopy = std::atomic_load_explicit(&safeCopy, std::memory_order_relaxed);
+    safeCopy =
+        std::atomic_load_explicit(&this->curMandate, std::memory_order_relaxed);
     weakOldMandate = safeCopy;
   }
 
@@ -68,7 +75,8 @@ void BlockControllerLF::ProcessBlockCreationEvent() {
 }
 void BlockControllerLF::CheckAndProcessNewTransactions() {
   std::shared_ptr<BlockMandateLF> safeCopy;
-  safeCopy = std::atomic_load_explicit(&safeCopy, std::memory_order_release);
+  safeCopy =
+      std::atomic_load_explicit(&this->curMandate, std::memory_order_release);
   this->CheckAndProcessNewTransactionsImpl(safeCopy);
 }
 

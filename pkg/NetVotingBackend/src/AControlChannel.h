@@ -3,7 +3,8 @@
 namespace Voting {
 class AControllChannel {
 public:
-  virtual ~AControllChannel() = 0;
+  AControllChannel() = default;
+  virtual ~AControllChannel() {}
   virtual std::shared_ptr<ABlockMandate> GetBlockMandate() = 0;
 };
 } // namespace Voting

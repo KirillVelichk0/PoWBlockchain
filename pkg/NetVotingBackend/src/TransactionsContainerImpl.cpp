@@ -20,16 +20,19 @@ bool TryToAppenTransactionToJson(Json::Value &jsonObj,
       auto signatureEncoded =
           drogon::utils::base64Encode(transaction.signature.data(),
                                       transaction.signature.size(), true, true);
-      actualValue["signature"] = std::string(transaction.signature.begin(),
-                                             transaction.signature.end());
+      actualValue["signature"] = std::move(signatureEncoded);
     }
+    std::cout << result << " asdf\n";
     return result;
   } catch (std::exception &error) {
+    std::cout << "BADASDF\n";
+
     LOG_ERROR << "Cant process appending transaction with voting id "
               << transaction.votingId << " and voter id " << transaction.voterId
               << " because catched exception " << error.what();
     throw error;
   } catch (...) {
+    std::cout << "BADASDF\n";
     LOG_ERROR << "Cant process appending transaction with voting id "
               << transaction.votingId << " and voter id " << transaction.voterId
               << " because catched unknown exception";
