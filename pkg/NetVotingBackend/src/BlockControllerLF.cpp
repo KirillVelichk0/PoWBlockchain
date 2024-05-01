@@ -5,9 +5,8 @@
 #include <thread>
 namespace Voting {
 void BlockControllerLF::CheckAndProcessNewTransactionsImpl(
-    std::shared_ptr<BlockMandateLF> mandate) {
+    std::shared_ptr<TransactionQueue> queue) {
   bool goNext = true;
-  auto queue = mandate->GetQueue();
   while (goNext) {
     LOG_DEBUG << "Trying Pop in transaction process";
     auto transaction = queue->pop();
@@ -49,6 +48,7 @@ void BlockControllerLF::ProcessBlockCreationEvent() {
   this->CheckAndProcessNewTransactions();
   this->curBlockId++;
   std::weak_ptr<BlockMandateLF> weakOldMandate;
+  std::shared_ptr<TransactionQueue> oldQueue;
   {
     std::shared_ptr<BlockMandateLF> safeCopy;
     // переменная меняется только в этом потоке. По идее, можно считывать
@@ -56,6 +56,7 @@ void BlockControllerLF::ProcessBlockCreationEvent() {
     safeCopy =
         std::atomic_load_explicit(&this->curMandate, std::memory_order_relaxed);
     weakOldMandate = safeCopy;
+    oldQueue = safeCopy->GetQueue();
   }
 
   std::shared_ptr<BlockMandateLF> newMandate =
@@ -64,7 +65,7 @@ void BlockControllerLF::ProcessBlockCreationEvent() {
                              std::memory_order_acquire);
   while (true) {
     auto oldMandate = weakOldMandate.lock();
-    this->CheckAndProcessNewTransactionsImpl(oldMandate);
+    this->CheckAndProcessNewTransactionsImpl(oldQueue);
     if (oldMandate == nullptr) {
       break;
     } else {
@@ -77,7 +78,7 @@ void BlockControllerLF::CheckAndProcessNewTransactions() {
   std::shared_ptr<BlockMandateLF> safeCopy;
   safeCopy =
       std::atomic_load_explicit(&this->curMandate, std::memory_order_release);
-  this->CheckAndProcessNewTransactionsImpl(safeCopy);
+  this->CheckAndProcessNewTransactionsImpl(safeCopy->GetQueue());
 }
 
 } // namespace Voting

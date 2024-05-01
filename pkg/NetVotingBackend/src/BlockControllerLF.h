@@ -11,7 +11,7 @@ private:
   std::unique_ptr<ATransactionsContainer> transactions;
   std::function<void(std::string &&)> callback;
   void
-  CheckAndProcessNewTransactionsImpl(std::shared_ptr<BlockMandateLF> mandate);
+  CheckAndProcessNewTransactionsImpl(std::shared_ptr<TransactionQueue> mandate);
   BlockControllerLF(std::uint64_t curBlockId,
                     const std::vector<std::shared_ptr<VoteTransaction>>
                         &notProcessedTransactions,
