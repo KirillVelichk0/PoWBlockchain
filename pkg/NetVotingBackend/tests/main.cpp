@@ -41,7 +41,9 @@ DROGON_TEST(SimpleHandlingTest) {
   CHECK(channel != nullptr);
   CHECK(controller->GetCurBlockMandate() != nullptr);
   CHECK(channel->GetBlockMandate() != nullptr);
-  channel->GetBlockMandate()->AddTransaction(vote1);
+  for (int i = 0; i < 10; i++) {
+    channel->GetBlockMandate()->AddTransaction(vote1);
+  }
   controller->ProcessBlockCreationEvent();
   CHECK(handlingData.size() != 0);
   LOG_INFO << handlingData;

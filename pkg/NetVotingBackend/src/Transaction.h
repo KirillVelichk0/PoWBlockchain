@@ -2,6 +2,8 @@
 #include <boost/lockfree/queue.hpp>
 #include <cstdint>
 #include <memory>
+#include <mutex>
+#include <queue>
 #include <string>
 #include <vector>
 namespace Voting {
@@ -13,9 +15,19 @@ struct VoteTransaction {
   std::vector<unsigned char> signature;
 };
 
+// Эта реализация ну такая, и ее потом лучше заменить.
+//
+// Есть lockfree очередь, она очень хорошая, быстрая, но имеет некоторый
+// максимальный размер Есть обычная очередь под мьютексом, она вспомогательная.
+//
+// При обычном сценарии работы будет использоваться именно основная очередь.
+// Однако, при крайне большой нагрузке атомарная очередь может достигнуть своего
+// лимита (обычно 2^16), на этот случай пригодится вспомогательная
 class TransactionQueue {
 private:
   boost::lockfree::queue<VoteTransaction *> queue;
+  std::queue<VoteTransaction *> additionalQueue;
+  std::mutex additionalQueueMutex;
   TransactionQueue();
 
 public:
