@@ -1,9 +1,12 @@
 #include "BlockControllerLF.h"
 #include "ATransactionsContainer.h"
+#include "BlockMandateLF.h"
+#include "Transaction.h"
 #include <atomic>
 #include <drogon/drogon.h>
 #include <thread>
 namespace Voting {
+BlockControllerLF::~BlockControllerLF() {}
 void BlockControllerLF::CheckAndProcessNewTransactionsImpl(
     std::shared_ptr<TransactionQueue> queue) {
   bool goNext = true;

@@ -1,7 +1,8 @@
 #pragma once
-#include "Transaction.h"
 #include <cstdint>
+#include <memory>
 namespace Voting {
+class VoteTransaction;
 class ABlockMandate {
 public:
   ABlockMandate() = default;

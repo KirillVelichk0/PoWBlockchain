@@ -6,6 +6,7 @@
 namespace fs = std::filesystem;
 template <class T> using Contr = drogon::HttpSimpleController<T>;
 int main() {
+
   auto pathToDrogonConf = (fs::current_path().parent_path())
                               .append("configs")
                               .append("drogon.json");

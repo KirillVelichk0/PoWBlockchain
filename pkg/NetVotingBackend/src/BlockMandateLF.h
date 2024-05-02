@@ -1,7 +1,7 @@
 #pragma once
 #include "ABlockMandate.h"
-#include "Transaction.h"
 namespace Voting {
+class TransactionQueue;
 class BlockMandateLF : public ABlockMandate {
 private:
   std::uint64_t curBlockId;
@@ -10,7 +10,7 @@ private:
 
 public:
   static std::unique_ptr<BlockMandateLF> Create(std::uint64_t curBlockId);
-  ~BlockMandateLF() = default;
+  ~BlockMandateLF();
   BlockMandateLF(const BlockMandateLF &) = delete;
   BlockMandateLF(BlockMandateLF &&) = delete;
   BlockMandateLF &operator=(const BlockMandateLF &) = delete;

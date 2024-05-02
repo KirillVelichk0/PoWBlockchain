@@ -2,6 +2,7 @@
 #define DROGON_TEST_MAIN
 #include "../src/BlockControllerLF.h"
 #include "../src/ContolChannelSimple.h"
+#include "../src/Transaction.h"
 #include <drogon/drogon_test.h>
 std::shared_ptr<Voting::ABlockController>
 PrepareController(std::string &result) {

@@ -1,5 +1,7 @@
+#include "ABlockController.h"
 #include "ContolChannelSimple.h"
 namespace Voting {
+ControllChannelSimple::~ControllChannelSimple() {}
 ControllChannelSimple::ControllChannelSimple(
     std::shared_ptr<ABlockController> controller)
     : blockController(controller) {}

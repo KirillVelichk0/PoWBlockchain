@@ -1,5 +1,7 @@
 #include "BlockMandateLF.h"
+#include "Transaction.h"
 namespace Voting {
+BlockMandateLF::~BlockMandateLF() {}
 BlockMandateLF::BlockMandateLF(std::uint64_t curBlockId)
     : curBlockId(curBlockId), queue(TransactionQueue::Create()) {}
 std::unique_ptr<BlockMandateLF>

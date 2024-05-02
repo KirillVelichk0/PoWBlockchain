@@ -1,7 +1,7 @@
 #pragma once
-#include "ABlockController.h"
 #include "AControlChannel.h"
 namespace Voting {
+class ABlockController;
 class ControllChannelSimple : public AControllChannel {
 private:
   std::shared_ptr<ABlockController> blockController;
@@ -11,7 +11,7 @@ private:
 
 public:
   std::shared_ptr<ABlockMandate> GetBlockMandate() override;
-  ~ControllChannelSimple() = default;
+  ~ControllChannelSimple();
   static std::shared_ptr<ControllChannelSimple>
   Create(std::shared_ptr<ABlockController> controller);
 

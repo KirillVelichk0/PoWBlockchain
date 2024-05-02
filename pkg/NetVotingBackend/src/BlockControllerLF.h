@@ -1,9 +1,10 @@
 #pragma once
 #include "ABlockController.h"
-#include "ATransactionsContainer.h"
-#include "BlockMandateLF.h"
 #include <functional>
 namespace Voting {
+class BlockMandateLF;
+class ATransactionsContainer;
+class TransactionQueue;
 class BlockControllerLF : public ABlockController {
 private:
   std::uint64_t curBlockId;
@@ -23,7 +24,7 @@ public:
          const std::vector<std::shared_ptr<VoteTransaction>>
              &notProcessedTransactions,
          std::function<void(std::string &&)> &callback);
-  ~BlockControllerLF() = default;
+  ~BlockControllerLF();
   BlockControllerLF(const BlockControllerLF &) = delete;
   BlockControllerLF(BlockControllerLF &&) = delete;
   BlockControllerLF &operator=(const BlockControllerLF &) = delete;
